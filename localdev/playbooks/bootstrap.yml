@@ -10,6 +10,11 @@
     apt:
       upgrade: dist
       update_cache: yes
+  - name: Start and Enable systemd-timesyncd
+    service:
+      name: systemd-timesyncd.service
+      enabled: yes
+      state: started
   - name: Reboot System if Required
     command: shutdown -r now 'Rebooting to complete system upgrade'
       removes=/var/run/reboot-required
