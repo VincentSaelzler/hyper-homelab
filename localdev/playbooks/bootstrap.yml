@@ -1,0 +1,15 @@
+---
+- name: Bootstrap a VM
+  hosts: vagrantboxes
+  become: yes
+  tasks:
+  - name: Set Timezone
+    community.general.timezone:
+      name: America/New_York
+  - name: Upgrade Packages
+    apt:
+      upgrade: dist
+      update_cache: yes
+  - name: Reboot System if Required
+    command: shutdown -r now 'Rebooting to complete system upgrade'
+      removes=/var/run/reboot-required

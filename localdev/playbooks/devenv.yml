@@ -1,0 +1,13 @@
+---
+- name: Install a Dev Environment
+  hosts: vagrantboxes
+  become: yes
+  tasks:
+  - name: Update Repositories and Install GDM3
+    apt:
+      name: gdm3
+      state: present
+      update_cache: yes
+  - name: Reboot System if Required
+    command: shutdown -r now 'Rebooting to complete system upgrade'
+      removes=/var/run/reboot-required
