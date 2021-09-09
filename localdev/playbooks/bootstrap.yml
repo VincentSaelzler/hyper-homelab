@@ -1,4 +1,5 @@
 ---
+# some of the stuff here is ubuntu-specific.
 - name: Bootstrap a VM
   hosts: vagrantboxes
   become: yes
@@ -6,15 +7,16 @@
   - name: Set Timezone
     community.general.timezone:
       name: America/New_York
-  - name: Upgrade Packages
-    apt:
-      upgrade: dist
-      update_cache: yes
   - name: Start and Enable systemd-timesyncd
     service:
       name: systemd-timesyncd.service
       enabled: yes
       state: started
+  - name: Upgrade Packages
+    apt:
+      upgrade: dist
+      update_cache: yes
   - name: Reboot System if Required
-    command: shutdown -r now 'Rebooting to complete system upgrade'
-      removes=/var/run/reboot-required
+    command:
+      cmd: shutdown -r now 'Rebooting to complete system upgrade'
+      removes: /var/run/reboot-required

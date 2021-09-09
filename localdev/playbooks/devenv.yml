@@ -3,11 +3,18 @@
   hosts: vagrantboxes
   become: yes
   tasks:
-  - name: Update Repositories and Install GDM3
+  - name: Install apt Packages
     apt:
-      name: gdm3
       state: present
       update_cache: yes
+      pkg:
+      - gdm3
+  - name: Install snap Packages
+    snap:
+      classic: yes
+      state: present
+      name: code
   - name: Reboot System if Required
-    command: shutdown -r now 'Rebooting to complete system upgrade'
-      removes=/var/run/reboot-required
+    command:
+      cmd: shutdown -r now 'Rebooting to complete system upgrade'
+      removes: /var/run/reboot-required
