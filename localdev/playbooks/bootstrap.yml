@@ -12,6 +12,11 @@
       name: systemd-timesyncd.service
       enabled: yes
       state: started
+  - name: Set Authorized Key
+    authorized_key:
+      user: vagrant
+      state: present
+      key: "{{ lookup('file', '../../id_rsa_ansible.pub') }}"
   - name: Upgrade Packages
     apt:
       upgrade: dist
