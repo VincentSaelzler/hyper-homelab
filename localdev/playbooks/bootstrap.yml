@@ -1,6 +1,6 @@
 ---
 # some of the stuff here is ubuntu-specific.
-- name: Bootstrap a VM
+- name: Update Packages and Sync Time
   hosts: vagrantboxes
   become: yes
   tasks:
@@ -12,11 +12,6 @@
       name: systemd-timesyncd.service
       enabled: yes
       state: started
-  - name: Set Authorized Key
-    authorized_key:
-      user: vagrant
-      state: present
-      key: "{{ lookup('file', '../../id_rsa_ansible.pub') }}"
   - name: Upgrade Packages
     apt:
       upgrade: dist
@@ -25,3 +20,30 @@
     command:
       cmd: shutdown -r now 'Rebooting to complete system upgrade'
       removes: /var/run/reboot-required
+
+- name: Add User and SSH Keys
+  hosts: vagrantboxes
+  become: yes
+  tasks:
+  - name: Add the User Vince
+    user:
+      name: vince
+      comment: Vincent Saelzler
+      password: '$6$samplesalt$4go7Bx4d0ZawOzbfKqAPjDiiS6yde8WJ/WUL8I6jq7ERU8MsLzluPPIpvpV8Y1RSeslZxNFeSVCsYWpkfZBX.1'
+  - name: Set Authorized (Public) Key
+    authorized_key:
+      user: vince
+      state: present
+      key: "{{ lookup('file', '~/.ssh/id_rsa_ansible.pub') }}"
+  - name: Ensure .ssh Directory Exists.
+    file: 
+      dest: "{{ '/home/vince/.ssh/id_rsa_ansible' | dirname }}"
+      mode: 0700
+      owner: vince
+      state: directory
+  - name: Install SSH Private Key
+    copy:
+      src: ~/.ssh/id_rsa_ansible
+      dest: /home/vince/.ssh/id_rsa_ansible
+      mode: 0600
+      owner: vince
