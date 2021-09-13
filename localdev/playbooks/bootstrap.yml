@@ -37,13 +37,13 @@
       key: "{{ lookup('file', '~/.ssh/id_rsa_ansible.pub') }}"
   - name: Ensure .ssh Directory Exists.
     file: 
-      dest: "{{ '/home/vince/.ssh/id_rsa_ansible' | dirname }}"
+      dest: "{{ '/home/vince/.ssh/id_rsa' | dirname }}"
       mode: 0700
       owner: vince
       state: directory
   - name: Install SSH Private Key
     copy:
       src: ~/.ssh/id_rsa_ansible
-      dest: /home/vince/.ssh/id_rsa_ansible
+      dest: /home/vince/.ssh/id_rsa
       mode: 0600
       owner: vince

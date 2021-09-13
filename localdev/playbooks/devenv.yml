@@ -8,7 +8,8 @@
       state: present
       update_cache: yes
       pkg:
-      - gdm3
+      - tasksel
+#vagrant@ubuntu2104:~$ sudo tasksel install ubuntu-mate-core
   - name: Install snap Packages
     snap:
       classic: yes
