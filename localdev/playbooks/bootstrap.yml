@@ -30,6 +30,7 @@
       name: vince
       comment: Vincent Saelzler
       password: '$6$samplesalt$4go7Bx4d0ZawOzbfKqAPjDiiS6yde8WJ/WUL8I6jq7ERU8MsLzluPPIpvpV8Y1RSeslZxNFeSVCsYWpkfZBX.1'
+      shell: /bin/bash
   - name: Set Authorized (Public) Key
     authorized_key:
       user: vince
