@@ -20,8 +20,19 @@ Saving the encrypted private key in source control was considered as an option. 
 Also, Vagrant auto-generates a key and uses that for the default `vagrant` user. These keys are for the unpriviledged `vince` user.
 
 # Host Box Prep
+
+
 - Install Windows 10 Pro
 - Install VS Code
 - Install Ansible
+-- But NOT on Windows
+-- Requires WSL
 - Install Python
+-- Works much better from MS Store478965
 - Enable Hyper-V
+- Hyper-V Networking Workaround
+- Run ansible on specific location (within /mnt/c)
+- https://github.com/microsoft/WSL/issues/4288
+- WSL Visual Studio Code Extension
+- Do not install ansible via PIP (use package manager)
+- Same for pip and literally everything.
