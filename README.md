@@ -18,3 +18,10 @@ Dependencies:
 Saving the encrypted private key in source control was considered as an option. However, having it in the `~/.ssh` directory makes ssh commands work more easily.
 
 Also, Vagrant auto-generates a key and uses that for the default `vagrant` user. These keys are for the unpriviledged `vince` user.
+
+# Host Box Prep
+- Install Windows 10 Pro
+- Install VS Code
+- Install Ansible
+- Install Python
+- Enable Hyper-V
