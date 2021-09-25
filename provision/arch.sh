@@ -14,7 +14,7 @@ vm_id="27"
 # convert and copy image to windows dir
 qemu-img convert $arch_file -O vhdx "$vhd_dir$vm_id"-os.vhdx
 
-# generate seed iso
+# generate seed iso and save in windows dir
 # ok having the PW here because it's just a test
 # ultimately will only be configuring public keys and IP addrs with cloud-init
 # those are ok in plain text
@@ -25,10 +25,11 @@ chpasswd: { expire: False }
 EOF
 
 cloud-localds "$vhd_dir$vm_id"-seed.iso user-data
-# copy to windows dir
 
-# run powershell script to
-# 1. convert image to vhdx
-# 2. create vm
-# 3. attach vhdx and iso
+# copy to the windows dir so we can start an elevated command prompt
+# (manually for now)
+ps_create="CreateVm.ps1"
+ps_delete="DeleteVm.ps1"
+cp $ps_create $ps_delete "$vhd_dir"
+
 

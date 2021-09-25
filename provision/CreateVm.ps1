@@ -1,14 +1,13 @@
-$VMName = "VMNAME"
+$VMName = "27"
 
  $VM = @{
      Name = $VMName
      MemoryStartupBytes = 2147483648
      Generation = 2
-     NewVHDPath = "C:\Virtual Machines\$VMName\$VMName.vhdx"
-     NewVHDSizeBytes = 53687091200
-     BootDevice = "VHD"
      Path = "C:\Virtual Machines\$VMName"
-     SwitchName = "Default Switch"
+     SwitchName = "TheOutside"
+     VHDPath = "27-os.vhdx"
  }
 
  New-VM @VM
+ Set-VMFirmware "27" -EnableSecureBoot "Off"
