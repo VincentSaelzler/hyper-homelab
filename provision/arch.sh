@@ -6,13 +6,19 @@ vhd_dir="/mnt/c/Users/Public/Documents/Hyper-V/Virtual hard disks/"
 arch_url="https://gitlab.archlinux.org/archlinux/arch-boxes/-/jobs/34904/artifacts/raw/output/Arch-Linux-x86_64-cloudimg-20210923.0.qcow2"
 arch_file="arch.qcow2"
 
+focal_url="https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64.img"
+focal_file="focal.img"
+
 # download os image file 
 #wget $arch_url -O $arch_file
+#wget $focal_url -O $focal_file
 
 # -- per machine
 vm_id="27"
 # convert and copy image to windows dir
-qemu-img convert $arch_file -O vhdx "$vhd_dir$vm_id"-os.vhdx
+#qemu-img convert $arch_file -O vhdx "$vhd_dir$vm_id"-os.vhdx
+qemu-img convert $focal_file -O vhdx "$vhd_dir$vm_id"-os.vhdx
+#qemu-img convert $arch_file -O vpc "$vhd_dir$vm_id"-os.vhd
 
 # generate seed iso and save in windows dir
 # ok having the PW here because it's just a test
