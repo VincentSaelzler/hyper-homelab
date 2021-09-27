@@ -17,7 +17,7 @@ focal_file="focal.img"
 vm_id="27"
 # convert and copy image to windows dir
 #qemu-img convert $arch_file -O vhdx "$vhd_dir$vm_id"-os.vhdx
-qemu-img convert $focal_file -O vhdx "$vhd_dir$vm_id"-os.vhdx
+#qemu-img convert $focal_file -O vhdx "$vhd_dir$vm_id"-os.vhdx
 #qemu-img convert $arch_file -O vpc "$vhd_dir$vm_id"-os.vhd
 
 # generate seed iso and save in windows dir
@@ -26,23 +26,35 @@ qemu-img convert $focal_file -O vhdx "$vhd_dir$vm_id"-os.vhdx
 # those are ok in plain text
 cat > user-data <<EOF
 #cloud-config
-password: password$vm_id
+password: asdfjkl;
 chpasswd: { expire: False }
+ssh_authorized_keys:
+  - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCW4Cf2kYGSvvx+HYcxs3dy4LGZ5At4+7out4usw0xY+lKlbMI5Y+tn62//3uCgDJ7zwMpq9gLOVdQ3XXdtri9e1DWIpytv26BR/RQOfslXeRw+GhVqMYsSd1Y5i9AqvDhSZN1zOA/Gq7EdGT7EGAuPfX+iehAhFXOWDOpIzWyFunMWDinYwrKesYwqLtfVREMa+8GWIijN8usGs9i4ZSdtrUDv7Lgyn9AAfpNiGu+QicYVkTbsXUwSjVmCNggX50qZvp4KuUUq5vStm5RQCRkB07fJQxR3StqMGikK60gSyWRXPxLsFsglet2WmA/4y7sGPlI3WPCFJYFM2VESVo8EMsssKAuo20MrCC8Fs2hcCpqPyBI4Las8drZ8WcWNf5Vht8FFBq7KvFySIyrvv5tD6nWok7tL3PGkDsamTAMdVTxbxLkAowo/ta31jWk3sdRHwyi8B2JrlbdGoTA73E3yhMOOA5UWbd2Si+Ykk6vwFXdzO2y7UR8ChjCiXE/U6JE= vince@RYZEN
 EOF
 
 cat > network-config <<EOF
 version: 2
 ethernets:
-  interface0:
-    match:
-      mac_address: "52:54:00:12:34:00"
-    set-name: interface0
+  eth0:
     addresses:
-      - 192.168.1.10/255.255.255.0
-    gateway4: 192.168.1.254
+      - 192.168.1.27/255.255.255.0
 EOF
 
-cloud-localds "$vhd_dir$vm_id"-seed.iso user-data #network-config
+cat > meta-data <<EOF
+instance-id: iid-abcdefg
+network-interfaces: |
+  iface eth0 inet static
+  address 192.168.1.27
+  network 192.168.1.0
+  netmask 255.255.255.0
+  broadcast 192.168.1.255
+  gateway 192.168.1.254
+hostname: myhost
+EOF
+
+cloud-localds "$vhd_dir$vm_id"-seed.iso user-data meta-data #-N network-config
+
+rm network-config user-data
 
 # copy to the windows dir so we can start an elevated command prompt
 # (manually for now)

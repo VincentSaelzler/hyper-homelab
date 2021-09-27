@@ -1,3 +1,0 @@
-#cloud-config
-password: password27
-chpasswd: { expire: False }
