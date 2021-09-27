@@ -17,7 +17,7 @@ focal_file="focal.img"
 vm_id="27"
 # convert and copy image to windows dir
 #qemu-img convert $arch_file -O vhdx "$vhd_dir$vm_id"-os.vhdx
-#qemu-img convert $focal_file -O vhdx "$vhd_dir$vm_id"-os.vhdx
+qemu-img convert $focal_file -O vhdx "$vhd_dir$vm_id"-os.vhdx
 #qemu-img convert $arch_file -O vpc "$vhd_dir$vm_id"-os.vhd
 
 # generate seed iso and save in windows dir
@@ -26,35 +26,27 @@ vm_id="27"
 # those are ok in plain text
 cat > user-data <<EOF
 #cloud-config
-password: asdfjkl;
-chpasswd: { expire: False }
+#password: passw0rd #for testing only
+#chpasswd: { expire: False }
 ssh_authorized_keys:
-  - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCW4Cf2kYGSvvx+HYcxs3dy4LGZ5At4+7out4usw0xY+lKlbMI5Y+tn62//3uCgDJ7zwMpq9gLOVdQ3XXdtri9e1DWIpytv26BR/RQOfslXeRw+GhVqMYsSd1Y5i9AqvDhSZN1zOA/Gq7EdGT7EGAuPfX+iehAhFXOWDOpIzWyFunMWDinYwrKesYwqLtfVREMa+8GWIijN8usGs9i4ZSdtrUDv7Lgyn9AAfpNiGu+QicYVkTbsXUwSjVmCNggX50qZvp4KuUUq5vStm5RQCRkB07fJQxR3StqMGikK60gSyWRXPxLsFsglet2WmA/4y7sGPlI3WPCFJYFM2VESVo8EMsssKAuo20MrCC8Fs2hcCpqPyBI4Las8drZ8WcWNf5Vht8FFBq7KvFySIyrvv5tD6nWok7tL3PGkDsamTAMdVTxbxLkAowo/ta31jWk3sdRHwyi8B2JrlbdGoTA73E3yhMOOA5UWbd2Si+Ykk6vwFXdzO2y7UR8ChjCiXE/U6JE= vince@RYZEN
-EOF
-
-cat > network-config <<EOF
-version: 2
-ethernets:
-  eth0:
-    addresses:
-      - 192.168.1.27/255.255.255.0
+  - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCW4Cf2kYGSvvx+HYcxs3dy4LGZ5At4+7out4usw0xY+lKlbMI5Y+tn62//3uCgDJ7zwMpq9gLOVdQ3XXdtri9e1DWIpytv26BR/RQOfslXeRw+GhVqMYsSd1Y5i9AqvDhSZN1zOA/Gq7EdGT7EGAuPfX+iehAhFXOWDOpIzWyFunMWDinYwrKesYwqLtfVREMa+8GWIijN8usGs9i4ZSdtrUDv7Lgyn9AAfpNiGu+QicYVkTbsXUwSjVmCNggX50qZvp4KuUUq5vStm5RQCRkB07fJQxR3StqMGikK60gSyWRXPxLsFsglet2WmA/4y7sGPlI3WPCFJYFM2VESVo8EMsssKAuo20MrCC8Fs2hcCpqPyBI4Las8drZ8WcWNf5Vht8FFBq7KvFySIyrvv5tD6nWok7tL3PGkDsamTAMdVTxbxLkAowo/ta31jWk3sdRHwyi8B2JrlbdGoTA73E3yhMOOA5UWbd2Si+Ykk6vwFXdzO2y7UR8ChjCiXE/U6JE= vince@RYZEN-WSL
+  - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDTjTrFm+PBbrJRoaO1CZrbvIgym8MQt6vWqZ9AmLL0VxEz1zfWxs3eB9hHkOZGKhwL1eekDbnhYAF/Z3SIIRp+68Cmu82qS5jYMC+PdgVfXIzHD9v8ng5Wfe/PXd5B+mD/oV+8prBUFd19u4v7eJyq7xSKj22+U7E0GtSYa794+O/EFRjvgJhScILasae/QzhqNat3xYXE4o2wWPwzS1sQcGspBlHcy08TDp8aWTbvYkjR57kCaqe9Mt0YL9xobg2EvZj8rt9BSuD7VsrkqpS1ZG1++dZ1vq+3cNNYlh9A0prTnap79Nirc4EZSDm2xi/w/DhfS7izCaavc42CPJ7xz0NRGHvnR/2BQdm1Tloa6w3kOxPwjOs0ZkxpWhbvo8RHklLeGXEFIZ53FyGppiXONTvoQwy1PE5zJotGZmRCNhn6TeonBGGW3kxjeQ7JFJvjiyG4YVZv2V6YoRyZuB5ZJRpq7Z8dH5hIT1pMz8Bmy/yYmzFkTFgFfSJDIV++ye8= vince@RYZEN
 EOF
 
 cat > meta-data <<EOF
-instance-id: iid-abcdefg
+instance-id: iid-$vm_id
 network-interfaces: |
   iface eth0 inet static
-  address 192.168.1.27
+  address 192.168.1.$vm_id
   network 192.168.1.0
   netmask 255.255.255.0
   broadcast 192.168.1.255
   gateway 192.168.1.254
-hostname: myhost
 EOF
 
-cloud-localds "$vhd_dir$vm_id"-seed.iso user-data meta-data #-N network-config
+cloud-localds "$vhd_dir$vm_id"-seed.iso user-data meta-data
 
-rm network-config user-data meta-data
+rm user-data meta-data
 
 # copy to the windows dir so we can start an elevated command prompt
 # (manually for now)
