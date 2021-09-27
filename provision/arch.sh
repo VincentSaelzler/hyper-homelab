@@ -30,7 +30,19 @@ password: password$vm_id
 chpasswd: { expire: False }
 EOF
 
-cloud-localds "$vhd_dir$vm_id"-seed.iso user-data
+cat > network-config <<EOF
+version: 2
+ethernets:
+  interface0:
+    match:
+      mac_address: "52:54:00:12:34:00"
+    set-name: interface0
+    addresses:
+      - 192.168.1.10/255.255.255.0
+    gateway4: 192.168.1.254
+EOF
+
+cloud-localds "$vhd_dir$vm_id"-seed.iso user-data #network-config
 
 # copy to the windows dir so we can start an elevated command prompt
 # (manually for now)

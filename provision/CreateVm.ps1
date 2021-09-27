@@ -1,15 +1,17 @@
 $VMName = "27"
+$SwitchName = "TheOutside"
 
- $VM = @{
-     Name = $VMName
-     MemoryStartupBytes = 2147483648
+$VM = @{
+     Name = "$VMName"
      Generation = 2
-     Path = "C:\Virtual Machines\$VMName"
-     SwitchName = "TheOutside"
-     VHDPath = "27-os.vhdx"
-     BootDevice = "VHD"
+     SwitchName = $SwitchName
+     VHDPath = "$VMName-os.vhdx"
  }
 
- New-VM @VM
- Set-VMFirmware "27" -EnableSecureBoot "Off"
- Add-VMDvdDrive "27" -Path "27-seed.iso"
+New-VM @VM
+Set-VMFirmware "$VMName" -EnableSecureBoot Off
+Add-VMDvdDrive "$VMName" -Path "$VMName-seed.iso"
+
+#can't seem to make this work but it might not matter
+#check if the router forwards via IP before wasting more time.
+#Set-VMNetworkAdapter -VMName "27" -StaticMacAddress "85B3FD973932"
