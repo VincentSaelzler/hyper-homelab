@@ -54,7 +54,7 @@ EOF
 
 cloud-localds "$vhd_dir$vm_id"-seed.iso user-data meta-data #-N network-config
 
-rm network-config user-data
+rm network-config user-data meta-data
 
 # copy to the windows dir so we can start an elevated command prompt
 # (manually for now)
