@@ -2,37 +2,22 @@
   hosts: ucloud
   become: yes
   tasks:
-  - name: Update and upgrade packages.
+  - name: Update cache and upgrade existing packages.
     apt:
       upgrade: dist
       cache_valid_time: 3600
-  - name: Reboot system if required.
-    command:
-      cmd: shutdown -r now 'Rebooting to complete system upgrade'
-      removes: /var/run/reboot-required
-  - name: Install tasksel
+  - name: Install new apt packages.
     apt:
       state: present
       pkg:
         - tasksel
-  - name: Reboot system if required.
-    command:
-      cmd: shutdown -r now 'Rebooting to complete system upgrade'
-      removes: /var/run/reboot-required
-  - name: Install desktop
-    apt:
-      state: present
-      pkg:
-        - ubuntu-desktop
-  - name: Reboot system if required.
-    command:
-      cmd: shutdown -r now 'Rebooting to complete system upgrade'
-      removes: /var/run/reboot-required
-  - name: Install xrdp
-    apt:
-      state: present
-      pkg:
+        - ubuntu-desktop-minimal
         - xrdp
+  - name: Install new snap packages.
+    snap:
+      classic: yes
+      state: present
+      name: code
   - name: Reboot system if required.
     command:
       cmd: shutdown -r now 'Rebooting to complete system upgrade'
