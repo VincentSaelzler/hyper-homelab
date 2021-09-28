@@ -13,11 +13,17 @@
         - tasksel
         - ubuntu-desktop-minimal
         - xrdp
-  - name: Install new snap packages.
+  - name: Install Visual Studio Code.
     snap:
       classic: yes
       state: present
       name: code
+  - name: Install dotnet SDK.
+    snap:
+      classic: yes
+      state: present
+      name: dotnet-sdk
+      channel: latest/edge
   - name: Reboot system if required.
     command:
       cmd: shutdown -r now 'Rebooting to complete system upgrade'
