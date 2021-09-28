@@ -1,0 +1,31 @@
+- name: Install required packages.
+  hosts: ucloud
+  become: yes
+  tasks:
+  - name: Update and upgrade packages.
+    apt:
+      upgrade: dist
+      cache_valid_time: 3600
+  - name: Reboot system if required.
+    command:
+      cmd: shutdown -r now 'Rebooting to complete system upgrade'
+      removes: /var/run/reboot-required
+  - name: Install tasksel
+    apt:
+      state: present
+      pkg:
+        - tasksel
+  - name: Reboot system if required.
+    command:
+      cmd: shutdown -r now 'Rebooting to complete system upgrade'
+      removes: /var/run/reboot-required
+  - name: Install desktop
+    apt:
+      state: present
+      pkg:
+        - ubuntu-desktop
+  - name: Reboot system if required.
+    command:
+      cmd: shutdown -r now 'Rebooting to complete system upgrade'
+      removes: /var/run/reboot-required
+      
