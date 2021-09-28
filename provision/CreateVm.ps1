@@ -15,6 +15,7 @@ Resize-VHD -Path $VHDFile -SizeBytes $VHDSize
 New-VM @VM
 Set-VMFirmware "$VMName" -EnableSecureBoot Off
 Add-VMDvdDrive "$VMName" -Path "$VMName-seed.iso"
+Set-VM "$VMName" -EnhancedSessionTransportType HvSocket
 
 Start-VM $VMName
 

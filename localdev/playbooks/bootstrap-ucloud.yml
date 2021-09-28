@@ -28,4 +28,13 @@
     command:
       cmd: shutdown -r now 'Rebooting to complete system upgrade'
       removes: /var/run/reboot-required
+  - name: Install xrdp
+    apt:
+      state: present
+      pkg:
+        - xrdp
+  - name: Reboot system if required.
+    command:
+      cmd: shutdown -r now 'Rebooting to complete system upgrade'
+      removes: /var/run/reboot-required
       
