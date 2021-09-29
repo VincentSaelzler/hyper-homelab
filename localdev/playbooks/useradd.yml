@@ -21,3 +21,11 @@
     with_file:
       - '/mnt/c/Users/vince/.ssh/id_rsa.pub' # windows powershell
       - '~/.ssh/id_rsa.pub' # WSL
+  - name: Set gitconfig user
+    git_config:
+      name: user.name
+      value: 'Vincent Saelzler'
+  - name: Set gitconfig email
+    git_config:
+      name: user.email
+      value: 'vincent.saelzler@gmail.com'
