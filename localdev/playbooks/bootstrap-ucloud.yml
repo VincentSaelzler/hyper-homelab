@@ -2,32 +2,17 @@
   hosts: ucloud
   become: yes
   tasks:
-  - name: Update cache and upgrade existing packages.
+  - name: Update cache and upgrade existing packages
     apt:
       upgrade: dist
       cache_valid_time: 3600
-  - name: Install new apt packages.
+  - name: Install new apt packages
     apt:
       state: present
       pkg:
         - tasksel
         - ubuntu-desktop-minimal
         - xrdp
-  - name: Install Visual Studio Code.
-    snap:
-      classic: yes
-      state: present
-      name: code
-  - name: Download Microsoft's Ubuntu 20.04 deb file
-    get_url:
-      url: https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb
-      dest: '/tmp'
-  - name: Add MS packages to be available to install
-    apt:
-      deb: '/tmp/packages-microsoft-prod.deb'
-  - name: Install dotnet SDK
-    apt:
-      pkg: dotnet-sdk-5.0
   - name: Implement fix for xrdp bug regarding "color management device"
     copy:
       src: 45-allow-colord.pkla # http://c-nergy.be/blog/?p=12043

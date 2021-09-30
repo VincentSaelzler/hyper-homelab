@@ -1,21 +1,26 @@
 ---
 - name: Install a Dev Environment
-  hosts: vagrantboxes
+  hosts: ucloud
   become: yes
   tasks:
-  - name: Install apt Packages
+  - name: Download Microsoft's VS Code deb file
+    get_url:
+      url: https://go.microsoft.com/fwlink/?LinkID=760868
+      dest: '/tmp/vscode.deb'
+  - name: Add MS VS Code to be available to install
+    apt:
+      deb: '/tmp/vscode.deb'
+  - name: Download Microsoft's Ubuntu 20.04 deb file
+    get_url:
+      url: https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb
+      dest: '/tmp'
+  - name: Add MS packages to be available to install
+    apt:
+      deb: '/tmp/packages-microsoft-prod.deb'
+  - name: Install new apt packages.
     apt:
       state: present
-      update_cache: yes
+      update_cache: yes # important
       pkg:
-      - tasksel
-#vagrant@ubuntu2104:~$ sudo tasksel install ubuntu-mate-core
-  - name: Install snap Packages
-    snap:
-      classic: yes
-      state: present
-      name: code
-  - name: Reboot System if Required
-    command:
-      cmd: shutdown -r now 'Rebooting to complete system upgrade'
-      removes: /var/run/reboot-required
+        - dotnet-sdk-5.0
+        - code
