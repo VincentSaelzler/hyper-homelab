@@ -28,6 +28,10 @@
   - name: Install dotnet SDK
     apt:
       pkg: dotnet-sdk-5.0
+  - name: Implement fix for xrdp bug regarding "color management device"
+    copy:
+      src: 45-allow-colord.pkla # http://c-nergy.be/blog/?p=12043
+      dest: /etc/polkit-1/localauthority/50-local.d/
   - name: Reboot system if required.
     command:
       cmd: shutdown -r now 'Rebooting to complete system upgrade'
