@@ -21,6 +21,7 @@ Also, Vagrant auto-generates a key and uses that for the default `vagrant` user.
 
 # Host Box Prep
 
+## Create SSH Keypairs
 
 - Install Windows 10 Pro
 - Install VS Code
@@ -36,3 +37,7 @@ Also, Vagrant auto-generates a key and uses that for the default `vagrant` user.
 - WSL Visual Studio Code Extension
 - Do not install ansible via PIP (use package manager)
 - Same for pip and literally everything.
+
+# Resources
+https://github.com/geerlingguy/ansible-for-devops
+https://www.ansiblefordevops.com/
