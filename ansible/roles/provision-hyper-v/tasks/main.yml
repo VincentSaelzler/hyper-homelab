@@ -16,3 +16,14 @@
   template:
     src: user-data.j2
     dest: "/tmp/user-data{{ vm_id }}"
+- name: Create meta data file
+  template:
+    src: meta-data.j2  #KLUDGE - the meta-data.j2 template asumes alot about the networking environment!
+    dest: "/tmp/meta-data{{ vm_id }}"
+- name: Create .iso seed file from meta data and user data
+  command:
+    argv:
+      - cloud-localds
+      - "{{ vhd_dir }}{{ vm_id }}-seed2.iso"
+      - "/tmp/user-data{{ vm_id }}"
+      - "/tmp/meta-data{{ vm_id }}"
