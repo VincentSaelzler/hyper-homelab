@@ -3,4 +3,12 @@
   get_url:
     url: "{{ image_url }}"
     dest: "/tmp/{{ image_tgt }}"
-
+- name: Create .vhdx file from cloud image
+  command:
+    argv:
+      - qemu-img
+      - convert
+      - "/tmp/{{ image_tgt }}"
+      - "-O"
+      - "vhdx"
+      - "{{ vhd_dir }}{{ vm_id }}-os2.vhdx"
