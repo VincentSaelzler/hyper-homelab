@@ -12,3 +12,7 @@
       - "-O"
       - "vhdx"
       - "{{ vhd_dir }}{{ vm_id }}-os2.vhdx"
+- name: Create user data file
+  template:
+    src: user-data.j2
+    dest: "/tmp/user-data{{ vm_id }}"
