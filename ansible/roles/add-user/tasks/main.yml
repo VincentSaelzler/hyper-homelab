@@ -27,8 +27,3 @@
   git_config:
     name: user.email
     value: 'vincent.saelzler@gmail.com'
-- name: Install extensions to VS Code
-  become_user: vince # vscode threw errors if trying to do this with the ubuntu/root user
-  command:
-    cmd: code --install-extension ms-dotnettools.csharp
-    #cmd: whoami

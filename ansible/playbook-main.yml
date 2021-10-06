@@ -7,4 +7,9 @@
     - ubuntu-gui
     - vs-code
     - add-user #currently depends on vs-code
-  tasks: []
+  tasks:
+  - name: Install extensions to VS Code #assumes vince user is already configured
+    become_user: vince # vscode threw errors if trying to do this with the ubuntu/root user
+    command:
+      cmd: code --install-extension ms-dotnettools.csharp
+      #cmd: whoami
