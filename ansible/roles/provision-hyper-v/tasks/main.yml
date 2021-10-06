@@ -1,0 +1,6 @@
+---
+- name: Download Ubuntu cloud image #does not appear to re-download if the file already exists
+  get_url:
+    url: "{{ image_url }}"
+    dest: "/tmp/{{ image_tgt }}"
+
