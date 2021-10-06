@@ -1,7 +1,7 @@
 --- 
 all: 
   children: 
-    ucloud: 
+    virtual: 
       hosts: "192.168.1.27"
       vars: 
         ansible_user: ubuntu

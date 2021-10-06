@@ -1,0 +1,10 @@
+---
+- name: test
+  hosts: virtual
+  become: yes
+  roles:
+    - ping
+    - ubuntu-gui
+    - vs-code
+    - add-user #currently depends on vs-code
+  tasks: []

@@ -1,24 +1,21 @@
-- name: Install required packages.
-  hosts: ucloud
-  become: yes
-  tasks:
-  - name: Update cache and upgrade existing packages
-    apt:
-      upgrade: dist
-      cache_valid_time: 3600
-  - name: Install new apt packages
-    apt:
-      state: present
-      pkg:
-        - tasksel
-        - ubuntu-desktop-minimal
-        - xrdp
-  - name: Implement fix for xrdp bug regarding "color management device"
-    copy:
-      src: 45-allow-colord.pkla # http://c-nergy.be/blog/?p=12043
-      dest: /etc/polkit-1/localauthority/50-local.d/
-  - name: Reboot system if required.
-    command:
-      cmd: shutdown -r now 'Rebooting to complete system upgrade'
-      removes: /var/run/reboot-required
+---
+- name: Update cache and upgrade existing packages
+  apt:
+    upgrade: dist
+    cache_valid_time: 3600
+- name: Install new apt packages
+  apt:
+    state: present
+    pkg:
+      - tasksel
+      - ubuntu-desktop-minimal
+      - xrdp
+- name: Implement fix for xrdp bug regarding "color management device"
+  copy:
+    src: 45-allow-colord.pkla # http://c-nergy.be/blog/?p=12043
+    dest: /etc/polkit-1/localauthority/50-local.d/
+- name: Reboot system if required.
+  command:
+    cmd: shutdown -r now 'Rebooting to complete system upgrade'
+    removes: /var/run/reboot-required
       
