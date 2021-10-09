@@ -27,3 +27,7 @@
       - "{{ vhd_dir }}{{ vm_id }}-seed2.iso"
       - "/tmp/user-data{{ vm_id }}"
       - "/tmp/meta-data{{ vm_id }}"
+- name: Create PowerShell script
+  template:
+    src: CreateVm.ps1.j2
+    dest: "/tmp/create-vm{{ vm_id }}.ps1"

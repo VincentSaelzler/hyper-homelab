@@ -1,6 +1,6 @@
-$VMName = "27"
-$SwitchName = "TheOutside"
-$VHDSize = 8589934592 # that's 8 GiB
+$VMName = {{ vm_id }}
+$SwitchName = {{ switch_name }}
+$VHDSize = {{ vhd_size }}
 $VHDFile = "$VMName-os.vhdx"
 
 $VM = @{
@@ -15,7 +15,6 @@ Resize-VHD -Path $VHDFile -SizeBytes $VHDSize
 New-VM @VM
 Set-VMFirmware "$VMName" -EnableSecureBoot Off
 Add-VMDvdDrive "$VMName" -Path "$VMName-seed.iso"
-Set-VM "$VMName" -EnhancedSessionTransportType HvSocket
 
 Start-VM $VMName
 
