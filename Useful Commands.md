@@ -6,7 +6,7 @@ Run a test ad-hoc command using an inventory file
 ```
 ansible -i hosts.yml vagrantboxes -a "hostname"
 ```
-Run a playbook using an inventory file
+Run a playbook using an inventory file, and with verbosity
 ```
-vince@5480:~/src/hyper-homelab/localdev$ ansible-playbook playbooks/bootstrap.yml -i hosts.yml  
+ansible-playbook ~/hyper-homelab/ansible/playbook-local.yml -i ~/hyper-homelab/ansible/inventory.yml -v
 ```

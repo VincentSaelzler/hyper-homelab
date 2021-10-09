@@ -40,4 +40,5 @@ Also, Vagrant auto-generates a key and uses that for the default `vagrant` user.
 
 # Resources
 https://github.com/geerlingguy/ansible-for-devops
+
 https://www.ansiblefordevops.com/
