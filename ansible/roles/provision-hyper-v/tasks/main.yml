@@ -11,7 +11,7 @@
       - "/tmp/{{ image_tgt }}"
       - "-O"
       - "vhdx"
-      - "{{ vhd_dir }}{{ vm_id }}-os2.vhdx"
+      - "{{ vhd_dir }}{{ vm_id }}-os.vhdx"
 - name: Create user data file
   template:
     src: user-data.j2
@@ -24,10 +24,15 @@
   command:
     argv:
       - cloud-localds
-      - "{{ vhd_dir }}{{ vm_id }}-seed2.iso"
+      - "{{ vhd_dir }}{{ vm_id }}-seed.iso"
       - "/tmp/user-data{{ vm_id }}"
       - "/tmp/meta-data{{ vm_id }}"
 - name: Create PowerShell script
   template:
     src: CreateVm.ps1.j2
     dest: "/tmp/create-vm{{ vm_id }}.ps1"
+- name: Run script to create and start VM
+  command:
+    argv:
+      - "powershell.exe"
+      - "/tmp/create-vm{{ vm_id }}.ps1"

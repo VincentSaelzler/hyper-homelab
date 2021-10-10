@@ -1,23 +1,26 @@
 $VMName = {{ vm_id }}
-$SwitchName = {{ switch_name }}
+$SwitchName = "{{ switch_name }}"
 $VHDSize = {{ vhd_size }}
 $VHDFile = "$VMName-os.vhdx"
+$VHDDir = "{{ vhd_dir_windows }}"
+$VHDPath = "$VHDDir$VHDFile"
 
 $VM = @{
      Name = "$VMName"
      Generation = 2
      SwitchName = $SwitchName
-     VHDPath = $VHDFile
+     VHDPath = $VHDPath
 }
 
-Resize-VHD -Path $VHDFile -SizeBytes $VHDSize
+#Write-Host "$VHDPath"
+Resize-VHD -Path "$VHDPath" -SizeBytes $VHDSize
 
 New-VM @VM
 Set-VMFirmware "$VMName" -EnableSecureBoot Off
-Add-VMDvdDrive "$VMName" -Path "$VMName-seed.iso"
+Add-VMDvdDrive "$VMName" -Path "$VHDDir$VMName-seed.iso"
 
 Start-VM $VMName
 
-#can't seem to make this work but it might not matter
-#check if the router forwards via IP before wasting more time.
-#Set-VMNetworkAdapter -VMName "27" -StaticMacAddress "85B3FD973932"
+# #can't seem to make this work but it might not matter
+# #check if the router forwards via IP before wasting more time.
+# #Set-VMNetworkAdapter -VMName "27" -StaticMacAddress "85B3FD973932"

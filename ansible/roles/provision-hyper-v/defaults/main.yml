@@ -1,5 +1,6 @@
 # host system
 vhd_dir: "/mnt/c/Users/Public/Documents/Hyper-V/Virtual hard disks/" #this is the default location for Hyper-V
+vhd_dir_windows: 'C:\Users\Public\Documents\Hyper-V\Virtual hard disks\' # PowerShell scripts don't recognize the linux format
 switch_name: TheOutside #move this out of role and into more appropriate vars file
 
 # things related to VM
