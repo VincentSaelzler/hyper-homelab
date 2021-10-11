@@ -1,0 +1,7 @@
+---
+- name: Install Ubuntu Desktop
+  hosts: virtual
+  become: yes
+  roles:
+    - ubuntu-gui
+    - add-user
