@@ -2,7 +2,6 @@
 - name: Create a Hyper-V VM
   hosts: localhost
   become: no
-  vars:
-    vm_id: 27
   roles:
-    - provision-hyper-v
+    - { role: "provision-hyper-v", vm_id: 28 }
+    - { role: "provision-hyper-v", vm_id: 29 }
