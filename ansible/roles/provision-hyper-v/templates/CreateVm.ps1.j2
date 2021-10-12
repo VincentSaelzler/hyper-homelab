@@ -1,26 +1,26 @@
-$VMName = {{ vm_id }}
+# get stuff from ansible to powershell parameters
+$VMName = "{{ vm['name'] }}"
 $SwitchName = "{{ switch_name }}"
-$VHDSize = {{ vhd_size }}
-$VHDFile = "$VMName-os.vhdx"
-$VHDDir = "{{ vhd_dir_windows }}"
-$VHDPath = "$VHDDir$VHDFile"
+$VHDSize = {{ vm['vhd_size'] }}
+$VHDPath = "{{ vhd_dir_windows }}{{ vhdx_file }}"
+$ISOPath = "{{ vhd_dir_windows }}{{ seed_file }}"
 
+# consolidate powershell parameters
 $VM = @{
      Name = "$VMName"
      Generation = 2
      SwitchName = $SwitchName
-     VHDPath = $VHDPath
+     VHDPath = "$VHDPath"
 }
 
-#Write-Host "$VHDPath"
+# adjust size of virtual hard drive
+# the ubuntu cloud image will automagically increase file system size to match this
 Resize-VHD -Path "$VHDPath" -SizeBytes $VHDSize
 
+# create VM with drive and DVD image
 New-VM @VM
 Set-VMFirmware "$VMName" -EnableSecureBoot Off
-Add-VMDvdDrive "$VMName" -Path "$VHDDir$VMName-seed.iso"
+Add-VMDvdDrive "$VMName" -Path "$ISOPath"
 
+# start the VM
 Start-VM $VMName
-
-# #can't seem to make this work but it might not matter
-# #check if the router forwards via IP before wasting more time.
-# #Set-VMNetworkAdapter -VMName "27" -StaticMacAddress "85B3FD973932"

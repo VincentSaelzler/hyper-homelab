@@ -1,6 +1,20 @@
 ---
-hostvar: "D"
+# assumptions about the host
+vhd_dir: "/mnt/d/VMs/" # for linux things
+vhd_dir_windows: 'D:\VMs\' # for PowerShell scripts
+
+# assumptions about hyper-v
+switch_name: TheOutside # must create this as a bridge network ahead of time
+
+# assumptions about the networking environment of the host
+address_base: "192.168.1." # used to assign "address" of individual VMs in meta-data.j2 template file
+network: "192.168.1.0"
+netmask: "255.255.255.0"
+broadcast: "192.168.1.255"
+gateway: "192.168.1.254"
+
 vms:
-  dnet:
+  dotnet:
+    id: 27
     name: dotnet
-    id: 29
+    vhd_size: 8589934592 # that's 8 GiB

@@ -1,4 +1,10 @@
 ---
+- name: Print something passed as a role parameter
+  debug:
+    var: vm
+- name: Print dynamic vars
+  debug:
+    var: user_data_file
 - name: Download Ubuntu cloud image #does not appear to re-download if the file already exists
   get_url:
     url: "{{ image_url }}"
@@ -11,28 +17,28 @@
       - "/tmp/{{ image_tgt }}"
       - "-O"
       - "vhdx"
-      - "{{ vhd_dir }}{{ vm_id }}-os.vhdx"
+      - "{{ vhd_dir }}{{ vhdx_file }}"
 - name: Create user data file
   template:
     src: user-data.j2
-    dest: "/tmp/user-data{{ vm_id }}"
+    dest: "/tmp/{{ user_data_file }}"
 - name: Create meta data file
   template:
-    src: meta-data.j2  #KLUDGE - the meta-data.j2 template asumes alot about the networking environment!
-    dest: "/tmp/meta-data{{ vm_id }}"
+    src: meta-data.j2 # assumes interface name is eth0
+    dest: "/tmp/{{ meta_data_file }}"
 - name: Create .iso seed file from meta data and user data
   command:
     argv:
       - cloud-localds
-      - "{{ vhd_dir }}{{ vm_id }}-seed.iso"
-      - "/tmp/user-data{{ vm_id }}"
-      - "/tmp/meta-data{{ vm_id }}"
+      - "{{ vhd_dir }}{{ seed_file }}"
+      - "/tmp/{{ user_data_file }}"
+      - "/tmp/{{ meta_data_file }}"
 - name: Create PowerShell script
   template:
     src: CreateVm.ps1.j2
-    dest: "/tmp/create-vm{{ vm_id }}.ps1"
+    dest: "/tmp/{{ pshell_file }}"
 - name: Run script to create and start VM
   command:
     argv:
       - "powershell.exe"
-      - "/tmp/create-vm{{ vm_id }}.ps1"
+      - "/tmp/{{ pshell_file }}"
