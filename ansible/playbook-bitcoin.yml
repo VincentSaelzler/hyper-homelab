@@ -1,8 +1,34 @@
 ---
+# based on https://jonatack.github.io/articles/how-to-compile-bitcoin-core-and-run-the-tests
 - name: Install Bitcoin
   hosts: bitcoin
   become: yes
   tasks:
-  - name: Confirm the virtual drive is large enough
-    command:
-      cmd: "df -h /"
+  - name: Install dependencies
+    apt:
+      pkg:
+      - build-essential
+      - libtool
+      - autotools-dev
+      - automake
+      - pkg-config
+      - bsdmainutils
+      - python3
+      - libssl-dev
+      - libevent-dev
+      - libboost-system-dev
+      - libboost-filesystem-dev
+      - libboost-chrono-dev
+      - libboost-test-dev
+      - libboost-thread-dev
+      - libminiupnpc-dev
+      - libzmq3-dev
+      - libqt5gui5
+      - libqt5core5a
+      - libqt5dbus5
+      - qttools5-dev
+      - qttools5-dev-tools
+      - libprotobuf-dev
+      - protobuf-compiler
+      - git
+      - libsqlite3-dev
