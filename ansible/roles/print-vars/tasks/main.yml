@@ -8,3 +8,6 @@
 - name: See if something from localhost.yml comes
   debug:
     var: hostvar
+- name: Print something passed as a role parameter
+  debug:
+    var: vm_id
