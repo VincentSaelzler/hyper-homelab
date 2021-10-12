@@ -4,6 +4,7 @@ This is a home lab environment based on the following technologies:
 - Oracle VM VirtualBox
 - Vagrant
 - Ansible
+- Cloud-Init
 
 Ansible and Vagrant are always required on the host machine.
 
