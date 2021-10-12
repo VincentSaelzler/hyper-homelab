@@ -18,7 +18,7 @@ vms:
     id: 27
     name: dotnet
     vhd_size: 8589934592 # that's 8 GiB
-  polkadot:
+  bitcoin:
     id: 28
-    name: polkadot
-    vhd_size: 107374182400 # that's 100 GiB
+    name: bitcoin
+    vhd_size: 549755813888 # that's 512 GiB

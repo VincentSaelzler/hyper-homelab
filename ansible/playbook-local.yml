@@ -13,14 +13,14 @@
     vars:
       vm: "{{ vms['dotnet'] }}"
     when: not dotnet_vhdx.stat.exists
-  # polkadot
-  - name: Check if polkadot VHDX file exists
+  # bitcoin
+  - name: Check if bitcoin VHDX file exists
     stat:
-      path: "{{ vhd_dir }}{{ vms['polkadot']['id'] }}-os.vhdx" 
-    register: polkadot_vhdx
-  - name: Create the polkadot VM
+      path: "{{ vhd_dir }}{{ vms['bitcoin']['id'] }}-os.vhdx" 
+    register: bitcoin_vhdx
+  - name: Create the bitcoin VM
     include_role:
       name: provision-hyper-v
     vars:
-      vm: "{{ vms['polkadot'] }}"
-    when: not polkadot_vhdx.stat.exists
+      vm: "{{ vms['bitcoin'] }}"
+    when: not bitcoin_vhdx.stat.exists
