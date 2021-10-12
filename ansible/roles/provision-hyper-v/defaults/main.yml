@@ -6,7 +6,8 @@ image_url: https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-a
 image_tgt: focal.img
 user_data_file: "{{ vm['id'] }}-ud"
 meta_data_file: "{{ vm['id'] }}-md"
-pshell_file: "{{ vm['id'] }}-create.ps1"
+pshell_create_file: "{{ vm['id'] }}-create.ps1"
+pshell_destroy_file: "{{ vm['id'] }}-destroy.ps1"
 
 # thse get copied out to the windows-accessible directory
 vhdx_file: "{{ vm['id'] }}-os.vhdx"

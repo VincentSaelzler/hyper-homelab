@@ -1,0 +1,9 @@
+# get stuff from ansible to powershell parameters
+$VMName = "{{ vm['name'] }}"
+$VHDPath = "{{ vhd_dir_windows }}{{ vhdx_file }}"
+$ISOPath = "{{ vhd_dir_windows }}{{ seed_file }}"
+
+Stop-Vm "$VMName" -TurnOff
+Remove-VM "$VMName"
+Remove-Item "$VHDPath"
+Remove-Item "$ISOPath"
