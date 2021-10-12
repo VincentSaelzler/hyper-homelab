@@ -1,0 +1,8 @@
+---
+- name: Install Bitcoin
+  hosts: bitcoin
+  become: yes
+  tasks:
+  - name: Confirm the virtual drive is large enough
+    command:
+      cmd: "df -h /"

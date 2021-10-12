@@ -1,0 +1,7 @@
+---
+- name: Personalize Ubuntu cloud image
+  hosts: virtual
+  become: yes
+  roles:
+    - full-upgrade
+    - add-user

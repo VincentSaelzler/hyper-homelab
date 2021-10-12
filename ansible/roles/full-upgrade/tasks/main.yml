@@ -1,0 +1,9 @@
+---
+- name: Update cache and upgrade existing packages
+  apt:
+    upgrade: full
+    cache_valid_time: 3600
+- name: Reboot system if required.
+  command:
+    cmd: shutdown -r now 'Rebooting to complete system upgrade'
+    removes: /var/run/reboot-required
