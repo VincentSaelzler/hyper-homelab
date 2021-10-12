@@ -1,0 +1,5 @@
+---
+- name: Do a lot of debug printing to see how complex variables move through tasks and roles.
+  hosts: localhost
+  roles:
+    - print-vars
