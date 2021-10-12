@@ -1,7 +1,16 @@
 ---
-- name: Create a Hyper-V VM
+- name: Create Hyper-V VMs
   hosts: localhost
-  become: no
-  roles:
-    - { role: "provision-hyper-v", vm: "{{ vms['dotnet'] }}" }
-    # - { role: "provision-hyper-v", vm_id: 29 }
+  tasks:
+  - name: Check if dotnet VHDX file exists
+    stat:
+      # KLUDGE: assumes where the provision-hyper-v role saves the VHDX file
+      path: "{{ vhd_dir }}{{ vms['dotnet']['id'] }}-os.vhdx" 
+    register: dotnet_vhdx
+  - name: Create the dotnet VM
+    include_role:
+      name: provision-hyper-v
+    vars:
+      vm: "{{ vms['dotnet'] }}"
+    when: not dotnet_vhdx.stat.exists
+
