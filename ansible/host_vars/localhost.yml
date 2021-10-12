@@ -1,5 +1,6 @@
 ---
 hostvar: "D"
-vm_ids:
-  - 28
-  - 29
+vms:
+  dnet:
+    name: dotnet
+    id: 29

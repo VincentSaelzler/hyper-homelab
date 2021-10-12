@@ -10,4 +10,4 @@
     var: hostvar
 - name: Print something passed as a role parameter
   debug:
-    var: vm_id
+    var: vm
