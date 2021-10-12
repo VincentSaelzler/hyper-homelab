@@ -2,9 +2,9 @@
 - name: Create Hyper-V VMs
   hosts: localhost
   tasks:
+  # dotnet
   - name: Check if dotnet VHDX file exists
     stat:
-      # KLUDGE: assumes where the provision-hyper-v role saves the VHDX file
       path: "{{ vhd_dir }}{{ vms['dotnet']['id'] }}-os.vhdx" 
     register: dotnet_vhdx
   - name: Create the dotnet VM
@@ -13,4 +13,14 @@
     vars:
       vm: "{{ vms['dotnet'] }}"
     when: not dotnet_vhdx.stat.exists
-
+  # polkadot
+  - name: Check if polkadot VHDX file exists
+    stat:
+      path: "{{ vhd_dir }}{{ vms['polkadot']['id'] }}-os.vhdx" 
+    register: polkadot_vhdx
+  - name: Create the polkadot VM
+    include_role:
+      name: provision-hyper-v
+    vars:
+      vm: "{{ vms['polkadot'] }}"
+    when: not polkadot_vhdx.stat.exists
