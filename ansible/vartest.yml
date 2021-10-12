@@ -2,4 +2,5 @@
 - name: Do a lot of debug printing to see how complex variables move through tasks and roles.
   hosts: localhost
   roles:
-    - print-vars
+  - { role: "print-vars", vm_id: 35 }
+  - { role: "print-vars", vm_id: 36 }

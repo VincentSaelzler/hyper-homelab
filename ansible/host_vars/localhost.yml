@@ -1,2 +1,5 @@
 ---
 hostvar: "D"
+vm_ids:
+  - 28
+  - 29
