@@ -32,3 +32,8 @@
       - protobuf-compiler
       - git
       - libsqlite3-dev
+  - name: Clone Bitcoin git repo
+    become_user: vince
+    git:
+      repo: "https://github.com/bitcoin/bitcoin.git"
+      dest: "~/bitcoin"
