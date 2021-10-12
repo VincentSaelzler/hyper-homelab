@@ -37,3 +37,8 @@
     git:
       repo: "https://github.com/bitcoin/bitcoin.git"
       dest: "~/bitcoin"
+  - name: Build old version of Berkley DB
+    become_user: vince
+    command:
+      chdir: "~/bitcoin"
+      cmd: "~/bitcoin/contrib/install_db4.sh ~/bitcoin"
