@@ -32,13 +32,41 @@
       - protobuf-compiler
       - git
       - libsqlite3-dev
+  - name: Reboot system if required.
+    command:
+      cmd: shutdown -r now 'Rebooting to complete system upgrade'
+      removes: /var/run/reboot-required
   - name: Clone Bitcoin git repo
     become_user: vince
     git:
       repo: "https://github.com/bitcoin/bitcoin.git"
       dest: "~/bitcoin"
-  - name: Build old version of Berkley DB
+    register: git_out
+  - debug:
+      msg: "{{ git_out['changed'] }}"
+  - name: Run script to install Bitcoin
     become_user: vince
-    command:
-      chdir: "~/bitcoin"
-      cmd: "~/bitcoin/contrib/install_db4.sh ~/bitcoin"
+    script: install-btc.sh
+    when: git_out['changed']
+
+  # - name: Get latest release version
+  #   become_user: vince
+  #   shell:
+  #     chdir: "~/bitcoin"
+  #     # this one-line looks complex but can be debugged easily by removing steps
+  #     # each step along the way makes sense and goes from raw to polished output
+  #     cmd: "git tag -n | sort -V | grep final | tail -n 1 | sed 's/ .*//'"
+  #   register: git_tag
+  # - name: Checkout latest release
+  #   become_user: vince
+  #   git:
+  #     repo: "https://github.com/bitcoin/bitcoin.git"
+  #     dest: "~/bitcoin"
+  #     version: "{{ git_tag['stdout'] }}"
+  # # - debug:
+  # #     msg: "Version:{{ tag['stdout'] }}"
+  # # - name: Build old version of Berkley DB
+  # #   become_user: vince
+  # #   command:
+  # #     chdir: "~/bitcoin"
+  # #     cmd: "~/bitcoin/contrib/install_db4.sh ~/bitcoin"
