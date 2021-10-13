@@ -6,6 +6,9 @@
     - full-upgrade
     - add-user
   tasks:
-  - name: Set Timezone
+  - name: Set timezone
     timezone:
       name: "{{ time_zone }}"
+  - name: Set hostname
+    hostname:
+      name: "{{ host_name }}"

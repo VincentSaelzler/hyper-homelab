@@ -4,7 +4,9 @@ all:
     virtual: 
       hosts:
         "192.168.1.27":
+          host_name: dotnet
         "192.168.1.28":
+          host_name: bitcoin
       vars: 
         ansible_user: ubuntu
     bitcoin:
