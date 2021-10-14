@@ -10,3 +10,9 @@
   - name: print a host var
     debug:
       var: vhd_dir
+  - name: show inventory name
+    debug:
+      var: inventory_hostname
+  - name: show hostname according to client machine
+    debug:
+      var: ansible_hostname
