@@ -11,4 +11,4 @@
       name: "{{ time_zone }}"
   - name: Set hostname
     hostname:
-      name: "{{ host_name }}"
+      name: "{{ inventory_hostname }}"
