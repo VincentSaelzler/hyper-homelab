@@ -4,10 +4,10 @@
     msg: "Hello, World!"
 - name: See if something from all.yml comes
   debug:
-    var: allvar
+    var: root_pw
 - name: See if something from localhost.yml comes
   debug:
-    var: hostvar
+    var: switch_name
 - name: Print something passed as a role parameter
   debug:
     var: vm

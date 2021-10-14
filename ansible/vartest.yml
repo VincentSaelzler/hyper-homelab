@@ -2,10 +2,11 @@
 - name: Do a lot of debug printing to see how complex variables move through tasks and roles.
   hosts: localhost
   roles:
-  - { role: "print-vars", vm: "{{ vms['dnet'] }}" }
-  # tasks:
-  # - name: Run the role with arg A
-  #   include_role:
-  #     name: print-vars
-  #   vars:
-  #     vm: "{{ vms['dnet'] }}"
+  - { role: "print-vars", vm: "{{ vms['dotnet'] }}" }
+  tasks:
+  - name: print a group var
+    debug:
+      var: time_zone
+  - name: print a host var
+    debug:
+      var: vhd_dir
