@@ -1,6 +1,6 @@
 ---
 - name: Do a lot of debug printing to see how complex variables move through tasks and roles.
-  hosts: localhost
+  hosts: virt_servers
   roles:
   - { role: "print-vars", vm: "{{ vms['dotnet'] }}" }
   tasks:

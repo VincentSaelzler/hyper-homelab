@@ -1,14 +1,22 @@
 --- 
 all: 
-  children: 
-    virtual: 
+  children:
+    # primary groups (include network config here)
+    virtual:
       hosts:
-        "192.168.1.27":
-          host_name: dotnet
-        "192.168.1.28":
-          host_name: bitcoin
-      vars: 
-        ansible_user: ubuntu
-    bitcoin:
+        dotnet:
+          ansible_host: 192.168.1.27
+        bitcoin:
+          ansible_host: 192.168.1.28
+    virt_servers:
       hosts:
-        "192.168.1.28":
+        hyper_v:
+          ansible_host: localhost
+          ansible_connection: local
+    # secondary groups
+    ubuntu_cloud:
+      hosts:
+        bitcoin:
+        dotnet:
+
+      
