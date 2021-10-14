@@ -1,0 +1,15 @@
+[Unit]
+Description=Runs bitcoind.
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+Type=simple
+ExecStart=/home/vince/bitcoin/src/bitcoind
+User=vince
+Restart=always
+RestartSec=5
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=%n

@@ -42,9 +42,18 @@
       repo: "https://github.com/bitcoin/bitcoin.git"
       dest: "~/bitcoin"
     register: git_out
-  - name: Run script to install Bitcoin
+  - name: Run script to build Bitcoin
     become_user: vince
     script:
       chdir: "/home/vince/bitcoin/"
-      cmd: install-btc.sh
+      cmd: btc-build.sh
     when: git_out['changed']
+  - name: Copy Bitcoin service file
+    copy:
+        src: btc.service
+        dest: /etc/systemd/system
+  - name: Start and enable bitcoin service
+    systemd:
+      name: btc
+      state: started
+      enabled: yes
