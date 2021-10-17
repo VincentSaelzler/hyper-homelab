@@ -1,0 +1,4 @@
+---
+id: 27
+vhd_size: 8589934592 # that's 8 GiB
+vcpus: 6

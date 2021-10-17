@@ -1,6 +1,6 @@
 ---
 - name: Do a lot of debug printing to see how complex variables move through tasks and roles.
-  hosts: virt_servers
+  hosts: hyper_v
   roles:
   - { role: "print-vars", vm: "{{ vms['dotnet'] }}" }
   tasks:
@@ -16,3 +16,26 @@
   - name: show hostname according to client machine
     debug:
       var: ansible_hostname
+  - name: show fact about dotnet host
+    debug:
+      var: hostvars['dotnet']['vvcpus']
+  - name: Show all the hosts in the inventory
+    ansible.builtin.debug:
+      msg: "{{ item }}"
+    loop: "{{ groups['all'] }}"
+  - name: Show all hosts as varialbe
+    ansible.builtin.debug:
+      var: item
+    loop: "{{ groups['all'] }}"
+  - name: Show vvcpus hopefully
+    ansible.builtin.debug:
+      var: hostvars[item]['vvcpus']
+    loop: "{{ groups['all'] }}"  
+  - name: msg vvcpus
+    ansible.builtin.debug:
+      msg: "{{ hostvars[item]['vvcpus'] }}"
+    loop: "{{ groups['all'] }}"  
+  # - name: Show all the hosts in the inventory
+  #   ansible.builtin.debug:
+  #     msg: hostvars['dotnet']['vvcpus']
+  #   loop: "{{ groups['all'] }}"
