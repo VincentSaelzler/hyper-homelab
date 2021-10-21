@@ -7,7 +7,7 @@
     var: root_pw
 - name: See if something from localhost.yml comes
   debug:
-    var: switch_name
-- name: Print something passed as a role parameter
+    var: server_details['switch_name']
+- name: Print something about the individual host
   debug:
-    var: vm
+    var: id

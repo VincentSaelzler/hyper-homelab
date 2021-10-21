@@ -1,26 +1,7 @@
 ---
-# assumptions about the host
+# assumptions about the host storage
 vhd_dir: "/mnt/d/VMs/" # for linux things
 vhd_dir_windows: 'D:\VMs\' # for PowerShell scripts
 
-# assumptions about hyper-v
+# assumptions about the hyper-v applicaton
 switch_name: TheOutside # must create this as a bridge network ahead of time
-
-# assumptions about the networking environment of the host
-address_base: "192.168.1." # used to assign "address" of individual VMs in meta-data.j2 template file
-network: "192.168.1.0"
-netmask: "255.255.255.0"
-broadcast: "192.168.1.255"
-gateway: "192.168.1.254"
-
-vms:
-  dotnet:
-    id: 27
-    name: dotnet
-    vhd_size: 8589934592 # that's 8 GiB
-    vcpus: 6
-  bitcoin:
-    id: 28
-    name: bitcoin
-    vhd_size: 549755813888 # that's 512 GiB
-    vcpus: 6

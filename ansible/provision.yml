@@ -1,16 +1,30 @@
 ---
 - name: Create Hyper-V VMs
-  hosts: hyper_v
+  hosts: ubuntu_cloud
+  gather_facts: no # the VMs don't exist yet
+  vars:
+    - server_details: "{{ hostvars['hyper_v'] }}"
   tasks:
-  - name: Check if VHDX file exists
-    stat:
-      path: "{{ vhd_dir }}{{ hostvars[item]['id'] }}-os.vhdx" 
-    register: vhdx
-    loop: "{{ groups['ubuntu_cloud'] }}"
-  - name: Print whether VHDX file exists
-    debug:
+  - name: show hostname according to client machine (delegate)
+    delegate_to: hyper_v
+    import_role:
+      name: print-vars
+
+# - name: Configure Hyper-V VMs
+#   hosts: ubuntu_cloud
+#   gather_facts: no # remove this later
+#   tasks:
+#   - name: write a message
+#     debug:
+#       msg: "Now, run on VMs instead of Hyper-V server"
+  # - name: Check if VHDX file exists
+  #   stat:
+  #     path: "{{ vhd_dir }}{{ id }}-os.vhdx" 
+   # register: vhdx
+  #- name: Print whether VHDX file exists
+  #  debug:
       #msg: "Yo {{ vhdx.results | selectattr('stat.exists') | first() }}"
-      msg: "Yo {{ vhdx.results | selectattr('item', 'equalto', 'dotnet') | first() }}"
+      #msg: "Yo {{ vhdx.results | selectattr('item', 'equalto', 'dotnet') | first() }}"
       #msg: "Yo {{ vhdx.results | reverse() | list() }}"
     #loop: "{{ vhdx.results }}"
 
