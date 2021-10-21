@@ -1,47 +1,17 @@
 ---
-- name: Create Hyper-V VMs
+- name: Create Hyper-V VMs if they don't already exist
   hosts: ubuntu_cloud
   gather_facts: no # the VMs don't exist yet
   vars:
-    - server_details: "{{ hostvars['hyper_v'] }}"
+    - srv_det: "{{ hostvars['hyper_v'] }}"
   tasks:
-  - name: show hostname according to client machine (delegate)
+  - name: Check if VHDX file exists
+    delegate_to: hyper_v
+    stat:
+      path: "{{ srv_det['vhd_dir'] }}{{ id }}-os.vhdx" 
+    register: vhdx
+  - name: Create the dotnet VM
     delegate_to: hyper_v
     import_role:
       name: print-vars
-
-# - name: Configure Hyper-V VMs
-#   hosts: ubuntu_cloud
-#   gather_facts: no # remove this later
-#   tasks:
-#   - name: write a message
-#     debug:
-#       msg: "Now, run on VMs instead of Hyper-V server"
-  # - name: Check if VHDX file exists
-  #   stat:
-  #     path: "{{ vhd_dir }}{{ id }}-os.vhdx" 
-   # register: vhdx
-  #- name: Print whether VHDX file exists
-  #  debug:
-      #msg: "Yo {{ vhdx.results | selectattr('stat.exists') | first() }}"
-      #msg: "Yo {{ vhdx.results | selectattr('item', 'equalto', 'dotnet') | first() }}"
-      #msg: "Yo {{ vhdx.results | reverse() | list() }}"
-    #loop: "{{ vhdx.results }}"
-
-  # - name: Create the dotnet VM
-  #   include_role:s
-  #     name: provision-hyper-v
-  #   vars:
-  #     vm: "{{ vms['dotnet'] }}"
-  #   when: not dotnet_vhdx.stat.exists
-  # # bitcoin
-  # - name: Check if bitcoin VHDX file exists
-  #   stat:
-  #     path: "{{ vhd_dir }}{{ vms['bitcoin']['id'] }}-os.vhdx" 
-  #   register: bitcoin_vhdx
-  # - name: Create the bitcoin VM
-  #   include_role:
-  #     name: provision-hyper-v
-  #   vars:
-  #     vm: "{{ vms['bitcoin'] }}"
-  #   when: not bitcoin_vhdx.stat.exists
+    # when: vhdx.stat.exists

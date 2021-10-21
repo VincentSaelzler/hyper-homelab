@@ -7,7 +7,7 @@
     var: root_pw
 - name: See if something from localhost.yml comes
   debug:
-    var: server_details['switch_name']
+    var: srv_det['switch_name']
 - name: Print something about the individual host
   debug:
     var: id
