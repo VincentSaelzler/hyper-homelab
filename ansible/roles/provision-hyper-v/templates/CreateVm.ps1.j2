@@ -1,10 +1,10 @@
 # get stuff from ansible to powershell parameters
-$VMName = "{{ vm['name'] }}"
-$SwitchName = "{{ switch_name }}"
-$VHDSize = {{ vm['vhd_size'] }}
-$VHDPath = "{{ vhd_dir_windows }}{{ vhdx_file }}"
-$ISOPath = "{{ vhd_dir_windows }}{{ seed_file }}"
-$VCPUs = "{{ vm['vcpus'] }}"
+$VMName = "{{ inventory_hostname }}"
+$SwitchName = "{{ srv_det['switch_name'] }}"
+$VHDSize = {{ vhd_size }}
+$VHDPath = "{{ srv_det['vhd_dir_windows'] }}{{ vhdx_file }}"
+$ISOPath = "{{ srv_det['vhd_dir_windows'] }}{{ seed_file }}"
+$VCPUs = "{{ vcpus }}"
 
 # consolidate powershell parameters
 $VM = @{

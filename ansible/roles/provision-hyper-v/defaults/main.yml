@@ -4,11 +4,11 @@ image_url: https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-a
 
 # all of these files get stored in /tmp/
 image_tgt: focal.img
-user_data_file: "{{ vm['id'] }}-ud"
-meta_data_file: "{{ vm['id'] }}-md"
-pshell_create_file: "{{ vm['id'] }}-create.ps1"
-pshell_destroy_file: "{{ vm['id'] }}-destroy.ps1"
+user_data_file: "{{ id }}-ud"
+meta_data_file: "{{ id }}-md"
+pshell_create_file: "{{ id }}-create.ps1"
+pshell_destroy_file: "{{ id }}-destroy.ps1"
 
 # thse get copied out to the windows-accessible directory
-vhdx_file: "{{ vm['id'] }}-os.vhdx"
-seed_file: "{{ vm['id'] }}-seed.iso"
+vhdx_file: "{{ id }}-os.vhdx"
+seed_file: "{{ id }}-seed.iso"

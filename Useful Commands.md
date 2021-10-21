@@ -1,25 +1,27 @@
-Connect to a VirtualBox-based guest with default networking
-```
-ssh vagrant@127.0.0.1 -p 2222
-```
+# General Ansible Stuff
 Run a test ad-hoc command using an inventory file
 ```
-ansible -i hosts.yml vagrantboxes -a "hostname"
+ansible -i inventory/hosts.yml ubuntu_cloud -a "hostname"
 ```
-Run a playbook using an inventory file, and with verbosity
-```
-ansible-playbook ~/hyper-homelab/ansible/playbook-local.yml -i ~/hyper-homelab/ansible/inventory.yml -v
-```
-Current Process of Starting from "Ground Zero"
+# Starting from "Ground Zero" (and Going Back)
+## Create VMs
+To create the VMs, need to run Ubuntu (WSL) as Administrator. Run all commands from the ansible directory: `~/hyper-homelab/ansible/`
 ```sh
- ansible-playbook ~/hyper-homelab/ansible/playbook-provision.yml -i ~/hyper-homelab/ansible/inventory.yml
+ansible-playbook ~/hyper-homelab/ansible/playbook-provision.yml -i ~/hyper-homelab/ansible/inventory.yml
+ ```
+ ## Configure VMs
+ ```sh
  # need to run twice due to reboot
- ansible-playbook ~/hyper-homelab/ansible/playbook-base-os.yml -i ~/hyper-homelab/ansible/inventory.yml
- ansible-playbook ~/hyper-homelab/ansible/playbook-gui.yml -i ~/hyper-homelab/ansible/inventory.yml
+ ansible-playbook base-os.yml -i inventory/hosts.yml
+ ansible-playbook gui.yml -i inventory/hosts.yml
 ```
 At this point all of the virtual machines will have a GUI installed. From there, run `playbook-bitcoin` and `playbook-dotnet` as appropriate.
-
-
+## Delete VMs
+Need to use PowerShell as Administrator
+```ps1
+D:\VMs\27-destroy.ps1
+D:\VMs\28-destroy.ps1
+```
 # Bitcoin
 This shows the output of bitcoind
 ```

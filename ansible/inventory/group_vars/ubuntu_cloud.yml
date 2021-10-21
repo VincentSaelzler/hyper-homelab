@@ -1,2 +1,3 @@
 ---
 ansible_user: ubuntu
+iface_name: eth0

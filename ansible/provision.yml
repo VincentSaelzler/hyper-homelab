@@ -1,7 +1,7 @@
 ---
 - name: Create Hyper-V VMs if they don't already exist
   hosts: ubuntu_cloud
-  gather_facts: no # the VMs don't exist yet
+  gather_facts: no # this will fail if the VMs don't exist yet
   vars:
     - srv_det: "{{ hostvars['hyper_v'] }}"
   tasks:
@@ -10,8 +10,8 @@
     stat:
       path: "{{ srv_det['vhd_dir'] }}{{ id }}-os.vhdx" 
     register: vhdx
-  - name: Create the dotnet VM
+  - name: Create the VM
     delegate_to: hyper_v
     import_role:
-      name: print-vars
-    # when: vhdx.stat.exists
+      name: provision-hyper-v
+    when: not vhdx.stat.exists

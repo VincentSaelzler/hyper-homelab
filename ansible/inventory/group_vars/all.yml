@@ -1,6 +1,5 @@
 ---
 # assumptions about the networking environment
-address_base: "192.168.1." # used to assign "address" of individual VMs in meta-data.j2 template file
 network: "192.168.1.0"
 netmask: "255.255.255.0"
 broadcast: "192.168.1.255"
