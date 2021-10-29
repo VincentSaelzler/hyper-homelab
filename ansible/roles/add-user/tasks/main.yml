@@ -9,14 +9,12 @@
     # ansible all -i localhost, -m debug -a 'msg={{ 'mypassword' | password_hash('sha512', 'mysecretsalt') }}'
     password: '$6$mysecretsalt$qJbapG68nyRab3gxvKWPUcs2g3t0oMHSHMnSKecYNpSi3CuZm.GbBqXO8BE6EI6P1JUefhA0qvD7b5LSh./PU1'
     shell: /bin/bash
-- name: Set public keys.
+- name: Set public key.
   authorized_key:
     user: vince
     state: present
-    key: '{{ item }}'
-  with_file:
-    - '/mnt/c/Users/vince/.ssh/id_rsa.pub' # windows powershell
-    - '~/.ssh/id_rsa.pub' # WSL
+    exclusive: yes
+    key: '{{ pub_key }}'
 # there doesn't seem to be a mechanisim to set git configuration at the user scope
 # these are all going into the global (system) level configuration
 - name: Set gitconfig user

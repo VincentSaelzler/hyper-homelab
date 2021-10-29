@@ -1,6 +1,6 @@
 ---
 - name: Install Ubuntu Desktop
-  hosts: virtual
+  hosts: ubuntu_cloud
   become: yes
   roles:
     - ubuntu-gui
