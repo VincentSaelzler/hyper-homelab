@@ -2,5 +2,4 @@
 password: {{ root_pw }}
 chpasswd: { expire: False }
 ssh_authorized_keys:
-  - {{ win_pub_key }}
-  - {{ lin_pub_key }}
+  - {{ pub_key }}

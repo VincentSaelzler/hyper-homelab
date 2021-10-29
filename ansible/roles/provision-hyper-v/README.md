@@ -28,6 +28,5 @@ gateway: "192.168.1.254"
 Credentials
 ```
 root_pw
-lin_pub_key
-win_pub_key
+pub_key
 ```

@@ -11,7 +11,7 @@ ansible-playbook ~/hyper-homelab/ansible/playbook-provision.yml -i ~/hyper-homel
  ```
  ## Configure VMs
  ```sh
- # need to run twice due to reboot
+ # might need to run one (or both) of these twice, due to reboot
  ansible-playbook base-os.yml -i inventory/hosts.yml
  ansible-playbook gui.yml -i inventory/hosts.yml
 ```
@@ -22,8 +22,17 @@ Need to use PowerShell as Administrator
 D:\VMs\27-destroy.ps1
 D:\VMs\28-destroy.ps1
 ```
-# Bitcoin
+## Bitcoin
 This shows the output of bitcoind
 ```
 journalctl -f -u btc.service
+```
+
+
+
+## Ansible Vault
+```
+ansible-vault encrypt inventory/group_vars/all/vault.yml --vault-password-file ~/.ansible/vault_pw.txt
+ansible-vault view inventory/group_vars/all/vault.yml --vault-password-file ~/.ansible/vault_pw.txt
+
 ```

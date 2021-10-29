@@ -1,0 +1,15 @@
+---
+# assumptions about the networking environment
+network: "192.168.1.0"
+netmask: "255.255.255.0"
+broadcast: "192.168.1.255"
+gateway: "192.168.1.254"
+
+# assumptions about physical location
+time_zone: "America/New_York"
+
+# stuff related to credentials
+# the private keys need to exist on the machine that ansible is runnning on
+# also will need to exist on the machine that the user plans to use for SSH access
+root_pw:  "{{ vault_root_pw }}"
+pub_key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCW4Cf2kYGSvvx+HYcxs3dy4LGZ5At4+7out4usw0xY+lKlbMI5Y+tn62//3uCgDJ7zwMpq9gLOVdQ3XXdtri9e1DWIpytv26BR/RQOfslXeRw+GhVqMYsSd1Y5i9AqvDhSZN1zOA/Gq7EdGT7EGAuPfX+iehAhFXOWDOpIzWyFunMWDinYwrKesYwqLtfVREMa+8GWIijN8usGs9i4ZSdtrUDv7Lgyn9AAfpNiGu+QicYVkTbsXUwSjVmCNggX50qZvp4KuUUq5vStm5RQCRkB07fJQxR3StqMGikK60gSyWRXPxLsFsglet2WmA/4y7sGPlI3WPCFJYFM2VESVo8EMsssKAuo20MrCC8Fs2hcCpqPyBI4Las8drZ8WcWNf5Vht8FFBq7KvFySIyrvv5tD6nWok7tL3PGkDsamTAMdVTxbxLkAowo/ta31jWk3sdRHwyi8B2JrlbdGoTA73E3yhMOOA5UWbd2Si+Ykk6vwFXdzO2y7UR8ChjCiXE/U6JE= vince@RYZEN-WSL"
