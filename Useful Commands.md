@@ -7,12 +7,12 @@ ansible -i inventory/hosts.yml ubuntu_cloud -a "hostname"
 ## Create VMs
 To create the VMs, need to run Ubuntu (WSL) as Administrator. Run all commands from the ansible directory: `~/hyper-homelab/ansible/`
 ```sh
-ansible-playbook ~/hyper-homelab/ansible/playbook-provision.yml -i ~/hyper-homelab/ansible/inventory.yml
- ```
+ansible-playbook provision.yml -i inventory/hosts.yml --vault-password-file ~/.ansible/vault_pw.txt
+```
  ## Configure VMs
  ```sh
  # might need to run one (or both) of these twice, due to reboot
- ansible-playbook base-os.yml -i inventory/hosts.yml
+ ansible-playbook base-os.yml -i inventory/hosts.yml --vault-password-file ~/.ansible/vault_pw.txt
  ansible-playbook gui.yml -i inventory/hosts.yml
 ```
 At this point all of the virtual machines will have a GUI installed. From there, run `playbook-bitcoin` and `playbook-dotnet` as appropriate.
@@ -34,5 +34,5 @@ journalctl -f -u btc.service
 ```
 ansible-vault encrypt inventory/group_vars/all/vault.yml --vault-password-file ~/.ansible/vault_pw.txt
 ansible-vault view inventory/group_vars/all/vault.yml --vault-password-file ~/.ansible/vault_pw.txt
-
+ansible-vault edit inventory/group_vars/all/vault.yml --vault-password-file ~/.ansible/vault_pw.txt
 ```
