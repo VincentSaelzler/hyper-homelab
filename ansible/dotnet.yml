@@ -1,12 +1,9 @@
 ---
-- name: test
-  hosts: virtual
+- name: Install the dotnet dev environment
+  hosts: dotnet
   become: yes
   roles:
-    - ping
-    - ubuntu-gui
     - vs-code
-    - add-user
   tasks:
   - name: Install extensions to VS Code #assumes vince user is already configured
     become_user: vince # vscode threw errors if trying to do this with the ubuntu/root user
