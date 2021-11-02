@@ -41,22 +41,27 @@
     command:
       cmd: shutdown -r now 'Rebooting to complete system upgrade'
       removes: /var/run/reboot-required
-  - name: Clone Bitcoin git repo
-    become_user: "{{ usr_name }}"
-    git:
-      repo: "https://github.com/bitcoin/bitcoin.git"
-      dest: "~/bitcoin"
-    register: git_out
-  - name: Run script to build Bitcoin
-    become_user: "{{ usr_name }}"
-    script:
-      chdir: "/home/{{ usr_name }}/bitcoin/"
-      cmd: btc-build.sh "{{ usr_name }}"
-    when: git_out['changed']
   - name: Copy Bitcoin service file
     template:
         src: btc.service
         dest: /etc/systemd/system
+  - name: Clone Bitcoin git repo
+    become_user: "{{ usr_name }}"
+    git:
+      repo: "https://github.com/bitcoin/bitcoin.git"
+      dest: "~/bitcoin-latest"
+    register: git_out
+  - name: Stop running the old binary
+    systemd:
+      name: btc
+      state: stopped
+    when: git_out['changed']
+  - name: Run script to build Bitcoin
+    become_user: "{{ usr_name }}"
+    script:
+      chdir: "/home/{{ usr_name }}/"
+      cmd: btc-build.sh "{{ usr_name }}"
+    when: git_out['changed']
   - name: Start and enable bitcoin service
     systemd:
       name: btc

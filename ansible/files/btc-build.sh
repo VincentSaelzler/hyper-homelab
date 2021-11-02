@@ -1,6 +1,13 @@
 #!/bin/bash
 # based on https://jonatack.github.io/articles/how-to-compile-bitcoin-core-and-run-the-tests
 
+# replace the old source (and wipe old binaries!)
+rm -rf bitcoin/
+cp -r bitcoin-latest/ bitcoin/
+
+# enter the fresh working directory
+cd bitcoin/
+
 # get the latest final release version and check it out
 version=`git tag -n | sort -V | grep final | tail -n 1 | sed 's/ .*//'`
 git checkout $version
