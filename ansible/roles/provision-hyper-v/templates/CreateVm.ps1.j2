@@ -22,9 +22,13 @@ Resize-VHD -Path "$VHDPath" -SizeBytes $VHDSize
 New-VM @VM
 
 # additional configuration for the new VM
-Set-VMFirmware "$VMName" -EnableSecureBoot Off
+# this works for ubuntu - may need to do something different for other distros
+Set-VMFirmware "$VMName" -EnableSecureBoot On -SecureBootTemplate "MicrosoftUEFICertificateAuthority"
 Add-VMDvdDrive "$VMName" -Path "$ISOPath"
 Set-VMProcessor "$VMName" -Count $VCPUs
+Set-Vm "$VMName" -AutomaticCheckpointsEnabled $false
+# not doing for now, but if I still face issues deleting VMs, may try
+#Set-Vm "$VMName" -CheckpointType Disabled
 
 # start the VM
 Start-VM $VMName
