@@ -1,5 +1,5 @@
 ---
-- name: Add the user vince.
+- name: Add the user.
   user:
     name: "{{ usr_name }}"
     comment: "{{ full_name }}"
