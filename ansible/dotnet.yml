@@ -3,6 +3,10 @@
   hosts: dotnet
   become: yes
   roles:
+    - full-upgrade
+    - personalize
+    - add-user
+    - ubuntu-gui
     - vs-code
   tasks:
   - name: Install extensions to VS Code #assumes user is already configured

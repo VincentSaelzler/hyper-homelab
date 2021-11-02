@@ -3,6 +3,11 @@
 - name: Install Bitcoin
   hosts: bitcoin
   become: yes
+  roles:
+    - full-upgrade
+    - personalize
+    - add-user
+    - ubuntu-gui
   tasks:
   - name: Install dependencies
     apt:
