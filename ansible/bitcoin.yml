@@ -46,10 +46,10 @@
     become_user: "{{ usr_name }}"
     script:
       chdir: "/home/{{ usr_name }}/bitcoin/"
-      cmd: btc-build.sh
+      cmd: btc-build.sh "{{ usr_name }}"
     when: git_out['changed']
   - name: Copy Bitcoin service file
-    copy:
+    template:
         src: btc.service
         dest: /etc/systemd/system
   - name: Start and enable bitcoin service
