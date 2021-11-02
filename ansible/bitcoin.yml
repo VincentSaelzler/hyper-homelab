@@ -37,15 +37,15 @@
       cmd: shutdown -r now 'Rebooting to complete system upgrade'
       removes: /var/run/reboot-required
   - name: Clone Bitcoin git repo
-    become_user: vince
+    become_user: "{{ usr_name }}"
     git:
       repo: "https://github.com/bitcoin/bitcoin.git"
       dest: "~/bitcoin"
     register: git_out
   - name: Run script to build Bitcoin
-    become_user: vince
+    become_user: "{{ usr_name }}"
     script:
-      chdir: "/home/vince/bitcoin/"
+      chdir: "/home/{{ usr_name }}/bitcoin/"
       cmd: btc-build.sh
     when: git_out['changed']
   - name: Copy Bitcoin service file

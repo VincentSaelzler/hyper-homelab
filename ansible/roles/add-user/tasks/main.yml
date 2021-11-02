@@ -1,13 +1,13 @@
 ---
 - name: Add the user vince.
   user:
-    name: vince
-    comment: Vincent Saelzler
+    name: "{{ usr_name }}"
+    comment: "{{ full_name }}"
     password: "{{ user_pw | password_hash('sha512', user_pw_salt) }}"
     shell: /bin/bash
 - name: Set public key.
   authorized_key:
-    user: vince
+    user: "{{ usr_name }}"
     state: present
     exclusive: yes
     key: '{{ pub_key }}'
@@ -16,8 +16,8 @@
 - name: Set gitconfig user
   git_config:
     name: user.name
-    value: 'Vincent Saelzler'
+    value: "{{ full_name }}"
 - name: Set gitconfig email
   git_config:
     name: user.email
-    value: 'vincent.saelzler@gmail.com'
+    value: "{{ usr_email }}"

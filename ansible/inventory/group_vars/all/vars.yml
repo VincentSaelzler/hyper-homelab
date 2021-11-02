@@ -8,6 +8,11 @@ gateway: "192.168.1.254"
 # assumptions about physical location
 time_zone: "America/New_York"
 
+# assumptions about the person running all this
+usr_name: "vince"
+full_name: "Vincent Saelzler"
+usr_email: "vincent.saelzler@gmail.com"
+
 # the private keys need to exist on the machine that ansible is runnning on
 # also will need to exist on the machine that the user plans to use for SSH access
 # if the private key is lost, it's possible to recover by logging in with UN/PW and changing the public keys
