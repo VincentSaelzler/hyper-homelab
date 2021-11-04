@@ -1,6 +1,6 @@
 ---
 # based on https://jonatack.github.io/articles/how-to-compile-bitcoin-core-and-run-the-tests
-- name: Install Bitcoin
+- name: Install Bitcoin and dependencies
   hosts: bitcoin
   become: yes
   roles:
@@ -51,7 +51,7 @@
       repo: "https://github.com/bitcoin/bitcoin.git"
       dest: "~/bitcoin-latest"
     register: git_out
-  - name: Stop running the old binary
+  - name: Ensure the old binary is not running
     systemd:
       name: btc
       state: stopped
@@ -62,6 +62,22 @@
       chdir: "/home/{{ usr_name }}/"
       cmd: btc-build.sh "{{ usr_name }}"
     when: git_out['changed']
+- name: Copy configuration files and start program as a system service
+  hosts: bitcoin
+  become: yes
+  tasks:
+  - name: Create the container directory for bitcoin config (mode based on what bitcoind auto-generated)
+    become_user: "{{ usr_name }}"
+    file:
+      path: "~/.bitcoin/wallets/"
+      state: directory
+      mode: "0755"
+  - name: Copy encrypted bitcoin wallet data file (mode based on what bitcoin-cli auto-generated)
+    become_user: "{{ usr_name }}"
+    copy:
+      src: vault/BitcoinWallet.dat
+      dest: "~/.bitcoin/wallets/wallet.dat"
+      mode: "600"
   - name: Start and enable bitcoin service
     systemd:
       name: btc
