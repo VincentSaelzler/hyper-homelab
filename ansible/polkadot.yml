@@ -3,11 +3,11 @@
 - name: Install Polkadot using the package manager
   hosts: polkadot
   become: yes
-  # roles:
-  #   - full-upgrade
-  #   - personalize
-  #   - add-user
-  #   - ubuntu-gui
+  roles:
+    - full-upgrade
+    - personalize
+    - add-user
+    - ubuntu-gui
   tasks:
   - name: Add an apt key by id from a keyserver
     apt_key:
@@ -17,3 +17,12 @@
     apt_repository:
       repo: deb https://releases.parity.io/deb release main
       state: present
+  - name: Install dependencies
+    apt:
+      pkg:
+      - parity-keyring
+      - polkadot
+    register: apt_result
+  - name: Restart system if any packages were installed or upgraded
+    reboot:
+    when: apt_result['changed']
