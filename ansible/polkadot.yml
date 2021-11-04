@@ -1,0 +1,14 @@
+---
+- name: Install Polkadot using the package manager
+  hosts: polkadot
+  become: yes
+  roles:
+    - full-upgrade
+    - personalize
+    - add-user
+    - ubuntu-gui
+  tasks:
+  - name: Print msg
+    debug:
+      msg: hi
+    
