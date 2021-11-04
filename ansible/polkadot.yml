@@ -1,14 +1,19 @@
 ---
+# based on https://github.com/paritytech/polkadot README
 - name: Install Polkadot using the package manager
   hosts: polkadot
   become: yes
-  roles:
-    - full-upgrade
-    - personalize
-    - add-user
-    - ubuntu-gui
+  # roles:
+  #   - full-upgrade
+  #   - personalize
+  #   - add-user
+  #   - ubuntu-gui
   tasks:
-  - name: Print msg
-    debug:
-      msg: hi
-    
+  - name: Add an apt key by id from a keyserver
+    apt_key:
+      keyserver: hkps://keys.mailvelope.com
+      id: 9D4B2B6EB8F97156D19669A9FF0812D491B96798
+  - name: Add specified repository into sources list
+    apt_repository:
+      repo: deb https://releases.parity.io/deb release main
+      state: present
