@@ -23,6 +23,28 @@
       - parity-keyring
       - polkadot
     register: apt_result
+  - name: Download front-end client #does not appear to re-download if the file already exists
+    become_user: "{{ usr_name }}"
+    get_url:
+      url: "https://github.com/polkadot-js/apps/releases/download/v0.98.1/Polkadot-JS-Apps-0.98.1.AppImage"
+      dest: "~/"
+      mode: "755"
   - name: Restart system if any packages were installed or upgraded
     reboot:
     when: apt_result['changed']
+  - name: Set CLI flags
+    lineinfile:
+      path: /etc/default/polkadot
+      regexp: '^POLKADOT_CLI_ARGS='
+      line: POLKADOT_CLI_ARGS="--rpc-cors file:// --name \"Ansible Node\""
+    register: line_result
+  - name: Restart polkadot service if config changes
+    systemd:
+      name: polkadot
+      state: restarted
+    when: apt_result['changed']
+  - name: Start and enable polkadot service
+    systemd:
+      name: polkadot
+      state: started
+      enabled: yes
