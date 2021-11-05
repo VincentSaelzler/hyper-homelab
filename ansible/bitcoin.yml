@@ -71,13 +71,14 @@
     file:
       path: "~/.bitcoin/wallets/"
       state: directory
-      mode: "0755"
+      mode: "755"
   - name: Copy encrypted bitcoin wallet data file (mode based on what bitcoin-cli auto-generated)
     become_user: "{{ usr_name }}"
     copy:
       src: vault/BitcoinWallet.dat
       dest: "~/.bitcoin/wallets/wallet.dat"
       mode: "600"
+      force: no
   - name: Start and enable bitcoin service
     systemd:
       name: btc
