@@ -8,7 +8,10 @@
   - name: Check if VHDX file exists
     delegate_to: hyper_v
     stat:
-      path: "{{ srv_det['vhd_dir'] }}{{ id }}-os.vhdx" 
+      path: "{{ srv_det['vhd_dir'] }}{{ id }}-os.vhdx"
+      get_checksum: no
+      get_attributes: no
+      get_mime: no
     register: vhdx
   - name: Create the VM
     delegate_to: hyper_v
