@@ -36,13 +36,13 @@
     lineinfile:
       path: /etc/default/polkadot
       regexp: '^POLKADOT_CLI_ARGS='
-      line: POLKADOT_CLI_ARGS="--rpc-cors file:// --name \"Ansible Node\""
+      line: POLKADOT_CLI_ARGS="--rpc-cors file:// --name '{{ node_name }}' --pruning archive""
     register: line_result
   - name: Restart polkadot service if config changes
     systemd:
       name: polkadot
       state: restarted
-    when: apt_result['changed']
+    when: apt_result['changed'] or line_result['changed']
   - name: Start and enable polkadot service
     systemd:
       name: polkadot
