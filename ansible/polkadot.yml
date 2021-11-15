@@ -22,11 +22,24 @@
       pkg:
       - parity-keyring
       - polkadot
+      - python3-pip
+      - python3-virtualenv
+      - python3-setuptools
     register: apt_result
+  - name: Install github python package
+    pip:
+      name: github3.py
+  - name: Get latest release of Polkadot js-app
+    github_release:
+      user: polkadot-js
+      repo: apps
+      action: latest_release
+    register: gh_release
   - name: Download front-end client #does not appear to re-download if the file already exists
     become_user: "{{ usr_name }}"
     get_url:
-      url: "https://github.com/polkadot-js/apps/releases/download/v0.98.1/Polkadot-JS-Apps-0.98.1.AppImage"
+      # the replace filter is to change it from somethng like 'v0.98.1' to '0.98.1'
+      url: "https://github.com/polkadot-js/apps/releases/download/{{ gh_release.tag }}/Polkadot-JS-Apps-{{ gh_release.tag | replace('v', '') }}.AppImage"
       dest: "~/"
       mode: "755"
   - name: Restart system if any packages were installed or upgraded
