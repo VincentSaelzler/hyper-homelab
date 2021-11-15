@@ -1,0 +1,9 @@
+---
+id: 29
+vhd_size: 274877906944 # that's 256 GiB (2^30 x 2^8)
+vcpus: 6
+# the polkadot system service (installed via polkadot package) uses this user name
+# just switching UN will be easer that adjusting their defaults and the service file
+usr_name: "polkadot"
+# the node name is how it appears to the public on https://telemetry.polkadot.io/
+node_name: "🧀 I Love Cream Cheese 🧀"
