@@ -7,7 +7,6 @@
     - full-upgrade
     - personalize
     - add-user
-    - ubuntu-gui
   tasks:
   - name: Add Ethereum stable repository from PPA and install its signing key
     apt_repository:
