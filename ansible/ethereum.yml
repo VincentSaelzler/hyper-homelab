@@ -1,0 +1,19 @@
+---
+# based on https://geth.ethereum.org/docs/install-and-build/installing-geth
+- name: Install Ethereum
+  hosts: ethereum
+  become: yes
+  # roles:
+  #   - full-upgrade
+  #   - personalize
+  #   - add-user
+  #   - ubuntu-gui
+  tasks:
+  - name: Add Ethereum stable repository from PPA and install its signing key
+    apt_repository:
+      repo: ppa:ethereum/ethereum
+  - name: Install ethereum package
+    apt:
+      state: present
+      pkg:
+        - ethereum
