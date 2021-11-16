@@ -1,0 +1,15 @@
+[Unit]
+Description=Runs geth.
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/geth
+User={{ usr_name }}
+Restart=always
+RestartSec=5
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=%n

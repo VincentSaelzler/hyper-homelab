@@ -3,11 +3,11 @@
 - name: Install Ethereum
   hosts: ethereum
   become: yes
-  # roles:
-  #   - full-upgrade
-  #   - personalize
-  #   - add-user
-  #   - ubuntu-gui
+  roles:
+    - full-upgrade
+    - personalize
+    - add-user
+    - ubuntu-gui
   tasks:
   - name: Add Ethereum stable repository from PPA and install its signing key
     apt_repository:
@@ -17,3 +17,12 @@
       state: present
       pkg:
         - ethereum
+  - name: Copy Ethereum service file
+    template:
+        src: eth.service
+        dest: /etc/systemd/system
+  - name: Start and enable eth service
+    systemd:
+      name: eth
+      state: started
+      enabled: yes
