@@ -20,6 +20,25 @@
     template:
         src: eth.service
         dest: /etc/systemd/system
+- name: Copy wallet files and start program as a system service
+  hosts: ethereum
+  become: yes
+  tasks:
+  - name: Create the container directory for key file (mode based on what geth auto-generated)
+    file:
+      path: "/home/{{ usr_name }}/.ethereum/keystore/"
+      state: directory
+      mode: "700"
+      owner: "{{ usr_name }}"
+      group: "{{ usr_name }}"
+  - name: Copy encrypted ethereum wallet data file (mode based on what geth auto-generated)
+    copy:
+      src: vault/UTC--2021-11-17T05-24-43.737628720Z--0b8dc010d117c760927e2d807827e24241499df2
+      dest: "/home/{{ usr_name }}/.ethereum/keystore/UTC--2021-11-17T05-24-43.737628720Z--0b8dc010d117c760927e2d807827e24241499df2"
+      mode: "600"
+      owner: "{{ usr_name }}"
+      group: "{{ usr_name }}"
+      force: no
   - name: Start and enable eth service
     systemd:
       name: eth
