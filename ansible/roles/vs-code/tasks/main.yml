@@ -18,5 +18,5 @@
     state: present
     update_cache: yes # important
     pkg:
-      - dotnet-sdk-5.0
+      - dotnet-sdk-6.0
       - code
