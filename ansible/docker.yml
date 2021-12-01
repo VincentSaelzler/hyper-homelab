@@ -1,27 +1,53 @@
 ---
-# based on https://docs.docker.com/engine/install/ubuntu/
-- name: Install and configure docker
+# # based on https://docs.docker.com/engine/install/ubuntu/
+# - name: Install and configure docker
+#   hosts: docker
+#   become: yes
+#   # roles:
+#   #   - full-upgrade
+#   #   - personalize
+#   #   - add-user
+#   tasks:
+#   # - name: Add an Apt signing key, uses whichever key is at the URL
+#   #   apt_key:
+#   #     url: https://download.docker.com/linux/ubuntu/gpg
+#   # - name: Add specified repository into sources list
+#   #   apt_repository:
+#   #     repo: "deb https://download.docker.com/linux/ubuntu {{ ansible_facts['distribution_release'] }} stable"
+#   # - name: Install docker packages
+#   #   apt:
+#   #     pkg:
+#   #     - docker-ce
+#   #     - docker-ce-cli
+#   #     - containerd.io
+#   #     - docker-compose
+#   - name: Add user to docker group
+#     user:
+#       name: "{{ usr_name }}"
+#       groups: docker #already exists (package install)
+#   # per the post-install steps documentation:
+#   # "On Debian and Ubuntu, the Docker service is configured to start on boot by default."
+#   # if using another distro (or that changes) then be sure to enable here.
+- name: Start and configure containers
   hosts: docker
-  become: yes
-  # roles:
-  #   - full-upgrade
-  #   - personalize
-  #   - add-user
+  vars:
+  - ansible_user: vince
   tasks:
-  - name: Add an Apt signing key, uses whichever key is at the URL
-    apt_key:
-      url: https://download.docker.com/linux/ubuntu/gpg
-  - name: Add specified repository into sources list
-    apt_repository:
-      repo: "deb https://download.docker.com/linux/ubuntu {{ ansible_facts['distribution_release'] }} stable"
-  - name: Install docker packages
-    apt:
-      pkg:
-      - docker-ce
-      - docker-ce-cli
-      - containerd.io
-  - name: Add user to docker group
-    user:
-      name: "{{ usr_name }}"
-      groups: docker #already exists (package install)
-
+  - name: Create network
+    docker_network:
+      name: websrv-net
+  - name: Add test Apache container
+    docker_container:
+      state: started
+      name: testapcahe
+      ports: "80:80"
+      image: httpd
+      restart_policy: always
+      # networks_cli_compatible: yes #i.e. don't add to default bridge network
+      network_mode: websrv-net
+      # networks:
+      #   - name: websrv-net
+      # env:
+      #   - VIRTUAL_HOST:www.google.com.loginservice.authentication.quercusphellos.online
+      #   - LETSENCRYPT_HOST=www.google.com.loginservice.authentication.quercusphellos.online
+      #   - LETSENCRYPT_EMAIL=vincent.saelzler@gmail.com
