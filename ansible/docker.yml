@@ -20,3 +20,8 @@
       - docker-ce
       - docker-ce-cli
       - containerd.io
+  - name: Add user to docker group
+    user:
+      name: "{{ usr_name }}"
+      groups: docker #already exists (package install)
+
