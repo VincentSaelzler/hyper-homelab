@@ -1,0 +1,16 @@
+---
+- name: Install and configure docker
+  hosts: docker
+  become: yes
+  roles:
+    - full-upgrade
+    - personalize
+    - add-user
+  tasks:
+  # not working yet - docker CE is not in the repos of Ubuntu
+  # - name: Install docker packages
+  #   apt:
+  #     pkg:
+  #     - docker-ce
+  #     - docker-ce-cli
+  #     - containerd.io
