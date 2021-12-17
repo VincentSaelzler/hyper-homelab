@@ -6,7 +6,7 @@ This is a home lab environment based on the following technologies:
 # Issues and Milestones
 The project's [milestone page](https://github.com/VincentSaelzler/hyper-homelab/milestones?direction=asc&sort=title&state=open) is where issues are tracked and organized.
 
-The milestones are numbered from 1-6. The lower numbers are foundational layers, like physical setup. The higher numbers build on the lower ones, and include things like software deployment.
+The milestones are numbered from 1-5. The lower numbers are foundational layers, like physical setup. The higher numbers build on the lower ones, and include things like software deployment.
 
 The idea is to focus on accomplishing foundational items before moving on to higher-level objectives.
 
