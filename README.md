@@ -1,8 +1,14 @@
 # Hyper Homelab
 This is a home lab environment based on the following technologies:
-- Microsoft Hyper-V
 - Ansible
 - Cloud-Init
+
+# Issues and Milestones
+The project's [milestone page](https://github.com/VincentSaelzler/hyper-homelab/milestones?direction=asc&sort=title&state=open) is where issues are tracked and organized.
+
+The milestones are numbered from 1-6. The lower numbers are foundational layers, like physical setup. The higher numbers build on the lower ones, and include things like software deployment.
+
+The idea is to focus on accomplishing foundational items before moving on to higher-level objectives.
 
 ## Secrets on the Host
 ### SSH Keys
@@ -52,6 +58,7 @@ cp ~/.ssh/id_rsa /mnt/c/Users/[username]/.ssh/
 - WSL Visual Studio Code Extension
 - Do not install ansible via PIP (use package manager)
 - Same for pip and literally everything.
+
 
 # Resources
 https://github.com/geerlingguy/ansible-for-devops
