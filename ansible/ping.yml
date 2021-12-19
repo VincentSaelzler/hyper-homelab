@@ -1,0 +1,9 @@
+---
+- name: Check whether Ansible is running in the dev environment.
+  hosts: localhost
+  tasks:
+  - ping:
+- name: Check whether Ansible is reachable in bare-metal Proxmox OS installs
+  hosts: proxmox_nodes
+  tasks:
+  - ping:
