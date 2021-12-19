@@ -35,8 +35,24 @@ The LAN side of the pfSense router is at `192.168.128.1`
 This is the main subnet, so hosts of certain types use different addresses.
 - `02` - `29`: Hypervisor Web GUI
 - `30` - `49`: Hardware (APs, iDRAC ports, Switch Admin Web GUI)
-- `50` - `69`: Clients with Static DHCP Reservations (e.g. to consistenly enable remote access)
+- `50` - `59`: Other Bare-Metal OS Addresses
+- `60` - `69`: Clients with Static DHCP Reservations (e.g. to consistenly enable remote access)
 - `70` - `99`: Dynamic DHCP range.
+
+## Hosts on MGMT
+
+|Address|Host|Description|
+|---|---|---|
+|1|pfsense1|pfSense Router|
+|2|pve2|Proxmox Node|
+|3|pve3|Proxmox Node|
+|4|pve4|Proxmox Node|
+|5|pve5|Proxmox Node|
+|30|(none)|TP-Link EAP 115 Access Point|
+|31|(none)|Dell PowerConnect 2824 Switch|
+|32|(none)|Dell PowerEdge R620 iDRAC|
+|33|(none)|Dell PowerEdge R720xd iDRAC|
+|50|pbu0|Proxmox Backup Server|
 
 # DMZ
 ```
