@@ -2,8 +2,11 @@
 Everything that needs to be done to have development environment that runs the Ansible playbooks.
 
 # Programs
+## Ansible Development and Running
 - Visual Studio Code
 - Ansible
+## iDRAC
+Java, and "Iced Tea"
 
 # Secrets (TODO - document more)
 Secrets like the `root` password are all encrypted using `ansible vault`.
