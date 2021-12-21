@@ -43,10 +43,11 @@
 #       cmd: pvecm add 192.168.128.3 --use_ssh
 #       creates: /etc/pve/corosync.conf
 
-
 - name: Create Bridge Networks and Attach
   hosts: pve4,pve5
   tasks:
-  - name: Join the Cluster
-    debug:
-      msg: "pvesh create /nodes/{{ inventory_hostname }}/network --iface {{ dmz_bridge }} --type bridge --autostart true --cidr {{ dmz_cidr }} --bridge_ports {{ dmz_iface }}"
+  # - name: Create DMZ bridge network (for VMs)
+  #   command:
+  #     cmd: "pvesh create /nodes/{{ inventory_hostname }}/network --iface {{ dmz_bridge }} --type bridge --autostart true --cidr {{ dmz_cidr }} --bridge_ports {{ dmz_iface }}"
+  - name: Restart to apply networking changes
+    reboot:
