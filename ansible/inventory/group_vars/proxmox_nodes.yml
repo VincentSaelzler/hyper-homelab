@@ -1,2 +1,3 @@
 ---
 ansible_user: root
+dmz_bridge: vmbr1

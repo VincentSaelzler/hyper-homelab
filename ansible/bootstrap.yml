@@ -1,30 +1,30 @@
 ---
-- name: Copy the public SSH key to the host.
-  hosts: proxmox_nodes
-  vars:
-    # this easy password is ONLY set so we don't have to type something difficult on the keyboard while
-    # doing the physical install
-    # as soon as the node is bootstrapped, it will be changed to the secure root PW, saved in the
-    # root_pw variable (which is encrypted using ansible vault)
-    ansible_password: "easypass"
-    # in terms of idempotence, things work out!
-    # after the SSH key is installed, the fact that "easypass" is no longer the correct PW doesn't matter
-    # SSH uses the keypair in that case, and the status of the task is OK (unchanged). 
-  tasks:
-  - name: Copy the public SSH key to the host.
-    authorized_key:
-      user: "{{ ansible_user }}"
-      state: present
-      #exclusive: yes #DO NOT DO THIS! it interferes with cluster operation!
-      key: '{{ pub_key }}'
+# - name: Copy the public SSH key to the host.
+#   hosts: proxmox_nodes
+#   vars:
+#     # this easy password is ONLY set so we don't have to type something difficult on the keyboard while
+#     # doing the physical install
+#     # as soon as the node is bootstrapped, it will be changed to the secure root PW, saved in the
+#     # root_pw variable (which is encrypted using ansible vault)
+#     ansible_password: "easypass"
+#     # in terms of idempotence, things work out!
+#     # after the SSH key is installed, the fact that "easypass" is no longer the correct PW doesn't matter
+#     # SSH uses the keypair in that case, and the status of the task is OK (unchanged). 
+#   tasks:
+#   - name: Copy the public SSH key to the host.
+#     authorized_key:
+#       user: "{{ ansible_user }}"
+#       state: present
+#       #exclusive: yes #DO NOT DO THIS! it interferes with cluster operation!
+#       key: '{{ pub_key }}'
 
-- name: Change the PW from the easy one we used during the OS install process
-  hosts: proxmox_nodes
-  tasks:
-  - name: Set the user PW to something strong
-    user:
-      name: "{{ ansible_user }}"
-      password: "{{ root_pw | password_hash('sha512', user_pw_salt) }}"
+# - name: Change the PW from the easy one we used during the OS install process
+#   hosts: proxmox_nodes
+#   tasks:
+#   - name: Set the user PW to something strong
+#     user:
+#       name: "{{ ansible_user }}"
+#       password: "{{ root_pw | password_hash('sha512', user_pw_salt) }}"
 
 # Ran into troubles with this (see docs/proxmox.md)
 # - name: Create the Cluster
@@ -42,3 +42,11 @@
 #     command:
 #       cmd: pvecm add 192.168.128.3 --use_ssh
 #       creates: /etc/pve/corosync.conf
+
+
+- name: Create Bridge Networks and Attach
+  hosts: pve4,pve5
+  tasks:
+  - name: Join the Cluster
+    debug:
+      msg: "pvesh create /nodes/{{ inventory_hostname }}/network --iface {{ dmz_bridge }} --type bridge --autostart true --cidr {{ dmz_cidr }} --bridge_ports {{ dmz_iface }}"
