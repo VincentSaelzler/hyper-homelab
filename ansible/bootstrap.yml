@@ -15,7 +15,7 @@
     authorized_key:
       user: "{{ ansible_user }}"
       state: present
-      exclusive: yes
+      #exclusive: yes #DO NOT DO THIS! it interferes with cluster operation!
       key: '{{ pub_key }}'
 
 - name: Change the PW from the easy one we used during the OS install process
@@ -25,3 +25,20 @@
     user:
       name: "{{ ansible_user }}"
       password: "{{ root_pw | password_hash('sha512', user_pw_salt) }}"
+
+# Ran into troubles with this (see docs/proxmox.md)
+# - name: Create the Cluster
+#   hosts: pve2 #specific host was arbitrary
+#   tasks:
+#   - name: Create the Cluster
+#     command:
+#       cmd: pvecm create cluster0
+#       creates: /etc/pve/corosync.conf
+
+# - name: Join the Cluster
+#   hosts: proxmox_nodes
+#   tasks:
+#   - name: Join the Cluster
+#     command:
+#       cmd: pvecm add 192.168.128.3 --use_ssh
+#       creates: /etc/pve/corosync.conf
