@@ -43,7 +43,7 @@
 #       cmd: pvecm add 192.168.128.3 --use_ssh
 #       creates: /etc/pve/corosync.conf
 
-- name: Create bridge networks and attach correct physical ports
+- name: Network and apt repository configuration
   hosts: proxmox_nodes
   tasks:
   #https://www.middlewareinventory.com/blog/ansible-search-string-file-check-if-string-exists/
@@ -61,6 +61,16 @@
     when: presence.changed # this will NOT run an update - only adds the bridge config if it does not exist.
     notify:
     - restart
+  - name: Comment out the enterprise repository
+    replace:
+      path: /etc/apt/sources.list.d/pve-enterprise.list
+      regexp: '^deb'
+      replace: '#deb'
+  - name: Add the no-subscription repository
+    lineinfile:
+      path: /etc/apt/sources.list
+      line: "deb http://download.proxmox.com/debian/pve {{ ansible_facts.distribution_release }} pve-no-subscription"
+      state: present
 
   handlers:
   - name: restart
