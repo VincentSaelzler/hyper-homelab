@@ -71,6 +71,12 @@
       path: /etc/apt/sources.list
       line: "deb http://download.proxmox.com/debian/pve {{ ansible_facts.distribution_release }} pve-no-subscription"
       state: present
+  - name: Update cache and upgrade existing packages
+    apt:
+      upgrade: full
+      cache_valid_time: 3600
+    notify:
+    - restart
 
   handlers:
   - name: restart
