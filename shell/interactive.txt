@@ -1,7 +1,7 @@
 Disk /dev/sda: 976773168 sectors, 465.8 GiB
 Model: HP SSD S700 500G
 Sector size (logical/physical): 512/4096 bytes
-Disk identifier (GUID): 1D1B3095-5CCD-4F07-9D9D-30660F06C65F
+Disk identifier (GUID): 1E8EFA39-2647-41C0-8045-88EACA1F0FC2
 Partition table holds up to 128 entries
 Main partition table begins at sector 2 and ends at sector 33
 First usable sector is 34, last usable sector is 976773134
