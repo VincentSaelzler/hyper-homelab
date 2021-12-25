@@ -97,3 +97,8 @@
       lv: data
       size: 99%FREE #THIN POOL VOLUMES CANNOT BE REDUCED IN SIZE (EVEN DIRECTLY WITH lvreduce)
       shrink: no
+
+- name: Configure remote logging
+  hosts: pve4
+  roles:
+    - send_logs
