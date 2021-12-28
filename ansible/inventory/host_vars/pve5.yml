@@ -2,7 +2,13 @@
 dmz_cidr: 192.168.129.5/24
 dmz_iface: eno2
 raid_drives:
-  - sdb
-  - sdc
-  - sdd
-  - sde
+  - /dev/sdb
+  - /dev/sdc
+  - /dev/sdd
+  - /dev/sde
+raid_parts:
+  - /dev/sdb1
+  - /dev/sdc1
+  - /dev/sdd1
+  - /dev/sde1
+mdev_name: /dev/md0

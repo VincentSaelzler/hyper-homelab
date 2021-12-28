@@ -1,36 +1,51 @@
 ---
-  # scheme: two-drive RAID1 array from installer, plus 4 drives that will be passed directly to VM 
+# scheme: two-drive RAID1 array from installer, plus 4 drives that will be passed directly to VM 
+# cat /proc/mdstat is helpful
 - name: Partition disks and configure RAID on pve5
   hosts: pve5
   tasks:
-    # Partitions cannot be deleted unless the OS stops using the memory device.
-    # remove LVM / unmount any file systems
-    # cat /proc/mdstat
-    # mdadm --stop /dev/md1
-    # mdadm --remove /dev/md1
-
-  # - name: Remove the superblocks
-  #   command:
-  #     cmd: "mdadm --zero-superblock /dev/{{ item }}1"
-  #     removes: /dev/md0 #TODO: i think there could still be superblock stuff even if /dev/md0 doesn't exist
-  #   loop: "{{ raid_drives }}"
-
-  # - name: Wipe all partitions
-  #   command:
-  #     cmd: "sgdisk /dev/{{ item }} --zap-all"
-  #     removes: "/dev/{{ item }}1"
-  #   loop: "{{ raid_drives }}"
-
-  # - name: Create partitions
-  #   command:
-  #     cmd: "sgdisk /dev/{{ item }} --new=1:0:+232G --typecode=1:fd00 --change-name=1:'Linux RAID'"
-  #     creates: "/dev/{{ item }}1"
-  #   loop: "{{ raid_drives }}"
-
-  # - name: Install mdadm package
-  #   apt:
-  #     pkg: mdadm
-
-  - name: Create the memory device
+  # Remove RAID
+  - name: Stop the memory device
     command:
-      cmd: "echo hi"
+      cmd: "mdadm --stop {{ mdev_name }}"
+      removes: "{{ mdev_name }}"
+  - name: Remove the memory device
+    # without the removes check, it is normal for this to return an error:
+    # "mdadm: error opening /dev/md0: No such file or directory" 
+    command:
+      cmd: "mdadm --remove {{ mdev_name }}"
+      removes: "{{ mdev_name }}"
+  - name: Remove the superblocks
+    command:
+      cmd: "mdadm --zero-superblock {{ item }}"
+      removes: "{{ item }}"
+    loop: "{{ raid_parts }}"
+
+  # Remove partitions
+  - name: Wipe all partitions
+    command:
+      cmd: "sgdisk {{ item }} --zap-all"
+      removes: "{{ item }}1"
+    loop: "{{ raid_drives }}"
+
+  # Create partitions
+  - name: Create partitions
+    command:
+      cmd: "sgdisk {{ item }} --new=1:0:+232G --typecode=1:fd00 --change-name=1:'Linux RAID'"
+      creates: "{{ item }}1"
+    loop: "{{ raid_drives }}"
+
+  # Install dependencies and create RAID device
+  - name: Install required apt packages
+    apt:
+      pkg:
+      - mdadm
+      - python3-pip
+  - name: Install required python packages
+    pip:
+      name: pexpect
+  - name: Create the memory device
+    expect:
+      command: mdadm --create --verbose --level=0 --raid-devices={{ raid_parts | length }} {{ mdev_name }} {{ raid_parts | join(' ') }}
+      responses:
+        Continue creating array: y
