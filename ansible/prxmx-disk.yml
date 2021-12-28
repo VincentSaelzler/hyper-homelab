@@ -49,3 +49,20 @@
       command: mdadm --create --verbose --level=0 --raid-devices={{ raid_parts | length }} {{ mdev_name }} {{ raid_parts | join(' ') }}
       responses:
         Continue creating array: y
+  - name: Get configuration line for memory device
+    command:
+      cmd: "mdadm --detail --scan"
+    register: mdadm_conf
+    changed_when: false
+  - name: Save configuration line for memory device
+    lineinfile:
+      path: /etc/mdadm/mdadm.conf
+      regexp: '^ARRAY {{ mdev_name }}'
+      insertafter: '^# definitions of existing MD arrays'
+      line: "{{ mdadm_conf.stdout }}"
+    notify:
+    - update ram fs # suggested within documentation of mdadm.conf
+
+  handlers:
+  - name: update ram fs
+    command: "update-initramfs -u"
