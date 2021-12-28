@@ -5,6 +5,18 @@
 - name: Partition disks and configure RAID on pve5
   hosts: pve5
   tasks:
+
+  # Unmount and remove file systems
+  - name: Unmount the device and remove from fstab
+    mount:
+      path: /mnt/swraid
+      src: "{{ mdev_name }}"
+      state: absent
+  - name: Remove the ext4 filesystem
+    filesystem:
+      state: absent
+      dev: "{{ mdev_name }}"
+
   # Remove RAID
   - name: Stop the memory device
     command:
@@ -16,11 +28,16 @@
     command:
       cmd: "mdadm --remove {{ mdev_name }}"
       removes: "{{ mdev_name }}"
-  - name: Remove the superblocks
+  - name: Remove the superblocks # shows as changed even when really no change
     command:
       cmd: "mdadm --zero-superblock {{ item }}"
       removes: "{{ item }}"
     loop: "{{ raid_parts }}"
+  - name: Remove configuration line for memory device
+    lineinfile:
+      path: /etc/mdadm/mdadm.conf
+      regexp: '^ARRAY {{ mdev_name }}'
+      state: absent
 
   # Remove partitions
   - name: Wipe all partitions
@@ -48,6 +65,7 @@
   - name: Create the memory device
     expect:
       command: mdadm --create --verbose --level=0 --raid-devices={{ raid_parts | length }} {{ mdev_name }} {{ raid_parts | join(' ') }}
+      creates: "{{ mdev_name }}"
       responses:
         Continue creating array: y
   - name: Get configuration line for memory device
@@ -63,8 +81,10 @@
       line: "{{ mdadm_conf.stdout }}"
     notify:
     - update ram fs # suggested within documentation of mdadm.conf
+
+  # Create and mount file system
   - name: Create an ext4 filesystem
-    filesystem: # changed = false?!?!
+    filesystem:
       fstype: ext4
       dev: "{{ mdev_name }}"
       opts: "-L quad -b 4096 -E stride=128,stripe-width=512"
