@@ -1,6 +1,7 @@
 ---
-# scheme: two-drive RAID1 array from installer, plus 4 drives that will be passed directly to VM 
+# scheme: two-drive btrfs RAID1 array from installer, plus 4-drive RAID 0 mdadm array for VMs 
 # cat /proc/mdstat is helpful
+# dumpe2fs /dev/md0 is helpful
 - name: Partition disks and configure RAID on pve5
   hosts: pve5
   tasks:
@@ -62,6 +63,18 @@
       line: "{{ mdadm_conf.stdout }}"
     notify:
     - update ram fs # suggested within documentation of mdadm.conf
+  - name: Create an ext4 filesystem
+    filesystem: # changed = false?!?!
+      fstype: ext4
+      dev: "{{ mdev_name }}"
+      opts: "-L quad -b 4096 -E stride=128,stripe-width=512"
+  - name: Mount the device and add to fstab
+    mount:
+      path: /mnt/swraid
+      src: "{{ mdev_name }}"
+      fstype: ext4
+      state: mounted
+      passno: 2
 
   handlers:
   - name: update ram fs
