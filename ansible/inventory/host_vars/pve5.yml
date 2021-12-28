@@ -1,3 +1,8 @@
 ---
 dmz_cidr: 192.168.129.5/24
 dmz_iface: eno2
+raid_drives:
+  - sdb
+  - sdc
+  - sdd
+  - sde

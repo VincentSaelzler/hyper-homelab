@@ -1,0 +1,36 @@
+---
+  # scheme: two-drive RAID1 array from installer, plus 4 drives that will be passed directly to VM 
+- name: Partition disks and configure RAID on pve5
+  hosts: pve5
+  tasks:
+    # Partitions cannot be deleted unless the OS stops using the memory device.
+    # remove LVM / unmount any file systems
+    # cat /proc/mdstat
+    # mdadm --stop /dev/md1
+    # mdadm --remove /dev/md1
+
+  # - name: Remove the superblocks
+  #   command:
+  #     cmd: "mdadm --zero-superblock /dev/{{ item }}1"
+  #     removes: /dev/md0 #TODO: i think there could still be superblock stuff even if /dev/md0 doesn't exist
+  #   loop: "{{ raid_drives }}"
+
+  # - name: Wipe all partitions
+  #   command:
+  #     cmd: "sgdisk /dev/{{ item }} --zap-all"
+  #     removes: "/dev/{{ item }}1"
+  #   loop: "{{ raid_drives }}"
+
+  # - name: Create partitions
+  #   command:
+  #     cmd: "sgdisk /dev/{{ item }} --new=1:0:+232G --typecode=1:fd00 --change-name=1:'Linux RAID'"
+  #     creates: "/dev/{{ item }}1"
+  #   loop: "{{ raid_drives }}"
+
+  # - name: Install mdadm package
+  #   apt:
+  #     pkg: mdadm
+
+  - name: Create the memory device
+    command:
+      cmd: "echo hi"

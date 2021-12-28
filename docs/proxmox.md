@@ -1,20 +1,7 @@
-# Manual Steps
-## Install Wizard
-Unlike the other infrastructure (VMs), the Proxmox OS is installed on bare metal hardware.
-
-Some of the steps are manual, while others can be completed using Ansible.
-
-All of the basic details about the node need to be manually entered via the installer menu.
-
-Some important ones:
-- Password
-- IP Address
-- Gateway and DNS
-- Domain
-
-The PW is set to `easypass` initially, then changed by Ansible.
-
+# Install Wizard (Manual)
+Unlike most of the other infrastructure (VMs), the Proxmox OS is installed on bare metal hardware. This requires some manual commands and data entry.
 ## Disk Prep
+### 1. Remove LVM Stuff:
 If there are any other LVM things on the disk(s), the Proxmox installer fails. Here are some relevant commands to remove the LVM stuff.
 ```
 lvs
@@ -24,13 +11,24 @@ vgremove
 pvs
 pvremove
 ```
-**After*** LVM stuff has been wiped, clear partition tables using these commands. The `gdisk` commands need to be run individually and interactively for each disk.
+### 2. Clear Partition Tables
+**After** LVM stuff has been wiped, clear partition tables. Repeat this command for each disk.
 ```
-gdisk /dev/sdx
-x, z, y, y (extra, zap, yes remove GPT, yes remove BIOS fallback)
-pvremove /dev/sda /dev/sdb /dev/sd.. -f
+sgdisk /dev/sdx --zap-all
 ```
+## General Configuration
+*Once LVM and partitions are gone*, we can move on to the install.
+
+Some basic details about the node need to be manually entered, including:
+- (temporary) Password
+- IP Address
+- Gateway and DNS
+- Domain
+
+The PW is set to `easypass` initially, then changed by Ansible.
+
 ## Cluster Creation and Joining
+> ⚠️ WARNING: Remove nodes from the cluster **before** uninstalling or re-installing Proxmox.
 ### Manual Join
 This is (unfortunately) the way it needs to be done.
 
