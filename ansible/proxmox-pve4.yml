@@ -3,6 +3,9 @@
 - name: Partition disks and configure LVM on pve4
   hosts: pve4
   tasks:
+  # Be sure to wipe the LVM stuff first! It can be a real pain if old LVM configs are left on the device
+  # There ends up being a duplicate vg name 'pve' and it is hard to tell which is the new and which is the old.
+
   # - name: Wipe all partitions
   #   command:
   #     cmd: "sgdisk {{ item }} --zap-all"
