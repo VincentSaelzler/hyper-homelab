@@ -66,6 +66,9 @@
   roles:
     - send_logs
 
+# host-specific stuff (disk partitioning and LVM/RAID)
+- import_playbook: proxmox-pve4.yml
+- import_playbook: proxmox-pve5.yml
 
 # Ran into troubles with this (see docs/proxmox.md)
 # - name: Create the Cluster

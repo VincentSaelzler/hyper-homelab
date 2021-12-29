@@ -6,45 +6,45 @@
   hosts: pve5
   tasks:
 
-  # Unmount and remove file systems
-  - name: Unmount the device and remove from fstab
-    mount:
-      path: /mnt/swraid
-      src: "{{ mdev_name }}"
-      state: absent
-  - name: Remove the ext4 filesystem
-    filesystem:
-      state: absent
-      dev: "{{ mdev_name }}"
+  # # Unmount and remove file systems
+  # - name: Unmount the device and remove from fstab
+  #   mount:
+  #     path: /mnt/swraid
+  #     src: "{{ mdev_name }}"
+  #     state: absent
+  # - name: Remove the ext4 filesystem
+  #   filesystem:
+  #     state: absent
+  #     dev: "{{ mdev_name }}"
 
-  # Remove RAID
-  - name: Stop the memory device
-    command:
-      cmd: "mdadm --stop {{ mdev_name }}"
-      removes: "{{ mdev_name }}"
-  - name: Remove the memory device
-    # without the removes check, it is normal for this to return an error:
-    # "mdadm: error opening /dev/md0: No such file or directory" 
-    command:
-      cmd: "mdadm --remove {{ mdev_name }}"
-      removes: "{{ mdev_name }}"
-  - name: Remove the superblocks # shows as changed even when really no change
-    command:
-      cmd: "mdadm --zero-superblock {{ item }}"
-      removes: "{{ item }}"
-    loop: "{{ raid_parts }}"
-  - name: Remove configuration line for memory device
-    lineinfile:
-      path: /etc/mdadm/mdadm.conf
-      regexp: '^ARRAY {{ mdev_name }}'
-      state: absent
+  # # Remove RAID
+  # - name: Stop the memory device
+  #   command:
+  #     cmd: "mdadm --stop {{ mdev_name }}"
+  #     removes: "{{ mdev_name }}"
+  # - name: Remove the memory device
+  #   # without the removes check, it is normal for this to return an error:
+  #   # "mdadm: error opening /dev/md0: No such file or directory" 
+  #   command:
+  #     cmd: "mdadm --remove {{ mdev_name }}"
+  #     removes: "{{ mdev_name }}"
+  # - name: Remove the superblocks # shows as changed even when really no change
+  #   command:
+  #     cmd: "mdadm --zero-superblock {{ item }}"
+  #     removes: "{{ item }}"
+  #   loop: "{{ raid_parts }}"
+  # - name: Remove configuration line for memory device
+  #   lineinfile:
+  #     path: /etc/mdadm/mdadm.conf
+  #     regexp: '^ARRAY {{ mdev_name }}'
+  #     state: absent
 
-  # Remove partitions
-  - name: Wipe all partitions
-    command:
-      cmd: "sgdisk {{ item }} --zap-all"
-      removes: "{{ item }}1"
-    loop: "{{ raid_drives }}"
+  # # Remove partitions
+  # - name: Wipe all partitions
+  #   command:
+  #     cmd: "sgdisk {{ item }} --zap-all"
+  #     removes: "{{ item }}1"
+  #   loop: "{{ raid_drives }}"
 
   # Create partitions
   - name: Create partitions
