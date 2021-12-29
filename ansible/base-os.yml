@@ -1,8 +1,0 @@
----
-- name: Personalize Ubuntu cloud image
-  hosts: ubuntu_cloud
-  become: yes
-  roles:
-    - full-upgrade
-    - personalize
-    - add-user
