@@ -1,0 +1,33 @@
+---
+# scheme: 1 SSD with OS plus LVM thinpool, expanded by second drive that is dedicated LVM space.
+- name: Partition disks and configure LVM on pve4
+  hosts: pve4
+  tasks:
+
+  # Remove partitions
+  - name: Wipe all partitions
+    command:
+      cmd: "sgdisk {{ item }} --zap-all"
+      removes: "{{ item }}1"
+    loop: "{{ lvm_drives }}"
+
+  # Create partitions
+  - name: Create partitions
+    command:
+      cmd: "sgdisk {{ item }} --new=1:0:+232G --typecode=1:8e00 --change-name=1:'Linux LVM'"
+      creates: "{{ item }}1"
+    loop: "{{ lvm_drives }}"
+
+  # Configure LVM
+  # https://www.redhat.com/sysadmin/automating-logical-volume-manager
+  - name: Associate /dev/sda1 with vg and resize maximum possible
+    lvg:
+      vg: pve
+      pvs: /dev/sda1,/dev/sdb3 #be sure to include the existing partition (from PMX installer)
+      pvresize: yes
+  - name: Create a logical volume the size of all remaining space in the volume group
+    lvol:
+      vg: pve
+      lv: data
+      #size: 99%FREE #THIN POOL VOLUMES CANNOT BE REDUCED IN SIZE (EVEN DIRECTLY WITH lvreduce)
+      shrink: no
