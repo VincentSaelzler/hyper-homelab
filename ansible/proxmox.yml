@@ -17,10 +17,6 @@
       state: present
       #exclusive: yes #DO NOT DO THIS! it interferes with cluster operation!
       key: '{{ pub_key }}'
-
-- name: Change the PW from the easy one we used during the OS install process
-  hosts: proxmox_nodes
-  tasks:
   - name: Set the user PW to something strong
     user:
       name: "{{ ansible_user }}"
@@ -65,10 +61,8 @@
   - name: restart
     reboot:
 
-
-
 - name: Configure remote logging
-  hosts: pve4
+  hosts: proxmox_nodes
   roles:
     - send_logs
 
