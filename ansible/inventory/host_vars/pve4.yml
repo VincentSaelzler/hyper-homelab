@@ -2,4 +2,11 @@
 dmz_cidr: 192.168.129.4/24
 dmz_iface: enp3s0
 lvm_drives:
-  - /dev/sdb
+  - /dev/sda
+lvm_parts:
+  - /dev/sda1 # partitioned by Ansible
+  - /dev/sdb3 # partitioned by Proxmox install Wizard
+
+# how big the volume for VM stuff can be
+# need to save some of sdb for OS root and swap lvs
+data_space: 630G 
