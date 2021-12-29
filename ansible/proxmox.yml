@@ -66,6 +66,7 @@
   roles:
     - send_logs
 
+
 # Ran into troubles with this (see docs/proxmox.md)
 # - name: Create the Cluster
 #   hosts: pve2 #specific host was arbitrary
