@@ -1,5 +1,55 @@
-Configuration files are saved in `usr/local/etc/nut`
 
+# Configuration Changes
+## pfSense Changes:
+Added lines to some files. Kept everything that was already there in place.
+```sh
+# /usr/local/etc/nut/upsd.conf
+...
+LISTEN 192.168.128.1
+```
+```sh
+# /usr/local/etc/nut/upsd.users
+...
+[upsmon_remote]
+password  = remote_pass
+upsmon slave
+```
+
+## Proxmox Changes
+*Added* a line to this file:
+```sh
+# /etc/nut/upsmon.conf
+...
+MONITOR old-smart-1500@192.168.128.1 1 upsmon_remote remote_pass slave
+```
+*Replaced* a line in this file:
+```sh
+# /etc/nut/nut.conf
+...
+#MODE=none
+MODE=netclient
+```
+
+# Testing Connectivity
+http://abakalidis.blogspot.com/2013/04/using-raspberry-pi-as-ups-server-with.html
+
+Local test from pfSense.
+```sh
+/usr/local/bin/upsc old-smart-1500@localhost ups.status
+ALARM OL RB # expected because the battery needs replacement
+```
+Remote test from Proxmox.
+```sh
+upsc old-smart-1500@192.168.128.1 ups.status
+ALARM OL RB # expected because the battery needs replacement
+```
+Monitor the status of the process on Proxmox.
+```sh
+systemctl status nut-client
+journalctl -u nut-monitor
+```
+# Default Configuration Files on pfSense
+These are all default values, except the naming of the UPS
 ```sh
 # ls /usr/local/etc/nut/
 cmdvartab
@@ -56,6 +106,64 @@ CMDSCRIPT /usr/local/bin/upssched-cmd
 ```
 ```sh
 # /usr/local/bin/upssched-cmd
+case $1 in
+	upsgone)
+		logger -t upssched-cmd "The UPS has been gone for awhile"
+		;;
+	*)
+		logger -t upssched-cmd "Unrecognized command: $1"
+		;;
+esac
+```
+# Default Configuration Files on Proxmox
+These are the defaults after installing the `nut` package using `apt`.
+```sh
+# ls -l /etc/nut/
+-rw-r----- 1 root nut  1538 Oct 15  2020 nut.conf
+-rw-r----- 1 root nut  5522 Oct 15  2020 ups.conf
+-rw-r----- 1 root nut  4578 Oct 15  2020 upsd.conf
+-rw-r----- 1 root nut  2131 Oct 15  2020 upsd.users
+-rw-r----- 1 root nut 15308 Oct 15  2020 upsmon.conf
+-rw-r----- 1 root nut  3879 Oct 15  2020 upssched.conf
+```
+```sh
+# /etc/nut/nut.conf
+...
+MODE=none
+```
+```sh
+# /etc/nut/ups.conf
+...
+maxretry = 3
+```
+```sh
+# /etc/nut/upsd.conf
+# all commented
+```
+```sh
+# /etc/nut/upsd.users
+# all commented
+```
+```sh
+# /etc/nut/upsmon.conf
+...
+MINSUPPLIES 1
+SHUTDOWNCMD "/sbin/shutdown -h +0"
+POLLFREQ 5
+POLLFREQALERT 5
+HOSTSYNC 15
+DEADTIME 15
+POWERDOWNFLAG /etc/killpower
+RBWARNTIME 43200
+NOCOMMWARNTIME 300
+FINALDELAY 5
+```
+```sh
+# /etc/nut/upssched.conf
+CMDSCRIPT /bin/upssched-cmd
+```
+```sh
+# /bin/upssched-cmd
 case $1 in
 	upsgone)
 		logger -t upssched-cmd "The UPS has been gone for awhile"

@@ -1,0 +1,11 @@
+---
+- name: Copy the public SSH key to the host.
+  authorized_key:
+    user: "{{ ansible_user }}"
+    state: present
+    exclusive: no #yes intereferes with Proxmox cluster operations. Do NOT make exclusive!
+    key: '{{ pub_key }}'
+- name: Set the user PW to something strong
+  user:
+    name: "{{ ansible_user }}"
+    password: "{{ root_pw | password_hash('sha512', user_pw_salt) }}"

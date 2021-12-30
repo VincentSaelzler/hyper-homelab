@@ -1,0 +1,9 @@
+---
+# this easy password is ONLY set so we don't have to type something difficult on the keyboard while
+# doing the physical install
+# as soon as the node is bootstrapped, it will be changed to the secure root PW, saved in the
+# root_pw variable (which is encrypted using ansible vault)
+ansible_password: "easypass"
+# in terms of idempotence, things work out!
+# after the SSH key is installed, the fact that "easypass" is no longer the correct PW doesn't matter
+# SSH uses the keypair in that case, and the status of the task is OK (unchanged). 

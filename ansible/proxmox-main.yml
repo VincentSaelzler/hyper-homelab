@@ -1,31 +1,11 @@
 ---
-- name: Copy the public SSH key to the host.
+- name: Network, apt repository, and UPS configuration
   hosts: proxmox_nodes
-  vars:
-    # this easy password is ONLY set so we don't have to type something difficult on the keyboard while
-    # doing the physical install
-    # as soon as the node is bootstrapped, it will be changed to the secure root PW, saved in the
-    # root_pw variable (which is encrypted using ansible vault)
-    ansible_password: "easypass"
-    # in terms of idempotence, things work out!
-    # after the SSH key is installed, the fact that "easypass" is no longer the correct PW doesn't matter
-    # SSH uses the keypair in that case, and the status of the task is OK (unchanged). 
+  roles:
+  - baremetal-bootstrap
+  - send_logs
   tasks:
-  - name: Copy the public SSH key to the host.
-    authorized_key:
-      user: "{{ ansible_user }}"
-      state: present
-      #exclusive: yes #DO NOT DO THIS! it interferes with cluster operation!
-      key: '{{ pub_key }}'
-  - name: Set the user PW to something strong
-    user:
-      name: "{{ ansible_user }}"
-      password: "{{ root_pw | password_hash('sha512', user_pw_salt) }}"
-
-- name: Network and apt repository configuration
-  hosts: proxmox_nodes
-  tasks:
-  #https://www.middlewareinventory.com/blog/ansible-search-string-file-check-if-string-exists/
+  #network
   - name: Check whether DMZ bridge configuration already exists.
     lineinfile:
       path: /etc/network/interfaces
@@ -40,6 +20,7 @@
     when: presence.changed # this will NOT run an update - only adds the bridge config if it does not exist.
     notify:
     - restart
+  #repositories
   - name: Comment out the enterprise repository
     replace:
       path: /etc/apt/sources.list.d/pve-enterprise.list
@@ -56,15 +37,29 @@
       cache_valid_time: 3600
     notify:
     - restart
-
+  - name: Install UPS client
+    apt:
+      pkg:
+      - nut-client
+    notify:
+    - restart
+  - name: Change mode to netclient
+    replace:
+      path: /etc/nut/nut.conf
+      regexp: '^MODE=.*'
+      replace: 'MODE=netclient'
+    notify:
+    - restart
+  - name: Add a monitor directive
+    lineinfile:
+      path: /etc/nut/upsmon.conf
+      line: MONITOR old-smart-1500@192.168.128.1 1 upsmon_remote remote_pass slave #TODO: PARAMATERIZE
+      state: present
+    notify:
+    - restart
   handlers:
   - name: restart
     reboot:
-
-- name: Configure remote logging
-  hosts: proxmox_nodes
-  roles:
-    - send_logs
 
 # host-specific stuff (disk partitioning and LVM/RAID)
 - import_playbook: proxmox-pve4.yml

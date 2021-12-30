@@ -18,7 +18,6 @@
     loop: "{{ lvm_drives }}"
 
   # Configure LVM
-  # https://www.redhat.com/sysadmin/automating-logical-volume-manager
   - name: Associate /dev/sda1 with vg
     lvg:
       vg: pve
