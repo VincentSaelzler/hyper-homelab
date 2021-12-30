@@ -21,6 +21,7 @@ Everything beyond that can be restored from the backup file.
 
 # Configuration Backup and Restoration
 Use the AutoConfigBackup service. This is totally free, and provides offsite backups from Netgate. Instructions from Netgate website are easy and clear.
+> ⚠️ IMPORTANT: When doing a bare-metal restore, be sure to note the new device ID
 
 # Software Setup
 > ⚠️ WARNING: Changes made by Ansible are wiped out when configuration is changed via the GUI
@@ -29,6 +30,7 @@ Use the AutoConfigBackup service. This is totally free, and provides offsite bac
 - Set DHCP Range to be Correct
 - DHCP on MGMT Interface but not DMZ
 - root PW and authorized keys
+- ntp? seems like the default pool wasn't working.
 
 ## Packages
 The backup config file does **not** automatically re-install packages when restored. It **does** save the configuration values from before.
