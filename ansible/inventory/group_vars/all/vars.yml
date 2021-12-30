@@ -5,8 +5,11 @@ netmask: "255.255.255.0"
 broadcast: "192.168.1.255"
 gateway: "192.168.1.254"
 
-# rsyslog server (pfSense)
+# rsyslog and nut server (pfSense)
 log_server: "192.168.128.1:5140"
+ups_server: "192.168.128.1"
+ups_name: "old-smart-1500"
+ups_user: upsmon_remote
 
 # assumptions about physical location
 time_zone: "America/New_York"
@@ -31,3 +34,4 @@ pub_key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCW4Cf2kYGSvvx+HYcxs3dy4LGZ5At4+7
 root_pw:  "{{ vault_root_pw }}"
 user_pw: "{{ vault_user_pw }}"
 user_pw_salt: "{{ vault_user_pw_salt }}"
+ups_pw: "{{ vault_ups_pw }}"

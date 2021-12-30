@@ -53,7 +53,8 @@
   - name: Add a monitor directive
     lineinfile:
       path: /etc/nut/upsmon.conf
-      line: MONITOR old-smart-1500@192.168.128.1 1 upsmon_remote remote_pass slave #TODO: PARAMATERIZE
+      line: "MONITOR {{ ups_name }}@{{ ups_server }} 1 {{ ups_user }} {{ ups_pw }} slave"
+      regexp: "^MONITOR"
       state: present
     notify:
     - restart
