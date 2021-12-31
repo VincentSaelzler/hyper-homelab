@@ -96,6 +96,20 @@
       state: mounted
       passno: 2
 
+  # Configure storage in Proxmox storage manager
+  - name: Check whether storage configuration already exists.
+    lineinfile:
+      path: /etc/pve/storage.cfg
+      line: "dir: quad-ssd"
+      state: present
+    check_mode: yes # do not add the line - just check whether it WOULD be added
+    register: presence
+  - name: Add entry to storage file
+    command:
+      cmd: "pvesh create /storage --storage=quad-ssd --type=dir --path=/mnt/swraid"
+      #cmd: echo hi
+    when: presence.changed # this will NOT run an update - only adds the storage config if it does not exist.
+
   handlers:
   - name: update ram fs
     command: "update-initramfs -u"
