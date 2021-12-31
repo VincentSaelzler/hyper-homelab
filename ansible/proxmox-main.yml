@@ -17,7 +17,9 @@
     command:
       cmd: "pvesh create /nodes/{{ inventory_hostname }}/network --iface {{ dmz_bridge }} --type bridge --autostart true --cidr {{ dmz_cidr }} --bridge_ports {{ dmz_iface }}"
       #cmd: echo hi
-    when: presence.changed # this will NOT run an update - only adds the bridge config if it does not exist.
+    when:
+    - presence.changed # this will NOT run an update - only adds the bridge config if it does not exist.
+    - dmz_iface is defined # some nodes don't have a spare ethernet port (yet)
     notify:
     - restart
   #repositories
