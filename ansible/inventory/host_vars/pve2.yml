@@ -1,0 +1,10 @@
+---
+lvm_drives:
+  - /dev/sdb
+lvm_parts:
+  - /dev/sda3 # partitioned by Proxmox install Wizard
+  - /dev/sdb1 # partitioned by Ansible
+
+# how big the volume for VM stuff can be
+# need to save some of sda for OS root and swap lvs
+data_space: 190G

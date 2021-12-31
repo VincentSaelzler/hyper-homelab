@@ -1,0 +1,29 @@
+---
+# scheme: 1 SSD with OS plus LVM thinpool, expanded by second drive that is dedicated LVM space.
+- name: Partition disks and configure LVM on pve3
+  hosts: pve3
+  tasks:
+  # Be sure to wipe the LVM stuff first! It can be a real pain if old LVM configs are left on the device
+  # There ends up being a duplicate vg name 'pve' and it is hard to tell which is the new and which is the old.
+
+  # - name: Wipe all partitions
+  #   command:
+  #     cmd: "sgdisk {{ item }} --zap-all"
+  #     removes: "{{ item }}1"
+  #   loop: "{{ lvm_drives }}"
+  - name: Create partitions
+    command:
+      cmd: "sgdisk {{ item }} --largest-new=1 --typecode=1:8e00 --change-name=1:'Linux LVM'"
+      creates: "{{ item }}1"
+    loop: "{{ lvm_drives }}"
+
+  # Configure LVM
+  - name: Associate /dev/sda1 with vg
+    lvg:
+      vg: pve
+      pvs: "{{ lvm_parts | join(',') }}"
+  - name: Create a logical volume with a pre-calculated size
+    lvol:
+      vg: pve
+      lv: data
+      size: "{{ data_space }}"
