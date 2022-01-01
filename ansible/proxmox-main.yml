@@ -65,13 +65,12 @@
     reboot:
 
 # Cluster configuration
-- name: Create the Cluster
+- name: Install dependencies and create the cluster
   hosts: proxmox_nodes
   tasks:
   - name: Install required apt packages
     apt:
-      pkg:
-      - python3-pip
+      pkg: python3-pip
   - name: Install required python packages
     pip:
       name: pexpect
@@ -80,14 +79,21 @@
       cmd: pvecm create cluster0
       creates: /etc/pve/corosync.conf
     when: ansible_hostname == cluster_starter
-
-# - name: Join the Cluster
-#   hosts: proxmox_nodes
-#   tasks:
-#   - name: Join the Cluster
-#     command:
-#       cmd: pvecm add 192.168.128.3 --use_ssh
-#       creates: /etc/pve/corosync.conf
+- name: Join the cluster one node at a time
+  hosts: proxmox_nodes
+  serial: 1
+  vars:
+  - cluster_ip: "{{ hostvars[cluster_starter]['ansible_host'] }}"
+  tasks:
+  - name: Join the cluster
+    expect:
+      command: "pvecm add {{ cluster_ip }}"
+      creates: /etc/pve/corosync.conf
+      timeout: 90
+      responses:
+        'Please enter superuser \(root\) password': "{{ root_pw }}"
+        'Are you sure you want to continue connecting': "yes"
+    when: ansible_hostname != cluster_starter
 
 # host-specific stuff (disk partitioning and LVM/RAID)
 - import_playbook: proxmox-pve2.yml
