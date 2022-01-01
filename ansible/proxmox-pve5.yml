@@ -58,10 +58,6 @@
     apt:
       pkg:
       - mdadm
-      - python3-pip
-  - name: Install required python packages
-    pip:
-      name: pexpect
   - name: Create the memory device
     expect:
       command: mdadm --create --verbose --level=0 --raid-devices={{ raid_parts | length }} {{ mdev_name }} {{ raid_parts | join(' ') }}

@@ -64,20 +64,22 @@
   - name: restart
     reboot:
 
-# host-specific stuff (disk partitioning and LVM/RAID)
-- import_playbook: proxmox-pve2.yml
-- import_playbook: proxmox-pve3.yml
-- import_playbook: proxmox-pve4.yml
-- import_playbook: proxmox-pve5.yml
-
-# Ran into troubles with this (see docs/proxmox.md)
-# - name: Create the Cluster
-#   hosts: pve2 #specific host was arbitrary
-#   tasks:
-#   - name: Create the Cluster
-#     command:
-#       cmd: pvecm create cluster0
-#       creates: /etc/pve/corosync.conf
+# Cluster configuration
+- name: Create the Cluster
+  hosts: proxmox_nodes
+  tasks:
+  - name: Install required apt packages
+    apt:
+      pkg:
+      - python3-pip
+  - name: Install required python packages
+    pip:
+      name: pexpect
+  - name: Create the Cluster
+    command:
+      cmd: pvecm create cluster0
+      creates: /etc/pve/corosync.conf
+    when: ansible_hostname == cluster_starter
 
 # - name: Join the Cluster
 #   hosts: proxmox_nodes
@@ -86,3 +88,9 @@
 #     command:
 #       cmd: pvecm add 192.168.128.3 --use_ssh
 #       creates: /etc/pve/corosync.conf
+
+# host-specific stuff (disk partitioning and LVM/RAID)
+- import_playbook: proxmox-pve2.yml
+- import_playbook: proxmox-pve3.yml
+- import_playbook: proxmox-pve4.yml
+- import_playbook: proxmox-pve5.yml
