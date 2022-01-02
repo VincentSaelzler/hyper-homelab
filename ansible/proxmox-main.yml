@@ -73,7 +73,9 @@
       pkg: python3-pip
   - name: Install required python packages
     pip:
-      name: pexpect
+      name:
+      - pexpect
+      - proxmoxer
   - name: Create the Cluster
     command:
       cmd: pvecm create cluster0

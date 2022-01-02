@@ -1,0 +1,38 @@
+---
+- name: Create VMs if they don't already exist
+  hosts: ubuntu_cloud
+  gather_facts: no # this will fail if the VMs don't exist yet
+  # vars:
+  #   - srv_det: "{{ hostvars['hyper_v'] }}"
+  tasks:
+  # - name: Check if VM exists
+  #   delegate_to: hyper_v
+  #   stat:
+  #     path: "{{ srv_det['vhd_dir'] }}{{ id }}-os.vhdx"
+  #     get_checksum: no
+  #     get_attributes: no
+  #     get_mime: no
+  #   register: vhdx
+  - name: Create new VM with minimal options
+    delegate_to: pve5
+    proxmox_kvm:
+      proxmox_default_behavior: no_defaults
+      api_user: root@pam
+      api_password: "{{ root_pw }}"
+      api_host: 192.168.128.5
+      name: spynal5
+      node: pve5
+      # hardware
+      memory: 49152
+      cores: 10
+      ide:
+        ide2: 'local:cloudinit,format=qcow2'
+      # cloud-init
+      citype: nocloud
+      cipassword: easypass
+      # options
+      onboot: yes
+      ostype: l26
+      agent: yes
+      # for iterative deleting
+      #state: absent
