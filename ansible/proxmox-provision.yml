@@ -31,14 +31,14 @@
       # cloud-init
       citype: nocloud
       cipassword: easypass
-      # ipconfig:
-      #   ipconfig0: 'ip=192.168.129.2/24,gw=192.168.129.1'
+      ipconfig:
+        ipconfig0: 'ip=192.168.129.2/24,gw=192.168.129.1'
       # options
       name: dev
       # onboot: yes
       ostype: l26
       scsihw: virtio-scsi-pci
-      #agent: yes
+      agent: yes
       #args: "-serial unix:/var/run/qemu-server/100.serial,server,nowait,-device virtio-rng-pci"
       # for iterative deleting
       # state: absent
