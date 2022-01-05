@@ -18,25 +18,28 @@
       api_user: root@pam
       api_password: "{{ root_pw }}"
       api_host: 192.168.128.5
-      name: dev
       node: pve5
       # hardware
-      memory: 49152
-      cores: 20
+      memory: 2048
+      cores: 1
+      sockets: 1
       net:
         net0: "virtio,bridge=vmbr1"
       ide:
         ide2: 'local:cloudinit,format=qcow2'
+        # ide2: 'none,media=cdrom'
       # cloud-init
       citype: nocloud
       cipassword: easypass
-      ipconfig:
-        ipconfig0: 'ip=192.168.129.2/24,gw=192.168.129.1'
+      # ipconfig:
+      #   ipconfig0: 'ip=192.168.129.2/24,gw=192.168.129.1'
       # options
-      onboot: yes
+      name: dev
+      # onboot: yes
       ostype: l26
-      agent: yes
-      args: "-serial unix:/var/run/qemu-server/100.serial,server,nowait,-device virtio-rng-pci"
+      scsihw: virtio-scsi-pci
+      #agent: yes
+      #args: "-serial unix:/var/run/qemu-server/100.serial,server,nowait,-device virtio-rng-pci"
       # for iterative deleting
       # state: absent
     register: vm
