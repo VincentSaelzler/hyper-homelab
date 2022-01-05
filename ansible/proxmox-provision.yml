@@ -1,38 +1,51 @@
 ---
 - name: Create VMs if they don't already exist
-  hosts: ubuntu_cloud
+  hosts: pve5
   gather_facts: no # this will fail if the VMs don't exist yet
-  # vars:
-  #   - srv_det: "{{ hostvars['hyper_v'] }}"
+  vars:
+    - img_url: "https://cloud-images.ubuntu.com/releases/hirsute/release/"
+    - img_file: "ubuntu-21.04-server-cloudimg-amd64.img"
+    - tgt_storage: "quad-ssd"
   tasks:
-  # - name: Check if VM exists
-  #   delegate_to: hyper_v
-  #   stat:
-  #     path: "{{ srv_det['vhd_dir'] }}{{ id }}-os.vhdx"
-  #     get_checksum: no
-  #     get_attributes: no
-  #     get_mime: no
-  #   register: vhdx
+  - name: Download cloud image #does not appear to re-download if client recently accessed (HTTP 304 Not Modified)
+    get_url:
+      url: "{{ img_url }}{{ img_file }}"
+      dest: "~/{{ img_file }}"
   - name: Create new VM with minimal options
-    delegate_to: pve5
+    # delegate_to: pve5
     proxmox_kvm:
       proxmox_default_behavior: no_defaults
       api_user: root@pam
       api_password: "{{ root_pw }}"
       api_host: 192.168.128.5
-      name: spynal5
+      name: dev
       node: pve5
       # hardware
       memory: 49152
-      cores: 10
+      cores: 20
+      net:
+        net0: "virtio,bridge=vmbr1"
       ide:
         ide2: 'local:cloudinit,format=qcow2'
       # cloud-init
       citype: nocloud
       cipassword: easypass
+      ipconfig:
+        ipconfig0: 'ip=192.168.129.2/24,gw=192.168.129.1'
       # options
       onboot: yes
       ostype: l26
       agent: yes
+      args: "-serial unix:/var/run/qemu-server/100.serial,server,nowait,-device virtio-rng-pci"
       # for iterative deleting
-      #state: absent
+      # state: absent
+    register: vm
+  - name: Import template disk # NOT IDEMPOTENT !!
+    command:
+      cmd: "qm importdisk {{ vm.vmid }} ~/{{ img_file }} {{ tgt_storage }}"
+  - name: Attach template disk to SCSI controller
+    command:
+      cmd: "qm set {{ vm.vmid }} --scsi0 {{ tgt_storage }}:{{ vm.vmid }}/vm-{{ vm.vmid }}-disk-0.raw"
+  - name: Set disk as bootable
+    command:
+      cmd: "qm set {{ vm.vmid }} --boot order=scsi0"
