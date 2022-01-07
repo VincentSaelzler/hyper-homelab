@@ -3,8 +3,8 @@
   hosts: pve5
   gather_facts: no # this will fail if the VMs don't exist yet
   vars:
-    - img_url: "https://cloud-images.ubuntu.com/releases/hirsute/release/"
-    - img_file: "ubuntu-21.04-server-cloudimg-amd64.img"
+    - img_url: "https://cloud.centos.org/altarch/7/images/"
+    - img_file: "CentOS-7-x86_64-GenericCloud.qcow2"
     - tgt_storage: "quad-ssd"
   tasks:
   - name: Download cloud image #does not appear to re-download if client recently accessed (HTTP 304 Not Modified)
@@ -20,28 +20,24 @@
       api_host: 192.168.128.5
       node: pve5
       # hardware
-      memory: 2048
-      cores: 1
-      sockets: 1
+      memory: 49152 #48 GiB
+      cores: 20
+      cpu: host
       net:
         net0: "virtio,bridge=vmbr1"
-      ide:
-        ide2: 'local:cloudinit,format=qcow2'
-        # ide2: 'none,media=cdrom'
+      # ide:
+      #   ide2: 'local:cloudinit,format=qcow2'
       # cloud-init
-      citype: nocloud
-      cipassword: easypass
-      ipconfig:
-        ipconfig0: 'ip=192.168.129.2/24,gw=192.168.129.1'
+      #citype: nocloud
+      #cipassword: easypass
+      #ipconfig:
+      #  ipconfig0: 'ip=192.168.129.2/24,gw=192.168.129.1'
       # options
-      name: dev
-      # onboot: yes
+      name: robox0
+      onboot: yes
       ostype: l26
       scsihw: virtio-scsi-pci
       agent: yes
-      #args: "-serial unix:/var/run/qemu-server/100.serial,server,nowait,-device virtio-rng-pci"
-      # for iterative deleting
-      # state: absent
     register: vm
   - name: Import template disk # NOT IDEMPOTENT !!
     command:
