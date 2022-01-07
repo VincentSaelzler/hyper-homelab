@@ -25,13 +25,13 @@
       cpu: host
       net:
         net0: "virtio,bridge=vmbr1"
-      # ide:
-      #   ide2: 'local:cloudinit,format=qcow2'
+      ide:
+        ide2: 'local:cloudinit,format=qcow2'
       # cloud-init
-      #citype: nocloud
-      #cipassword: easypass
-      #ipconfig:
-      #  ipconfig0: 'ip=192.168.129.2/24,gw=192.168.129.1'
+      sshkeys: "{{ pub_key }}"
+      cipassword: easypass
+      ipconfig:
+        ipconfig0: 'ip=192.168.129.2/24,gw=192.168.129.1'
       # options
       name: robox0
       onboot: yes
