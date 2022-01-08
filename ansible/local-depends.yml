@@ -1,0 +1,12 @@
+---
+- name: Install dependencies and create the cluster
+  hosts: localhost
+  tasks:
+  - name: Install required apt packages
+    apt:
+      pkg: python3-pip
+  - name: Install required python packages
+    pip:
+      name:
+      - pexpect
+      - proxmoxer

@@ -75,7 +75,7 @@
     pip:
       name:
       - pexpect
-      - proxmoxer
+      #- proxmoxer
   - name: Create the Cluster
     command:
       cmd: pvecm create cluster0
