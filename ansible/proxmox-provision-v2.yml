@@ -1,0 +1,38 @@
+---
+- name: Hello from Proxmox nodes
+  hosts: proxmox_nodes
+  gather_facts: no # this will fail if the VMs don't exist yet
+  tasks:
+  - name: Say hello
+    debug:
+      msg: "hi"
+- name: Hello from Proxmox VMs
+  hosts: proxmox_vms
+  gather_facts: no # this will fail if the VMs don't exist yet
+  tasks:
+  - debug:
+      var: tvar
+
+
+- name: Hello from node2
+  hosts: node2
+  gather_facts: no # this will fail if the VMs don't exist yet
+  tasks:
+  - debug:
+      var: virt_host
+
+- name: Hello from all vms
+  hosts: proxmox_vms
+  gather_facts: no # this will fail if the VMs don't exist yet
+  tasks:
+  - debug:
+      var: virt_host
+
+  
+- name: Delegating Stuff
+  hosts: proxmox_vms
+  gather_facts: no # this will fail if the VMs don't exist yet
+  tasks:
+  - command:
+      cmd: echo hi
+    delegate_to: "{{ virt_host }}"

@@ -1,3 +1,5 @@
 ---
 ansible_user: ubuntu
 iface_name: eth0
+img_url: "https://cloud-images.ubuntu.com/releases/focal/release/"
+img_file: "ubuntu-20.04-server-cloudimg-amd64.img"

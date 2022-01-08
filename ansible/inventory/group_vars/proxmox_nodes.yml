@@ -2,3 +2,4 @@
 ansible_user: root
 dmz_bridge: vmbr1
 cluster_starter: pve4 #specific host is arbitrary
+tgt_storage: local-lvm
