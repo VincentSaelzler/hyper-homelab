@@ -9,7 +9,7 @@
   - name: Check whether DMZ bridge configuration already exists.
     lineinfile:
       path: /etc/network/interfaces
-      line: iface vmbr1 inet static
+      line: "iface {{ dmz_bridge }} inet static"
       state: present
     check_mode: yes # do not add the line - just check whether it WOULD be added
     register: presence

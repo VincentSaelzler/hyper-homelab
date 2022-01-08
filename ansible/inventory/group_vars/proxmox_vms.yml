@@ -1,2 +1,5 @@
 ---
-tvar: fubar
+api_user: root@pam
+dmz_bridge: vmbr1
+dmz_gw: 192.168.129.1
+tgt_storage: "local-lvm"
