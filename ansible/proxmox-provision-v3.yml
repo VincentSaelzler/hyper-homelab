@@ -5,6 +5,7 @@
   gather_facts: no # this will fail if the VMs don't exist yet
   vars:
     virt_host_ip: "{{ hostvars[virt_host]['ansible_host'] }}"
+    not_single_quote: "[^']+" # define here to avoid issues with single quote escapes 
   tasks:
   - name: Create new VM
     proxmox_kvm:
@@ -47,10 +48,18 @@
       cmd: "qm importdisk {{ vm.vmid }} ~/{{ img_file }} {{ tgt_storage }}"
     when: vm.changed
     delegate_to: "{{ virt_host }}"
+    register: disk
+  - debug:
+      # var: "disk.stdout_lines | last | regex_search(tgt_storage + '[^w]+')" #WORKS
+      var: "disk.stdout_lines | last | regex_search(tgt_storage + not_single_quote)" #WORKS
+      #var: "'Successfully imported disk as ''unused2:quad-ssd:103/vm-103-disk-3.raw''' | regex_search('(?<=Successfully imported disk as ).*')"
+      # msg: "that's fun. it\\'s great"
+      # msg: "a" + "b"
+      # var: "'[^'']+' | regex_escape()"
+      # var: not_single_quote
   - name: Attach template disk to SCSI controller
     command:
-      cmd: "pvesh create /nodes/{{ virt_host }}/qemu/{{ vm.vmid }}/config --scsi0 {{ tgt_storage }}:vm-{{ vm.vmid }}-disk-0"
-      # # nodes/pve5/qemu/103/config scsi0	"quad-ssd:103/vm-103-disk-0.raw"
+      cmd: "pvesh create /nodes/{{ virt_host }}/qemu/{{ vm.vmid }}/config --scsi0 {{ disk.stdout_lines | last | regex_search(tgt_storage + not_single_quote) }}"
     when: vm.changed
     delegate_to: "{{ virt_host }}"
   - name: Set disk as bootable
