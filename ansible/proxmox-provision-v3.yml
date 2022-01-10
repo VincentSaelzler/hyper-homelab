@@ -49,14 +49,6 @@
     when: vm.changed
     delegate_to: "{{ virt_host }}"
     register: disk
-  - debug:
-      # var: "disk.stdout_lines | last | regex_search(tgt_storage + '[^w]+')" #WORKS
-      var: "disk.stdout_lines | last | regex_search(tgt_storage + not_single_quote)" #WORKS
-      #var: "'Successfully imported disk as ''unused2:quad-ssd:103/vm-103-disk-3.raw''' | regex_search('(?<=Successfully imported disk as ).*')"
-      # msg: "that's fun. it\\'s great"
-      # msg: "a" + "b"
-      # var: "'[^'']+' | regex_escape()"
-      # var: not_single_quote
   - name: Attach template disk to SCSI controller
     command:
       cmd: "pvesh create /nodes/{{ virt_host }}/qemu/{{ vm.vmid }}/config --scsi0 {{ disk.stdout_lines | last | regex_search(tgt_storage + not_single_quote) }}"
@@ -66,4 +58,12 @@
     command:
       cmd: "qm set {{ vm.vmid }} --boot order=scsi0"
     when: vm.changed
+    delegate_to: "{{ virt_host }}"
+  # special case
+  - name: Add a secondary network device to dev vm
+    command:
+      cmd: "pvesh set /nodes/{{ virt_host }}/qemu/{{ vm.vmid }}/config --net1 virtio,bridge={{ secondary_bridge }}"
+    when:
+      - vm.changed
+      - inventory_hostname == "dotnet"
     delegate_to: "{{ virt_host }}"
