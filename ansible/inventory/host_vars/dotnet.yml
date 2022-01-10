@@ -3,3 +3,13 @@ id: 27
 vhd_size: 8589934592 # that's 8 GiB
 vcpus: 2
 ram: 4096
+# most VMs connect only to the DMZ (vmbr1)
+# this one is special because it has an IP on the management network
+# and ALSO has an IP on the DMZ network.
+# this allows it to act as an ansible host to run commands on both bare-metal servers
+# and also vms
+bridge: vmbr0
+gatweay: 192.168.128.1
+secondary_bridge: vmbr1
+secondary_gatweay: 192.168.129.1
+secondary_ip: 192.168.129.2

@@ -53,6 +53,7 @@ This is the main subnet, so hosts of certain types use different addresses.
 |32|(none)|Dell PowerEdge R620 iDRAC|
 |33|(none)|Dell PowerEdge R720xd iDRAC|
 |50|pbu0|Proxmox Backup Server|
+|60|dotnet|Dev Environment and Ansible Host for VMs|
 
 # DMZ
 ```

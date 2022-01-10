@@ -19,14 +19,14 @@
       cores: "{{ vcpus }}"
       cpu: "{{ cpu_type }}"
       net:
-        net0: "virtio,bridge={{ dmz_bridge }}"
+        net0: "virtio,bridge={{ bridge }}"
       ide:
         ide2: 'local:cloudinit,format=qcow2'
       # cloud-init
       sshkeys: "{{ pub_key }}"
       cipassword: "{{ root_pw }}"
       ipconfig:
-        ipconfig0: 'ip={{ ansible_host }}/24,gw={{ dmz_gw }}'
+        ipconfig0: 'ip={{ ansible_host }}/24,gw={{ gateway }}'
       # options
       name: "{{ inventory_hostname }}"
       proxmox_default_behavior: no_defaults
