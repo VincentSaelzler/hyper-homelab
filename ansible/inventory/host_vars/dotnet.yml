@@ -8,8 +8,9 @@ ram: 4096
 # and ALSO has an IP on the DMZ network.
 # this allows it to act as an ansible host to run commands on both bare-metal servers
 # and also vms
-bridge: vmbr0
-gatweay: 192.168.128.1
-secondary_bridge: vmbr1
-secondary_gatweay: 192.168.129.1
-secondary_ip: 192.168.129.2
+ethports:
+  net0: "virtio,bridge=vmbr0" # MGMT
+  net1: "virtio,bridge=vmbr1" # DMZ
+netconfig:
+  ipconfig0: "ip={{ ansible_host }}/24,gw=192.168.128.1" # MGMT
+  ipconfig1: "ip=192.168.129.2/24,gw=192.168.129.1" # DMZ

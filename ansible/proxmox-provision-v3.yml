@@ -6,15 +6,6 @@
   vars:
     virt_host_ip: "{{ hostvars[virt_host]['ansible_host'] }}"
     not_single_quote: "[^']+" # define here to avoid issues with single quote escapes 
-    mynet:
-      net0: "virtio,bridge=vmbr1"
-      net1: "virtio,bridge=vmbr0"
-      net2: "virtio,bridge=vmbr0"
-    netconfig:
-        ipconfig0: 'ip={{ ansible_host }}/24,gw={{ gateway }}'
-        ipconfig1: 'ip={{ ansible_host }}/24,gw=192.168.128.1'
-        ipconfig2: 'ip={{ ansible_host }}/24,gw={{ gateway }}'
-      
   tasks:
   - name: Create new VM
     proxmox_kvm:
@@ -27,7 +18,7 @@
       memory: "{{ ram }}"
       cores: "{{ vcpus }}"
       cpu: "{{ cpu_type }}"
-      net: "{{ mynet }}"
+      net: "{{ ethports }}"
       ide:
         ide2: 'local:cloudinit,format=qcow2'
       # cloud-init
@@ -66,11 +57,3 @@
       cmd: "qm set {{ vm.vmid }} --boot order=scsi0"
     when: vm.changed
     delegate_to: "{{ virt_host }}"
-  # # special case
-  # - name: Add a secondary network device to dev vm
-  #   command:
-  #     cmd: "pvesh set /nodes/{{ virt_host }}/qemu/{{ vm.vmid }}/config --net1 virtio,bridge={{ secondary_bridge }}"
-  #   when:
-  #     - vm.changed
-  #     - inventory_hostname == "dotnet"
-  #   delegate_to: "{{ virt_host }}"
