@@ -33,6 +33,13 @@ MODE=netclient
 # Testing Connectivity
 http://abakalidis.blogspot.com/2013/04/using-raspberry-pi-as-ups-server-with.html
 
+Seeing whether driver is connecting to UPS. Use pfSense web GUI.
+- Status > System Logs > General
+```
+Jan 11 19:14:53 	upsd 	58838 	Can't connect to UPS [old-smart-1500] (apcsmart-old-smart-1500): No such file or directory
+Jan 11 19:14:16 	upsmon 	35051 	Poll UPS [old-smart-1500] failed - Driver not connected 
+```
+
 Local test from pfSense.
 ```sh
 /usr/local/bin/upsc old-smart-1500@localhost ups.status
