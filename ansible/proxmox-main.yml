@@ -2,7 +2,7 @@
 - name: Network, apt repository, and UPS configuration
   hosts: proxmox_nodes
   roles:
-  - baremetal-bootstrap
+  - bootstrap
   - send_logs
   tasks:
   #network
