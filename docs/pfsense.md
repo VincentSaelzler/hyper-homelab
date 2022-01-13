@@ -42,4 +42,5 @@ Mostly defaults, but need to name the ups `old-smart-1500`.
 Mostly defaults. Set retention period to 30 days and don't compress logs.
 
 ## Restricting GUI Access in DMZ
-https://docs.netgate.com/pfsense/en/latest/recipes/example-basic-configuration.html
+Followed the pfSense cookbook for DMZ: [Setup isolating LAN and DMZ, each with unrestricted Internet access](https://docs.netgate.com/pfsense/en/latest/recipes/example-basic-configuration.html#setup-isolating-lan-and-dmz-each-with-unrestricted-internet-access)  
+Was more permissive for MGMT. Just stuck with the default allow LAN to ANY rule, and made a blocking exception to the DMZ network.

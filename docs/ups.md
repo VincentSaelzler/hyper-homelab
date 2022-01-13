@@ -180,3 +180,5 @@ case $1 in
 		;;
 esac
 ```
+# References:
+[Debugging Guide]([https://dan.langille.org/2020/09/10/nut-testing-the-shutdown-mechanism/)
