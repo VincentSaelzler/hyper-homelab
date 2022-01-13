@@ -1,4 +1,4 @@
 ---
 ansible_user: root
-dmz_bridge: vmbr1
 cluster_starter: pve4 #specific host is arbitrary
+dmz_cidr: "{{ secondary_ip }}/{{ netenv.dmz.mask }}"
