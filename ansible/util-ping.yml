@@ -7,7 +7,3 @@
   hosts: proxmox_nodes
   tasks:
   - ping:
-- name: Check whether Ansible is reachable in pfSense firewall
-  hosts: routers
-  tasks:
-  - ping:
