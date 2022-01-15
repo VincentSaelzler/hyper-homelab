@@ -67,7 +67,7 @@ APC command table version 3.1
 ```
 Explicitly pass awd arg as number plus sdtype arg as number. Different messages now. This time, we have something that says "got SM" though. **UPS successfully does a hibernate!**
 ```sh
-/usr/local/libexec/nut/apcsmart -a old-smart-1500 -k -DD -x awd=001 -x sdtype=1
+# /usr/local/libexec/nut/apcsmart -a old-smart-1500 -k -DD -x awd=001 -x sdtype=1
 Network UPS Tools - APC Smart protocol driver 3.1 (2.7.4)
 APC command table version 3.1
    0.000000	debug level is '2'
@@ -81,7 +81,42 @@ APC command table version 3.1
    0.601821	sdok: got "SM"
    0.601831	sdok: last shutdown cmd failed
 ```
-
+Explicitly pass awd arg as number. Put sdtype in the "arguments to driver" section of pfsense. Different messages now. This time, we have something that says "got SM" though.
+```sh
+# /usr/local/libexec/nut/apcsmart -a old-smart-1500 -k -DD -x awd=001 
+Network UPS Tools - APC Smart protocol driver 3.1 (2.7.4)
+APC command table version 3.1
+   0.000000	debug level is '2'
+   0.000216	Initiating UPS shutdown
+   0.011432	Communications with UPS lost: serial port read error: 1383(smartmode): Resource temporarily unavailable
+   1.070036	Communications with UPS re-established
+   1.070044	upsdrv_shutdown: setting SmartMode failed !
+   1.128379	Communications with UPS lost: serial port read error: 1639(upsdrv_shutdown): Resource temporarily unavailable
+   1.128384	upsdrv_shutdown: status read failed, assuming LB+OB
+   1.128393	upsdrv_shutdown_simple: currently: on battery, sdtype: 1
+   1.128398	sdcmd_S: issuing [S]
+   1.220198	Communications with UPS lost: serial port read error: 1415(sdok): Resource temporarily unavailable
+   1.220206	sdcmd_AT: issuing [@] with 6 minutes of additional wakeup delay
+   1.311559	Communications with UPS re-established
+   1.311565	issuing [@] with 3 digits failed
+```
+```sh
+# /usr/local/libexec/nut/apcsmart -a old-smart-1500 -DD
+   2.574911	Communications with UPS lost: serial port read error: 752(preread_data): Resource temporarily unavailable
+   2.641412	Communications with UPS re-established
+   5.823148	Communications with UPS lost: serial port read error: 799(update_status): Resource temporarily unavailable
+   5.823257	dstate_init: sock /var/db/nut/apcsmart-old-smart-1500 open on fd 5
+   5.823271	upsdrv_updateinfo: comm lost
+   7.647639	upsdrv_updateinfo: nudging ups with 'Y', iteration #10 ...
+   7.714141	Communications with UPS re-established
+  10.196297	Communications with UPS lost: serial port read error: 775(poll_data): Resource temporarily unavailable
+  10.254642	upsdrv_updateinfo: comm lost
+  10.987803	upsdrv_updateinfo: nudging ups with 'Y', iteration #10 ...
+  11.037558	Communications with UPS lost: serial port read error: 1383(smartmode): Resource temporarily unavailable
+  12.128927	Communications with UPS re-established
+  13.469954	Communications with UPS lost: serial port read error: 775(poll_data): Resource temporarily unavailable
+  16.294922	upsdrv_updateinfo: nudging ups with 'Y', iteration #11 ...
+```
 # Configuration Changes
 ## pfSense Changes:
 Added lines to some files. Kept everything that was already there in place.
