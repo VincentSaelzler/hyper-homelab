@@ -1,4 +1,87 @@
 
+# Debugging
+```sh
+upsdrvctl -t shutdown
+# some output, then the commands that WOULD run
+0.000077	Shutdown UPS: old-smart-1500
+0.000082	exec:  /usr/local/libexec/nut/apcsmart -a old-smart-1500 -k
+```
+The UPS doesn't actually shut down when this is done. Probably doesn't pick up the config from `/usr/local/etc/nut/ups.conf`
+```sh
+# /usr/local/libexec/nut/apcsmart -a old-smart-1500 -k -DD
+Network UPS Tools - APC Smart protocol driver 3.1 (2.7.4)
+APC command table version 3.1
+   0.000000	debug level is '2'
+   0.000216	Initiating UPS shutdown
+   0.043851	Communications with UPS lost: serial port read error: 1383(smartmode): Resource temporarily unavailable
+   1.160389	Communications with UPS re-established
+   1.160398	upsdrv_shutdown: setting SmartMode failed !
+   1.218726	Communications with UPS lost: serial port read error: 1639(upsdrv_shutdown): Resource temporarily unavailable
+   1.218731	upsdrv_shutdown: status read failed, assuming LB+OB
+   1.218741	upsdrv_shutdown_simple: currently: on battery, sdtype: 5
+   1.218747	sdcmd_AT: issuing [@] with 6 minutes of additional wakeup delay
+   1.310514	Communications with UPS lost: serial port read error: 608(apc_write_long_i): Resource temporarily unavailable
+   1.310519	issuing [@] with 3 digits failed
+```
+Clear extra config from `/usr/local/etc/nut/ups.conf`. The UPS still doesn't shut down, but the error message is slightly different.
+```sh
+# /usr/local/libexec/nut/apcsmart -a old-smart-1500 -k -DD
+Network UPS Tools - APC Smart protocol driver 3.1 (2.7.4)
+APC command table version 3.1
+   0.000000	debug level is '2'
+   0.000212	Initiating UPS shutdown
+   0.112304	upsdrv_shutdown: status read failed, assuming LB+OB
+   0.112312	upsdrv_shutdown_simple: currently: on battery, sdtype: 0
+   0.112317	sdcmd_S: issuing [S]
+   0.170649	sdok: got "NA"
+   0.170653	sdok: last shutdown cmd failed
+
+```
+Explicitly pass awd arg as string. The UPS still doesn't shut down, same error message as without passing arg.
+```sh
+# /usr/local/libexec/nut/apcsmart -a old-smart-1500 -k -DD -x awd="001"
+Network UPS Tools - APC Smart protocol driver 3.1 (2.7.4)
+APC command table version 3.1
+   0.000000	debug level is '2'
+   0.000212	Initiating UPS shutdown
+   0.112304	upsdrv_shutdown: status read failed, assuming LB+OB
+   0.112312	upsdrv_shutdown_simple: currently: on battery, sdtype: 0
+   0.112317	sdcmd_S: issuing [S]
+   0.170649	sdok: got "NA"
+   0.170653	sdok: last shutdown cmd failed
+```
+Explicitly pass awd arg as number. The UPS still doesn't shut down, no error message.
+```sh
+# /usr/local/libexec/nut/apcsmart -a old-smart-1500 -k -DD -x awd=001
+Network UPS Tools - APC Smart protocol driver 3.1 (2.7.4)
+APC command table version 3.1
+   0.000000	debug level is '2'
+   0.000217	Initiating UPS shutdown
+   0.009487	Communications with UPS lost: serial port read error: 1383(smartmode): Resource temporarily unavailable
+   1.067286	Communications with UPS re-established
+   1.067293	upsdrv_shutdown: setting SmartMode failed !
+   1.125632	Communications with UPS lost: serial port read error: 1639(upsdrv_shutdown): Resource temporarily unavailable
+   1.125639	upsdrv_shutdown: status read failed, assuming LB+OB
+   1.125644	upsdrv_shutdown_simple: currently: on battery, sdtype: 0
+   1.125649	sdcmd_S: issuing [S]
+```
+Explicitly pass awd arg as number plus sdtype arg as number. Different messages now. This time, we have something that says "got SM" though. **UPS successfully does a hibernate!**
+```sh
+/usr/local/libexec/nut/apcsmart -a old-smart-1500 -k -DD -x awd=001 -x sdtype=1
+Network UPS Tools - APC Smart protocol driver 3.1 (2.7.4)
+APC command table version 3.1
+   0.000000	debug level is '2'
+   0.000216	Initiating UPS shutdown
+   0.110206	upsdrv_shutdown: status read failed, assuming LB+OB
+   0.110216	upsdrv_shutdown_simple: currently: on battery, sdtype: 1
+   0.110221	sdcmd_S: issuing [S]
+   0.168550	sdok: got "NA"
+   0.168554	sdok: last shutdown cmd failed
+   0.168557	sdcmd_AT: issuing [@] with 6 minutes of additional wakeup delay
+   0.601821	sdok: got "SM"
+   0.601831	sdok: last shutdown cmd failed
+```
+
 # Configuration Changes
 ## pfSense Changes:
 Added lines to some files. Kept everything that was already there in place.
@@ -13,6 +96,14 @@ LISTEN 192.168.128.1
 [upsmon_remote]
 password  = remote_pass
 upsmon slave
+```
+```sh
+# /usr/local/etc/nut/ups.conf
+[old-smart-1500]
+driver=apcsmart
+port=/dev/cuau1
+sdtype=5
+awd=001
 ```
 
 ## Proxmox Changes
