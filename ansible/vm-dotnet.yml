@@ -8,6 +8,7 @@
     - add-user
     - ubuntu-gui
     - vs-code
+    - private-key
   tasks:
   - name: Install extensions to VS Code #assumes user is already configured
     become_user: "{{ usr_name }}" # vscode threw errors if trying to do this with the ubuntu/root user

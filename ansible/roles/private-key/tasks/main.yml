@@ -1,0 +1,19 @@
+---
+  - name: Create the container ssh config (mode based on what ssh-keygen auto-generated)
+    become_user: "{{ usr_name }}"
+    file:
+      path: "~/.ssh/"
+      state: directory
+      mode: "700"
+  - name:  copy encrypted private key file to VM
+    become_user: "{{ usr_name }}"
+    copy:
+      src: vault/id_rsa
+      dest: "~/.ssh/"
+      mode: "600"
+  - name:  copy plaintext public key file to VM
+    become_user: "{{ usr_name }}"
+    copy:
+      src: id_rsa.pub
+      dest: "~/.ssh/"
+      mode: "644"
