@@ -9,6 +9,8 @@
     pkg:
       - tasksel
       - ubuntu-desktop-minimal
+      - spice-vdagent
+      - qemu-guest-agent
   notify:
   - restart
 
