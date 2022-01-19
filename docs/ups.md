@@ -100,6 +100,7 @@ APC command table version 3.1
    1.311559	Communications with UPS re-established
    1.311565	issuing [@] with 3 digits failed
 ```
+It looks like there are problems with the serial cable.
 ```sh
 # /usr/local/libexec/nut/apcsmart -a old-smart-1500 -DD
    2.574911	Communications with UPS lost: serial port read error: 752(preread_data): Resource temporarily unavailable
@@ -117,6 +118,92 @@ APC command table version 3.1
   13.469954	Communications with UPS lost: serial port read error: 775(poll_data): Resource temporarily unavailable
   16.294922	upsdrv_updateinfo: nudging ups with 'Y', iteration #11 ...
 ```
+Added both of the paramters to the config file. Even though it repeately said that it failed, and i never saw the "got SM" string again, the UPS did turn off! Also, it respected the arg in the config gile (put awd=002 and there are messages about 12 min delay)
+```sh
+/usr/local/libexec/nut/apcsmart -a old-smart-1500 -k -DD
+   0.000219	Initiating UPS shutdown
+   0.158018	Communications with UPS lost: serial port read error: 1394(smartmode): Resource temporarily unavailable
+   0.158024	upsdrv_shutdown: setting SmartMode failed !
+   0.216357	Communications with UPS re-established
+   0.216361	upsdrv_shutdown: status read failed, assuming LB+OB
+   0.216368	upsdrv_shutdown_simple: currently: on battery, sdtype: 1
+   0.216373	sdcmd_S: issuing [S]
+   0.274713	sdok: got "NA"
+   0.274718	sdok: last shutdown cmd failed
+   0.274724	sdcmd_AT: issuing [@] with 12 minutes of additional wakeup delay
+   0.333049	issuing [@] with 3 digits failed
+```
+It looks like the key was stopping the service in pfSense GUI! After stopping the UPS service in the pfSense GUI, communication errors go away, and the shutdown messages look normal.
+```sh
+# /usr/local/libexec/nut/apcsmart -a old-smart-1500 -DD
+   5.735983	update_status: [Q]
+   5.794230	update_info: starting scan (all vars)
+   5.794234	poll_data: ups.temperature [C]
+   5.886016	poll_data: ups.load [P]
+   5.977404	poll_data: ups.test.interval [E]
+   6.044323	poll_data: ups.test.result [X]
+   6.102670	poll_data: ups.delay.start [r]
+   6.169151	poll_data: ups.delay.shutdown [p]
+   6.236073	poll_data: ups.id [c]
+   6.344175	poll_data: input.voltage [L]
+   6.435995	poll_data: input.frequency [F]
+   6.527775	poll_data: input.sensitivity [s]
+   6.577553	poll_data: input.quality [9]
+   6.635874	poll_data: input.transfer.low [l]
+   6.702802	poll_data: input.transfer.high [u]
+   6.769310	poll_data: input.transfer.reason [G]
+   6.819487	poll_data: input.voltage.maximum [M]
+   6.911278	poll_data: input.voltage.minimum [N]
+   7.002668	poll_data: output.voltage [O]
+   7.094481	poll_data: output.voltage.nominal [o]
+   7.161368	poll_data: battery.date [x]
+   7.269467	poll_data: battery.charge [f]
+   7.361290	poll_data: battery.charge.restart [e]
+   7.419624	poll_data: battery.voltage [B]
+   7.511411	poll_data: battery.voltage.nominal [g]
+   7.577915	poll_data: battery.runtime [j]
+   7.669728	poll_data: battery.runtime.low [q]
+   7.728063	poll_data: battery.packs [>]
+   7.803129	poll_data: battery.alarm.threshold [k]
+   7.852886	poll_data: ups.serial [n]
+   7.994968	poll_data: ups.mfr.date [m]
+   8.102980	poll_data: ups.model [0x01]
+   8.286570	poll_data: ups.firmware [b]
+   8.386536	update_info: scan completed
+   8.386677	dstate_init: sock /var/db/nut/apcsmart-old-smart-1500 open on fd 5
+```
+```sh
+# /usr/local/libexec/nut/apcsmart -a old-smart-1500 -k -DD
+Network UPS Tools - APC Smart protocol driver 3.1 (2.7.4)
+APC command table version 3.1
+   0.000000	debug level is '2'
+   0.000249	Initiating UPS shutdown
+   0.111119	upsdrv_shutdown: status read failed, assuming LB+OB
+   0.111127	upsdrv_shutdown_simple: currently: on battery, sdtype: 1
+   0.111131	sdcmd_S: issuing [S]
+   0.169447	sdok: got "NA"
+   0.169450	sdok: last shutdown cmd failed
+   0.169454	sdcmd_AT: issuing [@] with 6 minutes of additional wakeup delay
+   0.545219	sdok: got "OK"
+   0.545224	sdok: last shutdown cmd succeded
+```
+Additionally, the `upsdrvctl` command works
+```sh
+# upsdrvctl shutdown
+Network UPS Tools - UPS driver controller 2.7.4
+Network UPS Tools - APC Smart protocol driver 3.1 (2.7.4)
+APC command table version 3.1
+Initiating UPS shutdown
+upsdrv_shutdown: status read failed, assuming LB+OB
+```
+Testing shutdown with `upsmon`. It does NOT work! Systems go down but UPS doesn't shut off.
+```sh
+# upsmon -c fsd -DD
+Executing automatic power-fail shutdown                                        
+Auto logout and shutdown proceeding                                            
+System going down IMMEDIATELY                                                  
+NUT killing power...                                                           
+```
 # Configuration Changes
 ## pfSense Changes:
 Added lines to some files. Kept everything that was already there in place.
@@ -132,6 +219,7 @@ LISTEN 192.168.128.1
 password  = remote_pass
 upsmon slave
 ```
+*Additional configuration lines for upsd.conf*
 ```sh
 # /usr/local/etc/nut/ups.conf
 [old-smart-1500]
