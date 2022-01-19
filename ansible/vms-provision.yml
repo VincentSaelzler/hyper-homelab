@@ -24,7 +24,9 @@
         ide2: 'local:cloudinit,format=qcow2'
       # cloud-init
       sshkeys: "{{ pub_key }}"
-      cipassword: "{{ root_pw }}"
+      # avoid as long as sshkeys are working
+      # this gets saved in plaintext on the target system
+      # cipassword: "{{ root_pw }}"
       ipconfig: "{{ netconfig }}"
       # options
       name: "{{ inventory_hostname }}"
@@ -54,11 +56,24 @@
     delegate_to: "{{ virt_host }}"
   - name: Resize template disk
     command:
-      cmd: "qm resize {{ vm.vmid }} scsi0 +8G"
-    when: vm.changed
+      cmd: "qm resize {{ vm.vmid }} scsi0 +{{ addtl_space }}"
+    when:
+    - vm.changed
+    - addtl_space is defined
     delegate_to: "{{ virt_host }}"
   - name: Set disk as bootable
     command:
       cmd: "qm set {{ vm.vmid }} --boot order=scsi0"
     when: vm.changed
     delegate_to: "{{ virt_host }}"
+  - name: Start VM
+    proxmox_kvm:
+      # api connectivity
+      api_user: "{{ api_user }}"
+      api_password: "{{ root_pw }}"
+      api_host: "{{ virt_host_ip }}"
+      node: "{{ virt_host }}"
+      # options
+      name: "{{ inventory_hostname }}"
+      state: started
+    delegate_to: localhost

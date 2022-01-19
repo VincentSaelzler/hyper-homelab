@@ -1,7 +1,6 @@
 ---
-id: 27
-vhd_size: 8589934592 # that's 8 GiB
-vcpus: 2
+addtl_space: 8G
+vcpus: 8
 ram: 4096
 
 # This VM is special because it has an

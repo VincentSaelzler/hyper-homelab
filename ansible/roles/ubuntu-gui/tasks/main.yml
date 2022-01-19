@@ -13,5 +13,3 @@
       - qemu-guest-agent
   notify:
   - restart
-
-
