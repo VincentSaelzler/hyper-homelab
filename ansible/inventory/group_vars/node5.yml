@@ -1,0 +1,3 @@
+---
+virt_host: pve5
+tgt_storage: "quad-ssd"

@@ -9,14 +9,7 @@
     pkg:
       - tasksel
       - ubuntu-desktop-minimal
-      - xrdp
-  register: apt_result
-- name: Implement fix for xrdp bug regarding "color management device"
-  copy:
-    src: 45-allow-colord.pkla # http://c-nergy.be/blog/?p=12043
-    dest: /etc/polkit-1/localauthority/50-local.d/
-  register: copy_result
-- name: Restart system to apply GUI config changes and/or if packages installed or upgraded
-  reboot:
-  when: apt_result['changed'] or copy_result['changed']
-      
+      - spice-vdagent
+      - qemu-guest-agent
+  notify:
+  - restart

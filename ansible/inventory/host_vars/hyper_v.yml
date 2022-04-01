@@ -1,7 +1,0 @@
----
-# assumptions about the host storage
-vhd_dir: "/mnt/d/VMs/" # for linux things
-vhd_dir_windows: 'D:\VMs\' # for PowerShell scripts
-
-# assumptions about the hyper-v applicaton
-switch_name: TheOutside # must create this as a bridge network ahead of time

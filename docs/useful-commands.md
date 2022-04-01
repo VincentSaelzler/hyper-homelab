@@ -12,28 +12,10 @@ source ~/.bashrc
 # Starting from "Ground Zero" (and Going Back)
 Run all Ansible commands from the `ansible` directory: `~/hyper-homelab/ansible/`
 
-## Create VMs
-To create the VMs, need to run Ubuntu (WSL) **as Administrator**. 
-```sh
-vvans provision.yml
-```
-
- ## Configure VMs
- These commands are all **idempotent**!
- ```sh
- # these will fully set up the hosts
-vvans dotnet.yml
-vvans bitcoin.yml
-# for experimentation purposses, the hosts can be stopped at a partial configuration state
-vvans base-os.yml
-vvans gui.yml
-```
-
 ## Delete VMs
-Need to use PowerShell as Administrator
-```ps1
-D:\VMs\27-destroy.ps1
-D:\VMs\28-destroy.ps1
+```
+pvesh create /nodes/pve4/qemu/102/status/stop
+pvesh delete /nodes/pve4/qemu/102 --destroy-unreferenced-disks 1 --purge 1
 ```
 
 ## Bitcoin

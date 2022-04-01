@@ -1,8 +1,0 @@
----
-- action: ping
-- name: Show Inventory Hostname
-  debug:
-    var: inventory_hostname
-- name: Show Remote Hostname
-  debug:
-    var: ansible_hostname

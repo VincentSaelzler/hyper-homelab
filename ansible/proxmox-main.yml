@@ -2,20 +2,20 @@
 - name: Network, apt repository, and UPS configuration
   hosts: proxmox_nodes
   roles:
-  - baremetal-bootstrap
+  - bootstrap
   - send_logs
   tasks:
   #network
   - name: Check whether DMZ bridge configuration already exists.
     lineinfile:
       path: /etc/network/interfaces
-      line: iface vmbr1 inet static
+      line: "iface {{ netenv.dmz.vbridge }} inet static"
       state: present
     check_mode: yes # do not add the line - just check whether it WOULD be added
     register: presence
   - name: Create DMZ bridge network (for VMs)
     command:
-      cmd: "pvesh create /nodes/{{ inventory_hostname }}/network --iface {{ dmz_bridge }} --type bridge --autostart true --cidr {{ dmz_cidr }} --bridge_ports {{ dmz_iface }}"
+      cmd: "pvesh create /nodes/{{ inventory_hostname }}/network --iface {{ netenv.dmz.vbridge }} --type bridge --autostart true --cidr {{ dmz_cidr }} --bridge_ports {{ dmz_iface }}"
       #cmd: echo hi
     when:
     - presence.changed # this will NOT run an update - only adds the bridge config if it does not exist.
@@ -73,7 +73,9 @@
       pkg: python3-pip
   - name: Install required python packages
     pip:
-      name: pexpect
+      name:
+      - pexpect
+      #- proxmoxer
   - name: Create the Cluster
     command:
       cmd: pvecm create cluster0

@@ -1,5 +1,4 @@
 ---
-dmz_cidr: 192.168.129.4/24
 dmz_iface: enp3s0
 lvm_drives:
   - /dev/sda

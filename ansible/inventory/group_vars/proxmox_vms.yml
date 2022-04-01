@@ -1,0 +1,9 @@
+---
+api_user: root@pam
+tgt_storage: "local-lvm"
+cpu_type: host
+
+ethports:
+  net0: "virtio,bridge={{ netenv.dmz.vbridge }}"
+netconfig:
+  ipconfig0: "ip={{ ansible_host }}/{{ netenv.dmz.mask }},gw={{ netenv.dmz.gw }}"

@@ -8,6 +8,7 @@
     - add-user
     - ubuntu-gui
     - vs-code
+    - private-key
   tasks:
   - name: Install extensions to VS Code #assumes user is already configured
     become_user: "{{ usr_name }}" # vscode threw errors if trying to do this with the ubuntu/root user
@@ -16,3 +17,9 @@
         code --install-extension ms-dotnettools.csharp
         code --install-extension ionide.ionide-fsharp
       #cmd: whoami
+  - name:  copy encrypted private ansible PW file to VM
+    become_user: "{{ usr_name }}"
+    copy:
+      src: vault/vault_pw.txt
+      dest: "~/.ansible/"
+      mode: "664"

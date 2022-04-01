@@ -1,4 +1,5 @@
 ---
 id: 28
 vhd_size: 549755813888 # that's 512 GiB
-vcpus: 6
+vcpus: 2
+ram: 4096

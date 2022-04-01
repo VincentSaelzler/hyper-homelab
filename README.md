@@ -61,6 +61,5 @@ cp ~/.ssh/id_rsa /mnt/c/Users/[username]/.ssh/
 
 
 # Resources
-https://github.com/geerlingguy/ansible-for-devops
-
+https://github.com/geerlingguy/ansible-for-devops  
 https://www.ansiblefordevops.com/

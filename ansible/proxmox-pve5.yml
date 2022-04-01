@@ -90,7 +90,7 @@
       src: "{{ mdev_name }}"
       fstype: ext4
       state: mounted
-      passno: 2
+      passno: "2"
 
   # Configure storage in Proxmox storage manager
   - name: Check whether storage configuration already exists.
