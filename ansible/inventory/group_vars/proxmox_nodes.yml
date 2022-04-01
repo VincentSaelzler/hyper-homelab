@@ -2,3 +2,8 @@
 ansible_user: root
 cluster_starter: pve4 #specific host is arbitrary
 dmz_cidr: "{{ secondary_ip }}/{{ netenv.dmz.mask }}"
+lvm_nodes: 
+  - pve2
+  - pve3
+  - pve4
+  #- pve5 #this node uses BTRFS raid for the OS 

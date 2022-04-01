@@ -102,7 +102,7 @@
     register: presence
   - name: Add entry to storage file
     command:
-      cmd: "pvesh create /storage --storage=quad-ssd --type=dir --path=/mnt/swraid"
+      cmd: "pvesh create /storage --storage=quad-ssd --type=dir --path=/mnt/swraid --nodes={{ inventory_hostname }}"
       #cmd: echo hi
     when: presence.changed # this will NOT run an update - only adds the storage config if it does not exist.
 

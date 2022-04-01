@@ -81,6 +81,14 @@
       cmd: pvecm create cluster0
       creates: /etc/pve/corosync.conf
     when: ansible_hostname == cluster_starter
+  - name: Configure default Proxmox-created LVM thin storage for VMs
+    # this will show as changed every time. that's because determining when a change has actually happened is difficult
+    # the /etc/pve/storage.cfg file puts the node names in random order, so using grep to confirm which nodes are in the lvm-thin
+    # config is tricky. there is no harm in re-specifying the nodes each time, because the "set" command is an update/put (as opposed to create)
+    # there seems to be no issue setting all node names, even if they are currently not part of the cluster
+    command: 
+      cmd: "pvesh set /storage/local-lvm --nodes={{ lvm_nodes | join(',') }}"
+    when: ansible_hostname == cluster_starter
 - name: Join the cluster one node at a time
   hosts: proxmox_nodes
   serial: 1
