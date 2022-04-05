@@ -27,12 +27,18 @@
     apt_repository:
       repo: 'ppa:ansible/ansible'
       state: present
-  - name: Install Ansible
+  - name: Install apt packages
     apt:
       state: present
       update_cache: yes # important
       pkg:
         - ansible
+        - python3-pip
+  - name: Install python packages
+    pip:
+      name:
+      - pexpect
+      - proxmoxer
   - name: Add alias to run ansible playbook
     lineinfile:
       path: "/home/{{ usr_name }}/.bashrc"
