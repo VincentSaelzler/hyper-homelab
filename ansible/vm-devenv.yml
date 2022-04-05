@@ -23,3 +23,18 @@
       src: vault/vault_pw.txt
       dest: "~/.ansible/"
       mode: "664"
+  - name: Configure Ansible PPA
+    apt_repository:
+      repo: 'ppa:ansible/ansible'
+      state: present
+  - name: Install Ansible
+    apt:
+      state: present
+      update_cache: yes # important
+      pkg:
+        - ansible
+  - name: Add alias to run ansible playbook
+    lineinfile:
+      path: "/home/{{ usr_name }}/.bashrc"
+      line: 'alias vvans="ansible-playbook -i inventory/hosts.yml --vault-password-file ~/.ansible/vault_pw.txt"'
+      state: present
