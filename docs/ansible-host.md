@@ -5,6 +5,12 @@ Everything that needs to be done to have development environment that runs the A
 ## Ansible Development and Running
 - Visual Studio Code
 - Ansible
+  - Version 2.9 does not have a recent enough version of the `proxmox_kvm` module.
+  - Install using the PPA method according to [Ansible Docs](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html?msclkid=0cfdb7b5b48311ec8206fab5f0405a81#installing-ansible-on-ubuntu)
+  - This installs version 5.x
+  - To confirm whether the module is installed, use `ansible-galaxy collection list` and/or `ansible-galaxy collection install community.general`
+- Virt-Viewer
+  - Works well in Linux, but Windows might not have clipboard.
 ## iDRAC
 Java, and "Iced Tea"
 
@@ -13,7 +19,7 @@ Secrets like the `root` password are all encrypted using `ansible vault`.
 
 The password for that needs to be saved in the user that's running Ansible's home directory.
 ```sh
-echo 'u3pV6qM3UKDwkGrUq9qjkv3XDNwKu2hQ' > ~/.ansible/vault_pw.txt
+echo 'SamplePassword' > ~/.ansible/vault_pw.txt
 ```
 
 - ssh keys
