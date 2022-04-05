@@ -1,6 +1,6 @@
 ---
-- name: Install the dotnet dev environment
-  hosts: dotnet
+- name: Install the VS Code dev environment
+  hosts: devenv
   become: yes
   roles:
     - full-upgrade
