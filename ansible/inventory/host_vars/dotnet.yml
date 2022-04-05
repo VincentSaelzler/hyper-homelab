@@ -1,6 +1,6 @@
 ---
 addtl_space: 8G
-vcpus: 8
+vcpus: 4
 ram: 4096
 
 # This VM is special because it has an

@@ -21,7 +21,7 @@
       net: "{{ ethports }}"
       vga: qxl
       ide:
-        ide2: 'local:cloudinit,format=qcow2'
+        ide2: 'local-lvm:cloudinit,format=raw'
       # cloud-init
       sshkeys: "{{ pub_key }}"
       # avoid as long as sshkeys are working
