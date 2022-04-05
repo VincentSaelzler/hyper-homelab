@@ -10,7 +10,7 @@ Everything that needs to be done to have development environment that runs the A
   - This installs version 5.x
   - To confirm whether the module is installed, use `ansible-galaxy collection list` and/or `ansible-galaxy collection install community.general`
 - Virt-Viewer
-  - Works well in Linux, but Windows might not have clipboard.
+- `pip` and Proxmoxer
 ## iDRAC
 Java, and "Iced Tea"
 
