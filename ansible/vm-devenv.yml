@@ -1,6 +1,6 @@
 ---
-- name: Install the dotnet dev environment
-  hosts: dotnet
+- name: Install the VS Code dev environment
+  hosts: devenv
   become: yes
   roles:
     - full-upgrade
@@ -23,3 +23,24 @@
       src: vault/vault_pw.txt
       dest: "~/.ansible/"
       mode: "664"
+  - name: Configure Ansible PPA
+    apt_repository:
+      repo: 'ppa:ansible/ansible'
+      state: present
+  - name: Install apt packages
+    apt:
+      state: present
+      update_cache: yes # important
+      pkg:
+        - ansible
+        - python3-pip
+  - name: Install python packages
+    pip:
+      name:
+      - pexpect
+      - proxmoxer
+  - name: Add alias to run ansible playbook
+    lineinfile:
+      path: "/home/{{ usr_name }}/.bashrc"
+      line: 'alias vvans="ansible-playbook -i inventory/hosts.yml --vault-password-file ~/.ansible/vault_pw.txt"'
+      state: present

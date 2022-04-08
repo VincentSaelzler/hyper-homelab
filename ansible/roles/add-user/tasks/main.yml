@@ -21,3 +21,8 @@
   git_config:
     name: user.email
     value: "{{ usr_email }}"
+- name: Add alias show git log
+  lineinfile:
+    path: "/home/{{ usr_name }}/.bashrc"
+    line: 'alias vvlog="git log --all --oneline --graph"'
+    state: present

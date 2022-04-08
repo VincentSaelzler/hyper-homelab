@@ -21,13 +21,14 @@
       net: "{{ ethports }}"
       vga: qxl
       ide:
-        ide2: 'local:cloudinit,format=qcow2'
+        ide2: "{{ tgt_storage }}:cloudinit,format=raw"
       # cloud-init
       sshkeys: "{{ pub_key }}"
       # avoid as long as sshkeys are working
       # this gets saved in plaintext on the target system
       # cipassword: "{{ root_pw }}"
       ipconfig: "{{ netconfig }}"
+      nameservers: "{{ dns_srv }}"
       # options
       name: "{{ inventory_hostname }}"
       proxmox_default_behavior: no_defaults

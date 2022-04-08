@@ -106,7 +106,7 @@
     when: ansible_hostname != cluster_starter
 
 # host-specific stuff (disk partitioning and LVM/RAID)
-- import_playbook: proxmox-pve2.yml
-- import_playbook: proxmox-pve3.yml
+#- import_playbook: proxmox-pve2.yml
+#- import_playbook: proxmox-pve3.yml
 - import_playbook: proxmox-pve4.yml
 - import_playbook: proxmox-pve5.yml
