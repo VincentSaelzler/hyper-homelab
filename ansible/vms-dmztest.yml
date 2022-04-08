@@ -1,6 +1,6 @@
 ---
 - name: Bootstrap VMs
-  hosts: service1,service2
+  hosts: service1,service2,proxy
   become: yes
   roles:
     - personalize

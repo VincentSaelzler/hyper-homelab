@@ -1,6 +1,5 @@
 ---
 api_user: root@pam
-tgt_storage: "local-lvm"
 cpu_type: host
 
 ethports:

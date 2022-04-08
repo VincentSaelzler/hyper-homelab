@@ -1,10 +1,4 @@
 ---
 addtl_space: 8G
-vcpus: 1
+vcpus: 2
 ram: 2048
-
-#override the defaults
-# ethports:
-#   net0: "virtio,bridge=vmbr0"
-# netconfig:
-#   ipconfig0: "ip=192.168.128.27/24,gw=192.168.128.1"

@@ -1,18 +1,4 @@
 ---
 addtl_space: 8G
-vcpus: 1
-ram: 2048
-
-#override the defaults
-# ethports:
-#   net0: "virtio,bridge=vmbr0"
-# netconfig:
-#   ipconfig0: "ip=192.168.128.27/24,gw=192.168.128.1"
-
-ethports:
-  net0: "virtio,bridge={{ netenv.mgmt.vbridge }}"
-netconfig:
-  ipconfig0: "ip={{ ansible_host }}/{{ netenv.mgmt.mask }},gw={{ netenv.mgmt.gw }}"
-
-
-user_pw: testpass
+vcpus: 4
+ram: 8192
