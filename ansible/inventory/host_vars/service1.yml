@@ -8,3 +8,12 @@ ram: 2048
 #   net0: "virtio,bridge=vmbr0"
 # netconfig:
 #   ipconfig0: "ip=192.168.128.27/24,gw=192.168.128.1"
+
+#defined in group_vars/all/vars.yml
+#check with systemd-resolve --status
+ethports:
+  net0: "virtio,bridge={{ netenv.dmz.vbridge }}"
+netconfig:
+  ipconfig0: "ip={{ ansible_host }}/{{ netenv.dmz.mask }},gw={{ netenv.dmz.gw }}"
+
+user_pw: testpass
