@@ -5,11 +5,13 @@ netenv:
     cidr: 192.168.128.0/24
     mask: 24
     gw: 192.168.128.1
+    dns: 192.168.128.1
     vbridge: vmbr0
   dmz:
     cidr: 192.168.129.0/24
     mask: 24
     gw: 192.168.129.1
+    dns: 192.168.129.1
     vbridge: vmbr1
 
 # rsyslog and nut server (pfSense)

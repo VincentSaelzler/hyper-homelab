@@ -28,9 +28,7 @@
       # this gets saved in plaintext on the target system
       # cipassword: "{{ root_pw }}"
       ipconfig: "{{ netconfig }}"
-      ## PARAMATERIZE THIS - FOR TESTING IT IS FINE BUT NOT ALL VMS WILL USE THIS ONE
-      nameservers:
-        - '192.168.129.1'
+      nameservers: "{{ dns_srv }}"
       # options
       name: "{{ inventory_hostname }}"
       proxmox_default_behavior: no_defaults
