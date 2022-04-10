@@ -1,0 +1,83 @@
+---
+- name: Create VMs if they don't already exist
+  hosts: proxmox_cts
+  serial: 1
+  gather_facts: no # this will fail if the VMs don't exist yet
+  vars:
+    #virt_host_ip: "{{ hostvars[virt_host]['ansible_host'] }}"
+    #not_single_quote: "[^']+" # define here to avoid issues with single quote escapes 
+  tasks:
+  - name: show variables
+    debug:
+      msg: hello there
+  # - name: Create new VM
+  #   proxmox_kvm:
+  #     # api connectivity
+  #     api_user: "{{ api_user }}"
+  #     api_password: "{{ root_pw }}"
+  #     api_host: "{{ virt_host_ip }}"
+  #     node: "{{ virt_host }}"
+  #     # hardware
+  #     memory: "{{ ram }}"
+  #     cores: "{{ vcpus }}"
+  #     cpu: "{{ cpu_type }}"
+  #     net: "{{ ethports }}"
+  #     vga: qxl
+  #     ide:
+  #       ide2: "{{ tgt_storage }}:cloudinit,format=raw"
+  #     # cloud-init
+  #     sshkeys: "{{ pub_key }}"
+  #     # avoid as long as sshkeys are working
+  #     # this gets saved in plaintext on the target system
+  #     # cipassword: "{{ root_pw }}"
+  #     ipconfig: "{{ netconfig }}"
+  #     nameservers: "{{ dns_srv }}"
+  #     # options
+  #     name: "{{ inventory_hostname }}"
+  #     proxmox_default_behavior: no_defaults
+  #     scsihw: virtio-scsi-pci # SUPER IMPORTANT!
+  #     ostype: l26
+  #     onboot: yes
+  #     agent: yes
+  #   delegate_to: localhost
+  #   register: vm
+  # - name: Download cloud image # does not appear to re-download if client recently accessed (HTTP 304 Not Modified)
+  #   get_url:
+  #     url: "{{ img_url }}{{ img_file }}"
+  #     dest: "~/{{ img_file }}"
+  #   when: vm.changed
+  #   delegate_to: "{{ virt_host }}"
+  # - name: Import template disk
+  #   command:
+  #     cmd: "qm importdisk {{ vm.vmid }} ~/{{ img_file }} {{ tgt_storage }}"
+  #   when: vm.changed
+  #   delegate_to: "{{ virt_host }}"
+  #   register: disk
+  # - name: Attach template disk to SCSI controller
+  #   command:
+  #     cmd: "pvesh create /nodes/{{ virt_host }}/qemu/{{ vm.vmid }}/config --scsi0 {{ disk.stdout_lines | last | regex_search(tgt_storage + not_single_quote) }}"
+  #   when: vm.changed
+  #   delegate_to: "{{ virt_host }}"
+  # - name: Resize template disk
+  #   command:
+  #     cmd: "qm resize {{ vm.vmid }} scsi0 +{{ addtl_space }}"
+  #   when:
+  #   - vm.changed
+  #   - addtl_space is defined
+  #   delegate_to: "{{ virt_host }}"
+  # - name: Set disk as bootable
+  #   command:
+  #     cmd: "qm set {{ vm.vmid }} --boot order=scsi0"
+  #   when: vm.changed
+  #   delegate_to: "{{ virt_host }}"
+  # - name: Start VM
+  #   proxmox_kvm:
+  #     # api connectivity
+  #     api_user: "{{ api_user }}"
+  #     api_password: "{{ root_pw }}"
+  #     api_host: "{{ virt_host_ip }}"
+  #     node: "{{ virt_host }}"
+  #     # options
+  #     name: "{{ inventory_hostname }}"
+  #     state: started
+  #   delegate_to: localhost
