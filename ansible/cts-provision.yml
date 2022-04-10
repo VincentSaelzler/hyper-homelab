@@ -4,19 +4,31 @@
   serial: 1
   gather_facts: no # this will fail if the VMs don't exist yet
   vars:
-    #virt_host_ip: "{{ hostvars[virt_host]['ansible_host'] }}"
+    virt_host_ip: "{{ hostvars[virt_host]['ansible_host'] }}"
     #not_single_quote: "[^']+" # define here to avoid issues with single quote escapes 
   tasks:
+
+  - name: Check for latest OS template
+    shell:
+      cmd: "pveam available --section system | grep -o debian.* | sort -r | sed 1q"
+    register: template
+    delegate_to: "{{ virt_host }}"
+    changed_when: false
+  - name: Download latest OS template
+    command:
+      cmd: "pveam available --section system | grep -o debian.* | sort -r | sed 1q"
+    register: template
+    delegate_to: "{{ virt_host }}"
   - name: show variables
     debug:
-      msg: hello there
-  # - name: Create new VM
-  #   proxmox_kvm:
-  #     # api connectivity
-  #     api_user: "{{ api_user }}"
-  #     api_password: "{{ root_pw }}"
-  #     api_host: "{{ virt_host_ip }}"
-  #     node: "{{ virt_host }}"
+      msg: "{{ template }}"
+  - name: Create new container
+    proxmox:
+      # api connectivity
+      api_user: "{{ api_user }}"
+      api_password: "{{ root_pw }}"
+      api_host: "{{ virt_host_ip }}"
+      node: "{{ virt_host }}"
   #     # hardware
   #     memory: "{{ ram }}"
   #     cores: "{{ vcpus }}"
@@ -33,13 +45,13 @@
   #     ipconfig: "{{ netconfig }}"
   #     nameservers: "{{ dns_srv }}"
   #     # options
-  #     name: "{{ inventory_hostname }}"
-  #     proxmox_default_behavior: no_defaults
+      hostname: "{{ inventory_hostname }}"
+      proxmox_default_behavior: no_defaults
   #     scsihw: virtio-scsi-pci # SUPER IMPORTANT!
   #     ostype: l26
   #     onboot: yes
   #     agent: yes
-  #   delegate_to: localhost
+    delegate_to: localhost
   #   register: vm
   # - name: Download cloud image # does not appear to re-download if client recently accessed (HTTP 304 Not Modified)
   #   get_url:
