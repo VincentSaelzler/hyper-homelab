@@ -14,14 +14,13 @@
     register: template
     delegate_to: "{{ virt_host }}"
     changed_when: false
-  - name: Download latest OS template
+  - name: Download latest OS template #always shows as changed, but pveam is smart enough to not re-download.
     command:
-      cmd: "pveam available --section system | grep -o debian.* | sort -r | sed 1q"
-    register: template
+      cmd: "pveam download local {{ template.stdout }}"
     delegate_to: "{{ virt_host }}"
   - name: show variables
     debug:
-      msg: "{{ template }}"
+      msg: "{{ template.stdout }}"
   - name: Create new container
     proxmox:
       # api connectivity
@@ -30,6 +29,8 @@
       api_host: "{{ virt_host_ip }}"
       node: "{{ virt_host }}"
   #     # hardware
+      ostemplate: "local:vztmpl/{{ template.stdout }}"
+      storage: "{{ tgt_storage }}"
   #     memory: "{{ ram }}"
   #     cores: "{{ vcpus }}"
   #     cpu: "{{ cpu_type }}"
