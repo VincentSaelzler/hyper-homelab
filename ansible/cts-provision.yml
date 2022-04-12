@@ -28,30 +28,35 @@
       api_password: "{{ root_pw }}"
       api_host: "{{ virt_host_ip }}"
       node: "{{ virt_host }}"
-  #     # hardware
+      # hardware
       ostemplate: "local:vztmpl/{{ template.stdout }}"
       storage: "{{ tgt_storage }}"
-  #     memory: "{{ ram }}"
-  #     cores: "{{ vcpus }}"
-  #     cpu: "{{ cpu_type }}"
-  #     net: "{{ ethports }}"
-  #     vga: qxl
-  #     ide:
-  #       ide2: "{{ tgt_storage }}:cloudinit,format=raw"
-  #     # cloud-init
-  #     sshkeys: "{{ pub_key }}"
-  #     # avoid as long as sshkeys are working
-  #     # this gets saved in plaintext on the target system
-  #     # cipassword: "{{ root_pw }}"
-  #     ipconfig: "{{ netconfig }}"
-  #     nameservers: "{{ dns_srv }}"
-  #     # options
+      memory: "{{ ram }}"
+      swap: 0
+      cores: "{{ vcpus }}"
+      netif: "{{ netconf }}"
+      nameserver: "{{ dns_srvr }}"
       hostname: "{{ inventory_hostname }}"
+  #     # options
+      pubkey: "{{ pub_key }}"
       proxmox_default_behavior: no_defaults
-  #     scsihw: virtio-scsi-pci # SUPER IMPORTANT!
-  #     ostype: l26
-  #     onboot: yes
-  #     agent: yes
+      unprivileged: yes
+      onboot: yes
+      # state: started #apparently cannot create and start containers in one step
+    delegate_to: localhost
+  - name: Wait for a few seconds so the container will be recognized by name
+    wait_for:
+      timeout: 5
+    delegate_to: localhost
+  - name: Start the new container
+    proxmox:
+      # api connectivity
+      api_user: "{{ api_user }}"
+      api_password: "{{ root_pw }}"
+      api_host: "{{ virt_host_ip }}"
+      # start container
+      hostname: "{{ inventory_hostname }}"
+      state: started
     delegate_to: localhost
   #   register: vm
   # - name: Download cloud image # does not appear to re-download if client recently accessed (HTTP 304 Not Modified)
