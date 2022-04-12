@@ -38,6 +38,13 @@
       agent: yes
     delegate_to: localhost
     register: vm
+  - name: Increase video memory of VM when required # doesn't seem to be directly supported by proxmox_kvm module
+    command:
+      cmd: "pvesh set /nodes/{{ virt_host }}/qemu/{{ vm.vmid }}/config --vga qxl,memory={{ vram }}"
+    when:
+    - vm.changed
+    - vram is defined
+    delegate_to: "{{ virt_host }}"
   - name: Download cloud image # does not appear to re-download if client recently accessed (HTTP 304 Not Modified)
     get_url:
       url: "{{ img_url }}{{ img_file }}"
