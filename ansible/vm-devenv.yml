@@ -16,6 +16,7 @@
       cmd: |
         code --install-extension ms-dotnettools.csharp
         code --install-extension ionide.ionide-fsharp
+        code --install-extension oderwat.indent-rainbow
       #cmd: whoami
   - name:  copy encrypted private ansible PW file to VM
     become_user: "{{ usr_name }}"

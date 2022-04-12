@@ -2,6 +2,7 @@
 addtl_space: 8G
 vcpus: 4
 ram: 4096
+vram: 32
 
 # This VM is special because it has an
 #   IP on the MGMT network
