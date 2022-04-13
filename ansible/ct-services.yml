@@ -1,6 +1,6 @@
 ---
-- name: Install HAProxy
-  hosts: proxy
+- name: Install Sample Web Services
+  hosts: service1,service2
   become: yes
   roles:
     - full-upgrade
@@ -11,5 +11,5 @@
       apt:
         state: present
         pkg:
-        - haproxy
-
+        - nodejs
+        - npm
