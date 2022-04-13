@@ -41,12 +41,17 @@
       pubkey: "{{ pub_key }}"
       proxmox_default_behavior: no_defaults
       unprivileged: yes
+      features:
+        #really don't want to enable, however
+        #required for ssh to function with good performance
+        #https://forum.proxmox.com/threads/delay-to-log-in-ssh-session-after-upgrade-from-6-x-to-7-x.92755/
+        - nesting=1 
       onboot: yes
       # state: started #apparently cannot create and start containers in one step
     delegate_to: localhost
   - name: Wait for a few seconds so the container will be recognized by name
     wait_for:
-      timeout: 5
+      timeout: 10
     delegate_to: localhost
   - name: Start the new container
     proxmox:
