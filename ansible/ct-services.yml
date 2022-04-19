@@ -1,6 +1,6 @@
 ---
-- name: Install Sample Web Services
-  hosts: service1,service2
+- name: Install Packages
+  hosts: service2
   become: yes
   roles:
     - full-upgrade
@@ -13,3 +13,17 @@
         pkg:
         - nodejs
         - npm
+        - sudo #required for become_user
+
+- name: Create and start express app
+  hosts: service2
+  #become_user: "{{ usr_name }}"
+  become: yes
+  become_user: "{{ usr_name }}"
+  #sudo: yes
+  #sudo_user: vince
+  tasks:
+    - name: Create the container directory
+      file:
+        path: "~/myapp/"
+        state: directory
