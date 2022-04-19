@@ -1,6 +1,6 @@
 ---
 - name: Install Packages
-  hosts: service2
+  hosts: service1,service2
   become: yes
   roles:
     - full-upgrade
@@ -16,7 +16,7 @@
         - sudo #required for become_user
 
 - name: Create and express app
-  hosts: service2
+  hosts: service1,service2
   become: yes
   become_user: "{{ usr_name }}"
   tasks:
@@ -41,14 +41,15 @@
         mode: "755"
 
 - name: Create the service
-  hosts: service2
+  hosts: service1,service2
   become: yes
   tasks:
   - name: Copy the node service file
     template:
         src: node.service
         dest: /etc/systemd/system
-  - name: Start node service
+  - name: Restart node service
     systemd:
       name: node
-      state: started
+      state: restarted
+      enabled: yes
