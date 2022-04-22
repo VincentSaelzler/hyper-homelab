@@ -1,12 +1,80 @@
 ---
-- name: Install dependencies and create the cluster
+- name: Install Visual Studio Code
   hosts: localhost
+  become: yes
   tasks:
-  - name: Install required apt packages
+  - name: Download Microsoft's VS Code deb file
+    get_url:
+      url: https://go.microsoft.com/fwlink/?LinkID=760868
+      dest: '/tmp/vscode.deb'
+  - name: Add the VS Code repository and install the program
     apt:
-      pkg: python3-pip
-  - name: Install required python packages
-    pip:
-      name:
-      - pexpect
-      - proxmoxer
+      deb: '/tmp/vscode.deb'
+
+- name: Save secrets
+  hosts: localhost
+  become: no
+  tasks:
+  - name:  Copy plaintext public key file
+    copy:
+      src: id_rsa.pub
+      dest: "~/.ssh/"
+      mode: "644"
+  - name:  Copy encrypted private key file.
+    copy:
+      src: vault/id_rsa
+      dest: "~/.ssh/"
+      mode: "600"
+  - name:  Copy encrypted vault PW file.
+    copy:
+      src: vault/vault_pw.txt
+      dest: "~/.ansible/"
+      mode: "664"
+
+# - name: Install software
+#   hosts: localhost
+#   become: no
+#   - name: Install python packages
+#     pip:
+#       name:
+#       - pexpect
+#       - proxmoxer
+
+
+
+- name: Configure git
+  hosts: localhost
+  become: yes
+  vars_prompt:
+  - name: fullname
+    prompt: What is your full name?
+    private: no
+    default: Vincent Saelzler
+  - name: emailaddr
+    prompt: What is your email address?
+    private: no
+    default: vincent.saelzler@gmail.com
+  tasks:
+  - name: Set gitconfig user
+    git_config:
+      name: user.name
+      value: "{{ fullname }}"
+  - name: Set gitconfig email
+    git_config:
+      name: user.email
+      value: "{{ emailaddr }}"
+
+- name: Add bash aliases
+  hosts: localhost
+  become: no
+  tasks:
+  - name: Add alias show git log
+    lineinfile:
+      path: "~/.bashrc"
+      line: 'alias vvlog="git log --all --oneline --graph"'
+      state: present
+  - name: Add aliases to run ansible playbook
+    lineinfile:
+      path: "~/.bashrc"
+      line: 'alias vvans="ansible-playbook -i inventory/hosts.yml --vault-password-file ~/.ansible/vault_pw.txt"'
+      state: present
