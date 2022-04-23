@@ -44,7 +44,7 @@
       dest: "~/.ansible/"
       mode: "664"
 
-- name: Configure git
+- name: Configure git and SSH
   hosts: localhost
   become: yes
   vars_prompt:
@@ -65,6 +65,12 @@
     git_config:
       name: user.email
       value: "{{ emailaddr }}"
+  - name: Disable strict host key checking
+    lineinfile:
+      path: /etc/ssh/ssh_config
+      line: "StrictHostKeyChecking no"
+      regexp: "StrictHostKeyChecking"
+      state: present
 
 - name: Non-critical convenience customizations
   hosts: localhost
