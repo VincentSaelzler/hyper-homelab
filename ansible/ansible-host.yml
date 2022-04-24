@@ -10,9 +10,11 @@
   - name: Add the VS Code repository and install code
     apt:
       deb: '/tmp/vscode.deb'
-  - name: Install pip
+  - name: Install other packages
     apt:
-      pkg: python3-pip
+      pkg:
+      - python3-pip
+      - sshpass
 
 - name: Install Python software using pip
   hosts: localhost
