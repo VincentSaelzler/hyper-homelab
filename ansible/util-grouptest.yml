@@ -1,0 +1,7 @@
+---
+- name: Make sure group members are as expected
+  hosts: proxmox_cts
+  gather_facts: no
+  tasks:
+  - debug:
+      msg: "hi {{ virt_host }}"

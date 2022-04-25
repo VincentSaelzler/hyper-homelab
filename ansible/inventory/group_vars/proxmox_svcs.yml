@@ -1,0 +1,15 @@
+---
+api_user: root@pam
+cpu_type: host
+
+# network info in VM format
+ethports:
+  net0: "virtio,bridge={{ netenv.dmz.vbridge }}"
+netconfig:
+  ipconfig0: "ip={{ ansible_host }}/{{ netenv.dmz.mask }},gw={{ netenv.dmz.gw }}"
+dns_srv:
+  - "{{ netenv.dmz.dns }}"
+
+# network info in container format
+netconf: '{"net0":"name=eth0,gw={{ netenv.dmz.gw }},ip={{ ansible_host }}/{{ netenv.dmz.mask }},bridge={{ netenv.dmz.vbridge }}"}'
+dns_srvr: "{{ netenv.dmz.dns }}"

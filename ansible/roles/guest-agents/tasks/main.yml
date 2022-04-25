@@ -1,0 +1,8 @@
+---
+- name: Install new apt packages
+  apt:
+    state: present
+    pkg:
+      - spice-vdagent
+      - qemu-guest-agent
+  notify: restart

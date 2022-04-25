@@ -11,18 +11,3 @@
     state: present
     exclusive: yes
     key: '{{ pub_key }}'
-# there doesn't seem to be a mechanisim to set git configuration at the user scope
-# these are all going into the global (system) level configuration
-- name: Set gitconfig user
-  git_config:
-    name: user.name
-    value: "{{ full_name }}"
-- name: Set gitconfig email
-  git_config:
-    name: user.email
-    value: "{{ usr_email }}"
-- name: Add alias show git log
-  lineinfile:
-    path: "/home/{{ usr_name }}/.bashrc"
-    line: 'alias vvlog="git log --all --oneline --graph"'
-    state: present

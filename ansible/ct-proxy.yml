@@ -1,0 +1,26 @@
+---
+- name: Install HAProxy
+  hosts: proxy
+  become: yes
+  roles:
+    - full-upgrade
+    - personalize
+    - add-user
+  tasks:
+    - name: Install apt packages
+      apt:
+        state: present
+        pkg:
+        - haproxy
+        - curl #just for testing connections to localhost
+    - name: Copy the config file
+      copy:
+        src: haproxy.cfg
+        dest: "/etc/haproxy/haproxy.cfg"
+        #mode: "644"
+        force: yes
+    - name: Restart haproxy service
+      systemd:
+        name: haproxy
+        state: restarted
+        enabled: yes

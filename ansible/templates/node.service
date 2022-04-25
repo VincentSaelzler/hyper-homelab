@@ -1,0 +1,15 @@
+[Unit]
+Description=Runs node app
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+Type=simple
+ExecStart=/home/{{ usr_name }}/myapp/index.js
+User={{ usr_name }}
+Restart=always
+RestartSec=5
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=%n
