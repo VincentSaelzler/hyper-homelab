@@ -13,14 +13,26 @@
         pkg:
         - haproxy
         - curl #just for testing connections to localhost
-    - name: Copy the config file
+        - rsyslog #until we have a centralized logging platform
+    - name: Copy the main config file
       copy:
         src: haproxy.cfg
         dest: "/etc/haproxy/haproxy.cfg"
         #mode: "644"
         force: yes
+    - name: Copy the logging config file
+      copy:
+        src: haproxy-log.conf
+        dest: "/etc/rsyslog.d/haproxy-log.conf"
+        #mode: "644"
+        force: yes
     - name: Restart haproxy service
       systemd:
         name: haproxy
+        state: restarted
+        enabled: yes
+    - name: Restart rsyslog service
+      systemd:
+        name: rsyslog
         state: restarted
         enabled: yes
