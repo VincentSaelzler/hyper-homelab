@@ -40,6 +40,12 @@
       name:
       - pexpect
       - proxmoxer
+  - name: Disable strict host key checking
+    lineinfile:
+      path: /etc/ssh/ssh_config
+      line: "StrictHostKeyChecking no"
+      regexp: "StrictHostKeyChecking"
+      state: present
   - name: Add alias to run ansible playbook
     lineinfile:
       path: "/home/{{ usr_name }}/.bashrc"
