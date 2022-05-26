@@ -2,14 +2,22 @@
 - name: Install HAProxy
   hosts: certbot
   become: yes
+  vars:
+    certbot_install_method: package
+    # certbot_auto_renew_user: your_username_here
+    # certbot_auto_renew_minute: "20"
+    # certbot_auto_renew_hour: "5"
+    certbot_testmode: true
+    certbot_create_if_missing: true
+    certbot_create_method: standalone
+    certbot_renew_user: vince
+    certbot_admin_email: "vincent.saelzler@gmail.com"
+    certbot_certs:
+      - domains:
+        - quercusphellos.online
+
   roles:
     - full-upgrade
     - personalize
     - add-user
-  tasks:
-    - name: Install apt packages
-      apt:
-        state: present
-        pkg:
-        - ansible
-        - certbot
+    - geerlingguy.certbot
