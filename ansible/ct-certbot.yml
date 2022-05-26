@@ -1,0 +1,15 @@
+---
+- name: Install HAProxy
+  hosts: certbot
+  become: yes
+  roles:
+    - full-upgrade
+    - personalize
+    - add-user
+  tasks:
+    - name: Install apt packages
+      apt:
+        state: present
+        pkg:
+        - ansible
+        - certbot
