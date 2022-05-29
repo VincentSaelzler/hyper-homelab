@@ -1,7 +1,14 @@
 ---
-- name: Install HAProxy
+- name: Bootstrap the host
   hosts: certbot
   become: yes
+  roles:
+    - full-upgrade
+    - personalize
+    - add-user
+
+- name: Generate Let's Encrypt Certificates
+  hosts: certbot
   vars:
     certbot_install_method: package
     # certbot_auto_renew_user: your_username_here
@@ -15,9 +22,5 @@
     certbot_certs:
       - domains:
         - quercusphellos.online
-
   roles:
-    - full-upgrade
-    - personalize
-    - add-user
     - geerlingguy.certbot
