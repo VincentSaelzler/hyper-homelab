@@ -1,61 +1,51 @@
 ---
-# - name: Install HAProxy
-#   hosts: proxy
-#   become: yes
-#   roles:
-#     - full-upgrade
-#     - personalize
-#     - add-user
-#   tasks:
-#     - name: Install apt packages
-#       apt:
-#         state: present
-#         pkg:
-#         - haproxy
-#         - curl #just for testing connections to localhost
-#         - rsyslog #until we have a centralized logging platform
-#     - name: Copy the main config file
-#       copy:
-#         src: haproxy.cfg
-#         dest: "/etc/haproxy/haproxy.cfg"
-#         #mode: "644"
-#         force: yes
-#     - name: Copy the logging config file
-#       copy:
-#         src: haproxy-log.conf
-#         dest: "/etc/rsyslog.d/haproxy-log.conf"
-#         #mode: "644"
-#         force: yes
-#     - name: Restart haproxy service
-#       systemd:
-#         name: haproxy
-#         state: restarted
-#         enabled: yes
-#     - name: Restart rsyslog service
-#       systemd:
-#         name: rsyslog
-#         state: restarted
-#         enabled: yes
+- name: Install HAProxy
+  hosts: proxy
+  become: yes
+  roles:
+    - full-upgrade
+    - personalize
+    - add-user
+  tasks:
+    - name: Install apt packages
+      apt:
+        state: present
+        pkg:
+        - haproxy
+        - curl #just for testing connections to localhost
+        - rsyslog #until we have a centralized logging platform
+    - name: Copy the main config file
+      copy:
+        src: haproxy.cfg
+        dest: "/etc/haproxy/haproxy.cfg"
+        #mode: "644"
+        force: yes
+    - name: Copy the logging config file
+      copy:
+        src: haproxy-log.conf
+        dest: "/etc/rsyslog.d/haproxy-log.conf"
+        #mode: "644"
+        force: yes
 
-# - name: Generate Let's Encrypt Certificates
-#   hosts: proxy
-#   vars:
-#     certbot_install_method: package
-#     # certbot_auto_renew_user: your_username_here
-#     # certbot_auto_renew_minute: "20"
-#     # certbot_auto_renew_hour: "5"
-#     certbot_testmode: true
-#     certbot_create_if_missing: true
-#     certbot_create_method: standalone
-#     certbot_renew_user: vince
-#     certbot_admin_email: "vincent.saelzler@gmail.com"
-#     certbot_certs:
-#       - domains:
-#         - quercusphellos.online
-#     certbot_create_standalone_stop_services:
-#       - haproxy
-#   roles:
-#     - certbot
+- name: Generate Let's Encrypt Certificates
+  hosts: proxy
+  vars:
+    certbot_install_method: package
+    # certbot_auto_renew_user: your_username_here
+    # certbot_auto_renew_minute: "20"
+    # certbot_auto_renew_hour: "5"
+    certbot_testmode: true
+    certbot_create_if_missing: true
+    certbot_create_method: standalone
+    certbot_renew_user: vince
+    certbot_admin_email: "vincent.saelzler@gmail.com"
+    certbot_certs:
+      - domains:
+        - quercusphellos.online
+    certbot_create_standalone_stop_services:
+      - haproxy
+  roles:
+    - certbot
 
 - name: Convert Let's Encrypt certificates to HAProxy format
   hosts: proxy
@@ -64,18 +54,28 @@
       file:
         path: /etc/haproxy/certs/
         state: directory
-        #mode: '0755'
     - name: Create symbolic links for intermediate certificate chains
       file:
         src: /etc/letsencrypt/live/quercusphellos.online/fullchain.pem
         dest: /etc/haproxy/certs/quercusphellos.online
-        # owner: foo
-        # group: foo
         state: link
     - name: Create symbolic links for private key files
       file:
         src: /etc/letsencrypt/live/quercusphellos.online/privkey.pem
         dest: /etc/haproxy/certs/quercusphellos.online.key
-        # owner: foo
-        # group: foo
         state: link
+
+- name: Restart services to apply changes
+  hosts: proxy
+  become: yes
+  tasks:
+    - name: Restart haproxy service
+      systemd:
+        name: haproxy
+        state: restarted
+        enabled: yes
+    - name: Restart rsyslog service
+      systemd:
+        name: rsyslog
+        state: restarted
+        enabled: yes
