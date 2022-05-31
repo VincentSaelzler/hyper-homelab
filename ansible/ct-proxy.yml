@@ -50,7 +50,7 @@
 - name: Convert Let's Encrypt certificates to HAProxy format
   hosts: proxy
   tasks:
-    - name: Create a directory if it does not exist
+    - name: Create container directory for certs
       file:
         path: /etc/haproxy/certs/
         state: directory
@@ -64,13 +64,6 @@
         src: /etc/letsencrypt/live/quercusphellos.online/privkey.pem
         dest: /etc/haproxy/certs/quercusphellos.online.key
         state: link
-    - name: Add certs to cert list file
-      lineinfile:
-        path: /etc/haproxy/certs/crt-list.txt
-        line: "/etc/haproxy/certs/quercusphellos.online quercusphellos.online"
-        #regexp: "^/etc/haproxy/certs/quercusphellos.online"
-        state: present
-        create: yes
 
 - name: Restart services to apply changes
   hosts: proxy
