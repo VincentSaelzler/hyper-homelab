@@ -1,3 +1,0 @@
-[submodule "ansible/roles/certbot"]
-	path = ansible/roles/certbot
-	url = https://github.com/geerlingguy/ansible-role-certbot.git

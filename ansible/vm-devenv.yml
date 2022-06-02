@@ -35,6 +35,10 @@
       pkg:
         - ansible
         - python3-pip
+  - name: Install Ansible Galaxy Roles
+    community.general.ansible_galaxy_install:
+      type: role
+      name: geerlingguy.certbot
   - name: Install python packages
     pip:
       name:
@@ -50,4 +54,9 @@
     lineinfile:
       path: "/home/{{ usr_name }}/.bashrc"
       line: 'alias vvans="ansible-playbook -i inventory/hosts.yml --vault-password-file ~/.ansible/vault_pw.txt"'
+      state: present
+  - name: Add alias show git log
+    lineinfile:
+      path: "/home/{{ usr_name }}/.bashrc"
+      line: 'alias vvlog="git log --all --oneline --graph"'
       state: present
