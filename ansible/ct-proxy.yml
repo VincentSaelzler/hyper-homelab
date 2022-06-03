@@ -41,12 +41,14 @@
     certbot_certs:
       - domains:
         - quercusphellos.online
+      - domains:
+        - saelzler.org
     # renewing certs
     certbot_auto_renew: true
     certbot_auto_renew_hour: "4"
     certbot_auto_renew_minute: "20"
   roles:
-    - certbot
+    - geerlingguy.certbot
 
 - name: Use Sym Links so Let's Encrypt certificates Match HAProxy Naming Convention
   hosts: proxy
@@ -57,14 +59,17 @@
         state: directory
     - name: Create symbolic links for intermediate certificate chains
       file:
-        src: /etc/letsencrypt/live/quercusphellos.online/fullchain.pem
-        dest: /etc/haproxy/certs/quercusphellos.online
+        src: "/etc/letsencrypt/live/{{ item }}/fullchain.pem"
+        dest: "/etc/haproxy/certs/{{ item }}"
         state: link
+      loop: "{{ domains }}"
+
     - name: Create symbolic links for private key files
       file:
-        src: /etc/letsencrypt/live/quercusphellos.online/privkey.pem
-        dest: /etc/haproxy/certs/quercusphellos.online.key
+        src: "/etc/letsencrypt/live/{{ item }}/privkey.pem"
+        dest: "/etc/haproxy/certs/{{ item }}.key"
         state: link
+      loop: "{{ domains }}"
 
 # this needs to run AFTER the sym links have been created
 - name: Restart Services to Apply Changes
