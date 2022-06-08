@@ -37,12 +37,8 @@
     # creating certs
     certbot_create_if_missing: true
     certbot_create_method: standalone
-    certbot_admin_email: "vincent.saelzler@gmail.com"
-    certbot_certs:
-      - domains:
-        - quercusphellos.online
-      - domains:
-        - saelzler.org
+    certbot_admin_email: "{{ usr_email }}"
+    certbot_certs: "{{ certs }}"
     # renewing certs
     certbot_auto_renew: true
     certbot_auto_renew_hour: "4"

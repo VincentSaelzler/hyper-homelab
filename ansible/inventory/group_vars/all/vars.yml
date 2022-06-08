@@ -19,6 +19,14 @@ domains:
   - quercusphellos.online
   - saelzler.org
 
+# the certbot role expects a list of ~certificates~
+# each certificate could have one or more domains
+certs:
+  - domains:
+    - quercusphellos.online
+  - domains:
+    - saelzler.org
+
 # rsyslog and nut server (pfSense)
 log_server: "192.168.128.1:5140"
 ups_server: "192.168.128.1"
