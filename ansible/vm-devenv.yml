@@ -1,48 +1,50 @@
 ---
-# - name: Bootstrap Host, Including GUI and IDE
-#   hosts: devenv
-#   become: yes
-#   roles:
-#     - full-upgrade
-#     - personalize
-#     - add-user
-#     - ubuntu-gui
-#     - vs-code
-#     - private-key
-#   tasks:
+- name: Bootstrap Host, Including GUI and IDE
+  hosts: devenv
+  become: yes
+  roles:
+    - full-upgrade
+    - personalize
+    - add-user
+    - ubuntu-gui
+    - vs-code
+    - private-key
+  handlers:
+  - name: restart
+    reboot:
+  tasks:
 
-  # - name: Configure Ansible PPA
-  #   apt_repository:
-  #     repo: 'ppa:ansible/ansible'
-  #     state: present
-  # - name: Install apt packages
-  #   apt:
-  #     state: present
-  #     update_cache: yes # important
-  #     pkg:
-  #       - ansible
-  #       - python3-pip
+  - name: Configure Ansible PPA
+    apt_repository:
+      repo: 'ppa:ansible/ansible'
+      state: present
 
-    # - name: Disable strict host key checking
-  #   lineinfile:
-  #     path: /etc/ssh/ssh_config
-  #     line: "StrictHostKeyChecking no"
-  #     regexp: "StrictHostKeyChecking"
-  #     state: present
+  - name: Install apt packages
+    apt:
+      state: present
+      update_cache: yes # important
+      pkg:
+        - ansible
+        - python3-pip
 
-  # - name: Hard-Code Hosts on DMZ
-  #   lineinfile:
-  #     path: /etc/cloud/templates/hosts.debian.tmpl
-  #     line: "192.168.129.30 {{ item }}"
-  #     state: present
-  #   loop: "{{ domains }}"
-  #   notify:
-  #   - restart
-  # handlers:
-  # - name: restart
-  #   reboot:
+  - name: Disable strict host key checking
+    lineinfile:
+      path: /etc/ssh/ssh_config
+      line: "StrictHostKeyChecking no"
+      regexp: "StrictHostKeyChecking"
+      state: present
 
-- name: IDE Extensions, Python Packages, Ansible Roles, and Aliases
+  - name: Hard-Code Hosts on DMZ
+    lineinfile:
+      path: /etc/cloud/templates/hosts.debian.tmpl
+      line: "192.168.129.30 {{ item }}"
+      state: present
+    loop: "{{ domains }}"
+    notify:
+    - restart
+
+
+- name: User Config - IDE Extensions, Python Packages, Ansible Roles, and Aliases
   hosts: devenv
   vars:
     ansible_user: "{{ usr_name }}"
