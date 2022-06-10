@@ -1,52 +1,5 @@
 ---
-- name: Install software using the OS package manager
-  hosts: localhost
-  become: yes
-  tasks:
-  - name: Download Microsoft's VS Code deb file
-    get_url:
-      url: https://go.microsoft.com/fwlink/?LinkID=760868
-      dest: '/tmp/vscode.deb'
-  - name: Add the VS Code repository and install code
-    apt:
-      deb: '/tmp/vscode.deb'
-  - name: Install other packages
-    apt:
-      pkg:
-      - python3-pip
-      - sshpass
-
-- name: Install Python software using pip
-  hosts: localhost
-  become: no
-  tasks:
-  - name: Install python packages
-    pip:
-      name:
-      - pexpect
-      - proxmoxer
-
-- name: Save secrets
-  hosts: localhost
-  become: no
-  tasks:
-  - name:  Copy plaintext public key file
-    copy:
-      src: id_rsa.pub
-      dest: "~/.ssh/"
-      mode: "644"
-  - name:  Copy encrypted private key file.
-    copy:
-      src: vault/id_rsa
-      dest: "~/.ssh/"
-      mode: "600"
-  - name:  Copy encrypted vault PW file.
-    copy:
-      src: vault/vault_pw.txt
-      dest: "~/.ansible/"
-      mode: "664"
-
-- name: Configure git and SSH
+- name: Root Tasks - APT Installs, Global Git Config, SSH Settings
   hosts: localhost
   become: yes
   vars_prompt:
@@ -59,14 +12,31 @@
     private: no
     default: vincent.saelzler@gmail.com
   tasks:
+
+  - name: Download Microsoft's VS Code deb file
+    get_url:
+      url: https://go.microsoft.com/fwlink/?LinkID=760868
+      dest: '/tmp/vscode.deb'
+      
+  - name: Add the VS Code repository and install code
+    apt:
+      deb: '/tmp/vscode.deb'
+
+  - name: Install other packages
+    apt:
+      pkg:
+      - python3-pip
+
   - name: Set gitconfig user
     git_config:
       name: user.name
       value: "{{ fullname }}"
+
   - name: Set gitconfig email
     git_config:
       name: user.email
       value: "{{ emailaddr }}"
+
   - name: Disable strict host key checking
     lineinfile:
       path: /etc/ssh/ssh_config
@@ -74,20 +44,48 @@
       regexp: "StrictHostKeyChecking"
       state: present
 
-- name: Non-critical convenience customizations
+
+- name: Regular User Tasks - Aliases, IDE Extensions, Python Packages, Secrets
   hosts: localhost
   become: no
   tasks:
+
   - name: Add alias show git log
     lineinfile:
       path: "~/.bashrc"
       line: 'alias vvlog="git log --all --oneline --graph"'
       state: present
+  
   - name: Add aliases to run ansible playbook
     lineinfile:
       path: "~/.bashrc"
       line: 'alias vvans="ansible-playbook -i inventory/hosts.yml --vault-password-file ~/.ansible/vault_pw.txt"'
       state: present
+  
   - name: Install extensions to VS Code
     command:
       cmd: code --install-extension oderwat.indent-rainbow
+
+  - name: Install python packages
+    pip:
+      name:
+      - pexpect
+      - proxmoxer
+
+  - name:  Copy plaintext public key file
+    copy:
+      src: id_rsa.pub
+      dest: "~/.ssh/"
+      mode: "644"
+
+  - name:  Copy encrypted private key file.
+    copy:
+      src: vault/id_rsa
+      dest: "~/.ssh/"
+      mode: "600"
+
+  - name:  Copy encrypted vault PW file.
+    copy:
+      src: vault/vault_pw.txt
+      dest: "~/.ansible/"
+      mode: "664"
