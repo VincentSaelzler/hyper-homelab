@@ -92,3 +92,8 @@
       path: "~/.bashrc"
       line: 'alias vvlog="git log --all --oneline --graph"'
       state: present
+
+  - name: Clone this repository
+    git:
+      repo: 'https://github.com/VincentSaelzler/hyper-homelab.git'
+      dest: "~/src/hyper-homelab/"
