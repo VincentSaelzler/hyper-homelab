@@ -1,0 +1,19 @@
+---
+- name: Bootstrap Host
+  hosts: log0
+  roles:
+    - full-upgrade
+    - personalize
+    - add-user
+  tasks:
+    - name: Install apt packages
+      apt:
+        state: present
+        pkg:
+        - rsyslog
+
+    - name: Restart rsyslog service
+      systemd:
+        name: rsyslog
+        state: started
+        enabled: yes
