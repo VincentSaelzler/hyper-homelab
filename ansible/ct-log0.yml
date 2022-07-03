@@ -11,9 +11,29 @@
         state: present
         pkg:
         - rsyslog
+      notify: Restart and Enable rsyslog
 
-    - name: Restart rsyslog service
+    # if left activated, the module fails to load
+    # i assumae that's because we are in a container
+    - name: Disable Kernel Logging Support 
+      lineinfile:
+        path: /etc/rsyslog.conf
+        line: '#module(load="imklog")   # provides kernel logging support'
+        regexp: "provides kernel logging support"
+        state: present
+      notify: Restart and Enable rsyslog
+
+    - name: Copy the main config file
+      copy:
+        src: log-server.conf
+        dest: "/etc/rsyslog.d/log-server.conf"
+        #mode: "644"
+        force: yes
+      notify: Restart and Enable rsyslog
+
+  handlers:
+    - name: Restart and Enable rsyslog
       systemd:
         name: rsyslog
-        state: started
+        state: restarted
         enabled: yes

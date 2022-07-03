@@ -1,5 +1,0 @@
----
-- name: Copy log configuration file
-  template:
-      src: remote-logging.conf
-      dest: /etc/rsyslog.d/
