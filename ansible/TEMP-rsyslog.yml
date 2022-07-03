@@ -1,7 +1,0 @@
-- name: Bootstrap Host
-  hosts: log0,service1,service2
-  roles:
-    # - full-upgrade
-    # - personalize
-    # - add-user
-    - send-logs

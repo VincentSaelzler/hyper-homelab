@@ -1,0 +1,34 @@
+---
+- name: Install rsyslog
+  apt:
+    state: present
+    pkg: rsyslog
+  notify: Restart and Enable rsyslog
+
+# - name: show variables per host
+#   debug:
+#     var: is_container
+
+- name: Copy Server Config File
+  template:
+    src: server.conf
+    dest: /etc/rsyslog.conf
+  when: is_log_server
+  notify: Restart and Enable rsyslog
+
+- name: Copy Client Config File
+  template:
+    src: client.conf
+    dest: /etc/rsyslog.d/send-tcp.conf
+  when: not is_log_server
+  notify: Restart and Enable rsyslog
+
+# if left activated, the module fails to load
+# i assume that's because we are in a container
+- name: Comment Out Kernel Module
+  replace:
+    path: /etc/rsyslog.conf
+    regexp: '^module\(load="imklog"\)'
+    replace: '#module(load="imklog")'
+  when: is_container
+  notify: Restart and Enable rsyslog
