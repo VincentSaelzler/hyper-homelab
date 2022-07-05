@@ -3,7 +3,7 @@
 
 **ATT**: These are the "private" addresses coming from the AT&T router. Only real use is to connect to the router to change configuratoin settings.
 
-**MGMT**: The main "LAN" segment. Includes bare-metal OS IPs, Wi-Fi AP, and iDRAC addresses.
+**LAN**: The main "LAN" segment. Includes bare-metal OS IPs, Wi-Fi AP, and iDRAC addresses.
 
 **DMZ**: Virtualized infrastructure has IPs on this network.
 
@@ -24,7 +24,7 @@ Gateway: 192.168.1.254
 ```
 Router config is at `192.168.1.254`
 
-# MGMT
+# LAN
 ```
 Network: 192.168.128.0/24
 Gateway: 192.168.128.1
@@ -39,7 +39,7 @@ This is the main subnet, so hosts of certain types use different addresses.
 - `60` - `69`: Clients with Static DHCP Reservations (e.g. to consistenly enable remote access)
 - `70` - `99`: Dynamic DHCP range.
 
-## Hosts on MGMT
+## Hosts on LAN
 
 |Address|Host|Description|
 |---|---|---|
@@ -61,4 +61,4 @@ Network: 192.168.129.0/24
 Gateway: 192.168.129.1
 DNS: 192.168.129.1
 ```
-The LAN side of the pfSense router is at `192.168.129.1` (_it's the same pfSense as for the MGMT network_)
+The LAN side of the pfSense router is at `192.168.129.1` (_it's the same pfSense as for the LAN network_)

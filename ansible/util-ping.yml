@@ -1,9 +1,10 @@
 ---
-- name: Check whether Ansible is running in the dev environment.
+- name: Check Whether Ansible is Working
   hosts: localhost
   tasks:
   - ping:
-- name: Check whether Ansible is reachable in bare-metal Proxmox OS installs
-  hosts: proxmox_nodes
+  
+- name: Check Whether Other Hosts are Reachable
+  hosts: all
   tasks:
   - ping:
