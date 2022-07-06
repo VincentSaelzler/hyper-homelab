@@ -8,6 +8,7 @@
     - unprivileged-user
     - ubuntu-gui
     - vs-code
+    - dotnet-sdk
     - private-key
   handlers:
     - import_tasks: handlers.yml
