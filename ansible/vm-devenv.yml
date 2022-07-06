@@ -11,87 +11,81 @@
     - private-key
   handlers:
     - import_tasks: handlers.yml
-  # tasks:
+  tasks:
 
-#   - name: Configure Ansible PPA
-#     apt_repository:
-#       repo: 'ppa:ansible/ansible'
-#       state: present
+  - name: Configure Ansible PPA
+    apt_repository:
+      repo: 'ppa:ansible/ansible'
+      state: present
 
-#   - name: Install apt packages
-#     apt:
-#       state: present
-#       update_cache: yes # important
-#       pkg:
-#         - ansible
-#         - python3-pip
+  - name: Install apt Packages
+    apt:
+      state: present
+      update_cache: yes # important
+      pkg:
+        - ansible
+        - python3-pip
 
-#   - name: Disable strict host key checking
-#     lineinfile:
-#       path: /etc/ssh/ssh_config
-#       line: "StrictHostKeyChecking no"
-#       regexp: "StrictHostKeyChecking"
-#       state: present
+  - name: Disable Strict Host Key Checking
+    lineinfile:
+      path: /etc/ssh/ssh_config
+      line: "StrictHostKeyChecking no"
+      regexp: "StrictHostKeyChecking"
+      state: present
 
-#   - name: Hard-Code Hosts on DMZ
-#     lineinfile:
-#       path: /etc/cloud/templates/hosts.debian.tmpl
-#       line: "192.168.129.30 {{ item }}"
-#       state: present
-#     loop: "{{ domains }}"
-#     notify:
-#     - Restart
+  - name: Hard-Code Hosts on DMZ
+    lineinfile:
+      path: /etc/cloud/templates/hosts.debian.tmpl
+      line: "192.168.129.30 {{ item }}"
+      state: present
+    loop: "{{ domains }}"
+    notify:
+    - Restart
 
-# - name: User Config - IDE Extensions, Python Packages, Ansible Roles, and Aliases
-#   hosts: devenv
-#   vars:
-#     ansible_user: "{{ usr_name }}"
-#   tasks:
+- name: User Config - IDE Extensions, Python Packages, Ansible Roles, and Aliases
+  hosts: devenv
+  vars:
+    ansible_user: "{{ usr_name }}"
+  tasks:
 
-#   - name: Install extensions to VS Code
-#     command:
-#       cmd: |
-#         code --install-extension ms-dotnettools.csharp
-#         code --install-extension ionide.ionide-fsharp
-#         code --install-extension oderwat.indent-rainbow
-#       # cmd: whoami
+  - name: Install extensions to VS Code
+    command:
+      cmd: |
+        code --install-extension ms-dotnettools.csharp
+        code --install-extension ionide.ionide-fsharp
+        code --install-extension oderwat.indent-rainbow
+      # cmd: whoami
 
-#   - name:  copy encrypted private ansible PW file to VM
-#     copy:
-#       src: vault/vault_pw.txt
-#       dest: "~/.ansible/"
-#       mode: "664"
+  - name:  Copy Encrypted Vault PW File to VM
+    copy:
+      src: vault/vault_pw.txt
+      dest: "~/.ansible/"
+      mode: "664"
 
-#   - name: Install Certbot Role from Ansible Galaxy
-#     community.general.ansible_galaxy_install:
-#       type: role
-#       name: geerlingguy.certbot
+  - name: Install Certbot Role from Ansible Galaxy
+    community.general.ansible_galaxy_install:
+      type: role
+      name: geerlingguy.certbot
 
-#   - name: Install Rsyslog Role from Ansible Galaxy
-#     community.general.ansible_galaxy_install:
-#       type: role
-#       name: robertdebock.rsyslog
+  - name: Install Python Packages
+    pip:
+      name:
+      - pexpect
+      - proxmoxer
 
-#   - name: Install python packages
-#     pip:
-#       name:
-#       - pexpect
-#       - proxmoxer
-#       - jinja2>=2.11.2 # required by robertdebock.rsyslog
+  - name: Add Alias to Run Ansible Playbook
+    lineinfile:
+      path: "~/.bashrc"
+      line: 'alias vvans="ansible-playbook -i inventory/hosts.yml --vault-password-file ~/.ansible/vault_pw.txt"'
+      state: present
 
-#   - name: Add alias to run ansible playbook
-#     lineinfile:
-#       path: "~/.bashrc"
-#       line: 'alias vvans="ansible-playbook -i inventory/hosts.yml --vault-password-file ~/.ansible/vault_pw.txt"'
-#       state: present
+  - name: Add Alias Show Git Log
+    lineinfile:
+      path: "~/.bashrc"
+      line: 'alias vvlog="git log --all --oneline --graph"'
+      state: present
 
-#   - name: Add alias show git log
-#     lineinfile:
-#       path: "~/.bashrc"
-#       line: 'alias vvlog="git log --all --oneline --graph"'
-#       state: present
-
-#   - name: Clone this repository
-#     git:
-#       repo: 'https://github.com/VincentSaelzler/hyper-homelab.git'
-#       dest: "~/src/hyper-homelab/"
+  - name: Clone This Repository
+    git:
+      repo: 'https://github.com/VincentSaelzler/hyper-homelab.git'
+      dest: "~/src/hyper-homelab/"

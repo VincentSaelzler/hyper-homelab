@@ -44,6 +44,22 @@
       regexp: "StrictHostKeyChecking"
       state: present
 
+  - name: Configure Ansible PPA
+    apt_repository:
+      repo: 'ppa:ansible/ansible'
+      state: present
+
+  # THIS DOES NOT WORK BECAUSE THE ANSIBLE EXECUTABLE IS RUNNING
+  # WHILE APT TRIES TO REPLACE IT
+  # THE NEW PPA VERSION IS REQUIRED BECAUSE THE ANSIBLE GALAXY GENERAL COLLECTION IS TOO OLD
+  # WITH JUST THE DEFAULT OS INSTALL. SPECIFICALLY, THE ANSIBLE HOST NEEDS TO RUN
+  # community.general.ansible_galaxy_install ON THE DEV VM
+  # - name: Install apt Packages
+  #   apt:
+  #     state: latest
+  #     update_cache: yes # important
+  #     pkg:
+  #       - ansible
 
 - name: Regular User Tasks - Aliases, IDE Extensions, Python Packages, Secrets
   hosts: localhost
