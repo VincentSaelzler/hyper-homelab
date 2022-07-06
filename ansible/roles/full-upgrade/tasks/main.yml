@@ -1,6 +1,7 @@
 ---
-- name: Update cache and upgrade existing packages
+- name: Update Cache and Upgrade Existing Packages
   apt:
     upgrade: full
     cache_valid_time: 3600
-  notify: restart
+  notify: Restart
+  changed_when: yes

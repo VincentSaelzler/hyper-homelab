@@ -1,9 +1,12 @@
 ---
 - name: Bootstrap Proxmox Nodes
   hosts: proxmox_nodes
+  handlers:
+    - import_tasks: handlers.yml
   roles:
-    - bootstrap
+    - privileged-user
   tasks:
+
   # network
   - name: Check Whether DMZ Bridge Configuration Exists
     lineinfile:
@@ -19,8 +22,9 @@
     when:
     - presence.changed # this will NOT run an update - only adds the bridge config if it does not exist.
     - dmz_iface is defined # some nodes don't have a spare ethernet port (yet)
+    changed_when: true
     notify:
-    - restart
+    - Restart
 
   #repositories
   - name: Disable Enterprise Repository
@@ -28,23 +32,18 @@
       path: /etc/apt/sources.list.d/pve-enterprise.list
       regexp: '^deb'
       replace: '#deb'
+    notify:
+    - Update and Upgrade
+    - Restart
 
   - name: Enable No-Subscription Repository
     lineinfile:
       path: /etc/apt/sources.list
       line: "deb http://download.proxmox.com/debian/pve {{ ansible_facts.distribution_release }} pve-no-subscription"
       state: present
-
-  - name: Update Cache and Upgrade Existing Packages
-    apt:
-      upgrade: full
-      cache_valid_time: 3600
     notify:
-    - restart
-
-  handlers:
-  - name: restart
-    reboot:
+    - Update and Upgrade
+    - Restart
 
 # host-specific configuration (disk partitioning and LVM/RAID)
 - import_playbook: proxmox-pve4.yml

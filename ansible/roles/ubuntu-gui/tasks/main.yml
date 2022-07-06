@@ -1,9 +1,5 @@
 ---
-- name: Update cache and upgrade existing packages
-  apt:
-    upgrade: dist
-    cache_valid_time: 3600
-- name: Install new apt packages
+- name: Install apt Packages
   apt:
     state: present
     pkg:
@@ -12,4 +8,4 @@
       - spice-vdagent
       - qemu-guest-agent
   notify:
-  - restart
+  - Restart
