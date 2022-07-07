@@ -1,0 +1,8 @@
+---
+- name: Install extensions to VS Code
+  command:
+    cmd: |
+      code --install-extension ms-dotnettools.csharp
+      code --install-extension ionide.ionide-fsharp
+      code --install-extension oderwat.indent-rainbow
+    # cmd: whoami

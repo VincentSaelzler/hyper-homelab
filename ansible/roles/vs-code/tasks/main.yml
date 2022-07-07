@@ -4,13 +4,13 @@
     url: https://go.microsoft.com/fwlink/?LinkID=760868
     dest: '/tmp/vscode.deb'
 
-- name: Make VS Code Package Available for Install
+- name: Install VS Code
   apt:
     deb: '/tmp/vscode.deb'
-
-- name: Install New apt Packages.
-  apt:
-    state: present
-    update_cache: yes # important
-    pkg: code
   notify: Restart
+
+# - name: Install New apt Packages.
+#   apt:
+#     state: present
+#     update_cache: yes # important
+#     pkg: code

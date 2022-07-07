@@ -1,0 +1,6 @@
+---
+- name:  Copy Encrypted Vault PW File
+  copy:
+    src: vault/vault_pw.txt
+    dest: "~/.ansible/"
+    mode: "664"

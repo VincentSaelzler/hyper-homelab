@@ -9,7 +9,7 @@
     - ubuntu-gui
     - vs-code
     - dotnet-sdk
-    - private-key
+    - ssh-conf
   handlers:
     - import_tasks: handlers.yml
   tasks:
@@ -25,14 +25,7 @@
       update_cache: yes # important
       pkg:
         - ansible
-        - python3-pip
-
-  - name: Disable Strict Host Key Checking
-    lineinfile:
-      path: /etc/ssh/ssh_config
-      line: "StrictHostKeyChecking no"
-      regexp: "StrictHostKeyChecking"
-      state: present
+        # - python3-pip
 
   - name: Hard-Code Hosts on DMZ
     lineinfile:
@@ -47,44 +40,23 @@
   hosts: devenv
   vars:
     ansible_user: "{{ usr_name }}"
+  roles:
+    - vs-code-ext
+    - private-key
+    - vault-pw
+    - aliases
   tasks:
-
-  - name: Install extensions to VS Code
-    command:
-      cmd: |
-        code --install-extension ms-dotnettools.csharp
-        code --install-extension ionide.ionide-fsharp
-        code --install-extension oderwat.indent-rainbow
-      # cmd: whoami
-
-  - name:  Copy Encrypted Vault PW File to VM
-    copy:
-      src: vault/vault_pw.txt
-      dest: "~/.ansible/"
-      mode: "664"
 
   - name: Install Certbot Role from Ansible Galaxy
     community.general.ansible_galaxy_install:
       type: role
       name: geerlingguy.certbot
 
-  - name: Install Python Packages
-    pip:
-      name:
-      - pexpect
-      - proxmoxer
-
-  - name: Add Alias to Run Ansible Playbook
-    lineinfile:
-      path: "~/.bashrc"
-      line: 'alias vvans="ansible-playbook -i inventory/hosts.yml --vault-password-file ~/.ansible/vault_pw.txt"'
-      state: present
-
-  - name: Add Alias Show Git Log
-    lineinfile:
-      path: "~/.bashrc"
-      line: 'alias vvlog="git log --all --oneline --graph"'
-      state: present
+  # - name: Install Python Packages
+  #   pip:
+  #     name:
+  #     # - pexpect
+  #     - proxmoxer
 
   - name: Clone This Repository
     git:
