@@ -1,107 +1,40 @@
 ---
-- name: Root Tasks - APT Installs, Global Git Config, SSH Settings
+- name: Bootstrap Host, Including GUI and IDE
   hosts: localhost
   become: yes
   vars_prompt:
-  - name: fullname
+  - name: full_name
     prompt: What is your full name?
     private: no
     default: Vincent Saelzler
-  - name: emailaddr
+  - name: usr_email
     prompt: What is your email address?
     private: no
     default: vincent.saelzler@gmail.com
+  handlers:
+    - import_tasks: handlers.yml
+  roles:
+    - full-upgrade
+    - vs-code # NOT IN WSL
+    - ssh-conf
+    - git-conf
   tasks:
 
-  - name: Download Microsoft's VS Code deb file
-    get_url:
-      url: https://go.microsoft.com/fwlink/?LinkID=760868
-      dest: '/tmp/vscode.deb'
-      
-  - name: Add the VS Code repository and install code
-    apt:
-      deb: '/tmp/vscode.deb'
-
-  - name: Install other packages
+  - name: Install apt packages
     apt:
       pkg:
       - python3-pip
 
-  - name: Set gitconfig user
-    git_config:
-      name: user.name
-      value: "{{ fullname }}"
-
-  - name: Set gitconfig email
-    git_config:
-      name: user.email
-      value: "{{ emailaddr }}"
-
-  - name: Disable strict host key checking
-    lineinfile:
-      path: /etc/ssh/ssh_config
-      line: "StrictHostKeyChecking no"
-      regexp: "StrictHostKeyChecking"
-      state: present
-
-  - name: Configure Ansible PPA
-    apt_repository:
-      repo: 'ppa:ansible/ansible'
-      state: present
-
-  # THIS DOES NOT WORK BECAUSE THE ANSIBLE EXECUTABLE IS RUNNING
-  # WHILE APT TRIES TO REPLACE IT
-  # THE NEW PPA VERSION IS REQUIRED BECAUSE THE ANSIBLE GALAXY GENERAL COLLECTION IS TOO OLD
-  # WITH JUST THE DEFAULT OS INSTALL. SPECIFICALLY, THE ANSIBLE HOST NEEDS TO RUN
-  # community.general.ansible_galaxy_install ON THE DEV VM
-  # - name: Install apt Packages
-  #   apt:
-  #     state: latest
-  #     update_cache: yes # important
-  #     pkg:
-  #       - ansible
-
-- name: Regular User Tasks - Aliases, IDE Extensions, Python Packages, Secrets
+- name: User Config - IDE Extensions, Python Packages, Ansible Roles, and Aliases
   hosts: localhost
-  become: no
+  roles:
+    - aliases
+    - vs-code-ext
+    - private-key
+    - vault-pw
   tasks:
-
-  - name: Add alias show git log
-    lineinfile:
-      path: "~/.bashrc"
-      line: 'alias vvlog="git log --all --oneline --graph"'
-      state: present
-  
-  - name: Add aliases to run ansible playbook
-    lineinfile:
-      path: "~/.bashrc"
-      line: 'alias vvans="ansible-playbook -i inventory/hosts.yml --vault-password-file ~/.ansible/vault_pw.txt"'
-      state: present
-  
-  - name: Install extensions to VS Code
-    command:
-      cmd: code --install-extension oderwat.indent-rainbow
 
   - name: Install python packages
     pip:
       name:
-      - pexpect
       - proxmoxer
-
-  - name:  Copy plaintext public key file
-    copy:
-      src: id_rsa.pub
-      dest: "~/.ssh/"
-      mode: "644"
-
-  - name:  Copy encrypted private key file.
-    copy:
-      src: vault/id_rsa
-      dest: "~/.ssh/"
-      mode: "600"
-
-  - name:  Copy encrypted vault PW file.
-    copy:
-      src: vault/vault_pw.txt
-      dest: "~/.ansible/"
-      mode: "664"
