@@ -23,9 +23,11 @@ sudo apt install git python3-pip
 ```
 Install python software
 ```sh
-# this is where python saves the Ansible executables
-echo 'export PATH=$PATH:$HOME/.local/bin' >> ~/.bashrc
-source ~/.bashrc
+# ~/.local/bin is where python saves the Ansible executables
+# The export command will only add the directory to the path for the current session.
+# For persistence, we are relying on ~/.profile to automatically add ~/.local/bin (because it exists).
+# If that doesn't work, check documentation for your distro.
+export PATH=$PATH:$HOME/.local/bin
 python3 -m pip install --user ansible
 ```
 Clone repository
