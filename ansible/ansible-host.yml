@@ -15,18 +15,14 @@
     prompt: Should we install Linux apps? Do NOT install if running WSL on Windows! (y/n)
     private: no
     default: "y"
-  handlers:
-    - import_tasks: handlers.yml
   roles:
-    - full-upgrade
     - ssh-conf
     - git-conf
   tasks:
 
   - name: Install apt packages
     apt:
-      pkg:
-      - python3-pip
+      pkg: python3-pip
 
   - name: Install SPICE Client
     apt:
@@ -53,8 +49,7 @@
 
   - name: Install python packages
     pip:
-      name:
-      - proxmoxer
+      name: proxmoxer
 
   - name: Install VS Code Extensions
     import_role:
