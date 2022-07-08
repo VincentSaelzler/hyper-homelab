@@ -41,15 +41,23 @@
     prompt: Should we install Linux apps? Do NOT install if running WSL on Windows! (y/n)
     private: no
     default: "y"
+  - name: wipe_keyair
+    prompt: Should we OVERWRITE the existing public/private keypair? This WIPES existing contents of ~/.ssh/id_rsa and ~/.ssh/id_rsa.pub
+    private: no
+    default: "y"
   roles:
     - aliases
-    - private-key
     - vault-pw
   tasks:
 
   - name: Install python packages
     pip:
       name: proxmoxer
+
+  - name: Install Public/Private Keypair
+    import_role:
+      name: private-key
+    when: wipe_keyair == "y" or wipe_keyair == "Y"
 
   - name: Install VS Code Extensions
     import_role:
