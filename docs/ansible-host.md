@@ -16,10 +16,14 @@ Download and install [virt-viewer](https://virt-manager.org/download/)
 **Linux:** Install Ubuntu on physical hardware
 
 ### Bootstrap with Ansible and Git
-Install software
+Install apt software
 ```sh
 sudo apt update && sudo apt full-upgrade && sudo apt autoremove && sudo reboot
-sudo apt install git ansible
+sudo apt install git python3-pip
+```
+Install python software
+```sh
+python3 -m pip install --user ansible
 ```
 Clone repository
 ```sh
