@@ -24,6 +24,7 @@ sudo apt install git python3-pip
 Install python software
 ```sh
 python3 -m pip install --user ansible
+export PATH=$PATH:$HOME/.local/bin #this is where python saves the executables
 ```
 Clone repository
 ```sh
