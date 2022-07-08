@@ -11,11 +11,14 @@
     prompt: What is your email address?
     private: no
     default: vincent.saelzler@gmail.com
+  - name: on_linux
+    prompt: Should we install Linux apps? Do NOT install if running WSL on Windows! (y/n)
+    private: no
+    default: "y"
   handlers:
     - import_tasks: handlers.yml
   roles:
     - full-upgrade
-    - vs-code # NOT IN WSL
     - ssh-conf
     - git-conf
   tasks:
@@ -25,11 +28,25 @@
       pkg:
       - python3-pip
 
+  - name: Install SPICE Client
+    apt:
+      pkg: virt-viewer
+    when: on_linux == "y" or on_linux == "Y"
+
+  - name: Install VS Code
+    import_role:
+      name: vs-code
+    when: on_linux == "y" or on_linux == "Y"
+
 - name: User Config - IDE Extensions, Python Packages, Ansible Roles, and Aliases
   hosts: localhost
+  vars_prompt:
+  - name: on_linux
+    prompt: Should we install Linux apps? Do NOT install if running WSL on Windows! (y/n)
+    private: no
+    default: "y"
   roles:
     - aliases
-    - vs-code-ext
     - private-key
     - vault-pw
   tasks:
@@ -38,3 +55,8 @@
     pip:
       name:
       - proxmoxer
+
+  - name: Install VS Code Extensions
+    import_role:
+      name: vs-code-ext
+    when: on_linux == "y" or on_linux == "Y"
