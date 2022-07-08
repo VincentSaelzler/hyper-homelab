@@ -7,4 +7,3 @@
 - name: Install VS Code
   apt:
     deb: '/tmp/vscode.deb'
-  notify: Restart
