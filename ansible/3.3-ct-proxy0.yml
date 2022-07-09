@@ -1,10 +1,12 @@
 ---
 - name: Bootstrap Host and Install HAProxy
-  hosts: proxy
+  hosts: proxy0
+  handlers:
+    - import_tasks: handlers/main.yml
   roles:
     - full-upgrade
     - personalize
-    - add-user
+    - unprivileged-user
   tasks:
     - name: Install apt packages
       apt:
@@ -27,7 +29,7 @@
         force: yes
 
 - name: Generate Let's Encrypt Certificates
-  hosts: proxy
+  hosts: proxy0
   vars:
     # running the app
     certbot_testmode: true
@@ -47,7 +49,7 @@
     - geerlingguy.certbot
 
 - name: Use Sym Links so Let's Encrypt certificates Match HAProxy Naming Convention
-  hosts: proxy
+  hosts: proxy0
   tasks:
     - name: Create container directory for certs
       file:
@@ -69,7 +71,7 @@
 
 # this needs to run AFTER the sym links have been created
 - name: Restart Services to Apply Changes
-  hosts: proxy
+  hosts: proxy0
   tasks:
     - name: The certbot role (sometimes) restarts haproxy service already. Give it a few seconds to fully start.
       wait_for:

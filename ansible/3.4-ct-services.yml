@@ -2,10 +2,12 @@
 - name: Install Packages
   hosts: service1,service2
   become: yes
+  handlers:
+    - import_tasks: handlers/main.yml
   roles:
     - full-upgrade
     - personalize
-    - add-user
+    - unprivileged-user
     - rsyslog
   tasks:
     - name: Install apt packages
@@ -14,12 +16,11 @@
         pkg:
         - nodejs
         - npm
-        - sudo #required for become_user
 
 - name: Create and express app
   hosts: service1,service2
-  become: yes
-  become_user: "{{ usr_name }}"
+  vars:
+    ansible_user: "{{ usr_name }}"
   tasks:
     - name: Create the container directory
       file:

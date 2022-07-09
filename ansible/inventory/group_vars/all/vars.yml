@@ -16,14 +16,14 @@ netenv:
 
 # domains that these services are for
 domains: 
-  - quercusphellos.online
+  # - quercusphellos.online
   - saelzler.org
 
 # the certbot role expects a list of ~certificates~
 # each certificate could have one or more domains
 certs:
-  - domains:
-    - quercusphellos.online
+  # - domains:
+    # - quercusphellos.online
   - domains:
     - saelzler.org
 
