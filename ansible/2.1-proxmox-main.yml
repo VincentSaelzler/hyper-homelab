@@ -2,7 +2,7 @@
 - name: Bootstrap Proxmox Nodes
   hosts: proxmox_nodes
   handlers:
-    - import_tasks: handlers.yml
+    - import_tasks: handlers/main.yml
   roles:
     - privileged-user
   tasks:
@@ -46,4 +46,4 @@
     - Restart
 
 # host-specific configuration (disk partitioning and LVM/RAID)
-- import_playbook: proxmox-pve4.yml
+#- import_playbook: proxmox-pve4.yml

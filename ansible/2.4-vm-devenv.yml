@@ -12,7 +12,7 @@
     - ssh-conf
     - git-conf
   handlers:
-    - import_tasks: handlers.yml
+    - import_tasks: handlers/main.yml
   tasks:
 
   - name: Configure Ansible PPA
@@ -27,6 +27,7 @@
       pkg:
         - ansible
         - python3-pip
+        - sshpass # required to bootstrap bare-metal nodes
 
   - name: Hard-Code Hosts on DMZ
     lineinfile:

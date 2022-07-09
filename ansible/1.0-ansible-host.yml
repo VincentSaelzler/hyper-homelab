@@ -22,7 +22,9 @@
 
   - name: Install apt packages
     apt:
-      pkg: python3-pip
+      pkg:
+        - python3-pip
+        - sshpass # required to bootstrap bare-metal nodes
 
   - name: Install SPICE Client
     apt:
