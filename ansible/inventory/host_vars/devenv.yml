@@ -5,13 +5,13 @@ ram: 4096
 vram: 32
 
 # This VM is special because it has an
-#   IP on the MGMT network
+#   IP on the LAN network
 #   AND on the DMZ network.
 # this allows it to act as an ansible host to run commands
 # and do SSH on both bare-metal servers and also vms
 ethports:
-  net0: "virtio,bridge={{ netenv.mgmt.vbridge }}"
+  net0: "virtio,bridge={{ netenv.lan.vbridge }}"
   net1: "virtio,bridge={{ netenv.dmz.vbridge }}"
 netconfig:
-  ipconfig0: "ip={{ ansible_host }}/{{ netenv.mgmt.mask }},gw={{ netenv.mgmt.gw }}"
+  ipconfig0: "ip={{ ansible_host }}/{{ netenv.lan.mask }},gw={{ netenv.lan.gw }}"
   ipconfig1: "ip={{ secondary_ip }}/{{ netenv.dmz.mask }},gw={{ netenv.dmz.gw }}"

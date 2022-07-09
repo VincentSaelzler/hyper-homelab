@@ -1,8 +1,0 @@
----
-- name: Bootstrap Host
-  hosts: log0
-  roles:
-    - full-upgrade
-    - personalize
-    - add-user
-    - rsyslog

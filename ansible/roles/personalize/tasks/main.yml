@@ -1,7 +1,8 @@
 ---
-- name: Set timezone
+- name: Set Time Zone
   timezone:
     name: "{{ time_zone }}"
-- name: Set hostname
+
+- name: Set Host Name
   hostname:
     name: "{{ inventory_hostname }}"

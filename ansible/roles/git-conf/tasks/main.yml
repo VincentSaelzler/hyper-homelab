@@ -1,0 +1,10 @@
+---
+- name: Set Git User
+  git_config:
+    name: user.name
+    value: "{{ full_name }}"
+
+- name: Set Git Email
+  git_config:
+    name: user.email
+    value: "{{ usr_email }}"

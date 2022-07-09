@@ -1,0 +1,12 @@
+---
+- name: Add Alias to Run Ansible Playbook
+  lineinfile:
+    path: "~/.bashrc"
+    line: 'alias vvans="ansible-playbook -i inventory/hosts.yml --vault-password-file ~/.ansible/vault_pw.txt"'
+    state: present
+
+- name: Add Alias Show Git Log
+  lineinfile:
+    path: "~/.bashrc"
+    line: 'alias vvlog="git log --all --oneline --graph"'
+    state: present

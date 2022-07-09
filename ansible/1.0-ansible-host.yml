@@ -1,0 +1,67 @@
+---
+- name: Bootstrap Host, Including GUI and IDE
+  hosts: localhost
+  become: yes
+  vars_prompt:
+  - name: full_name
+    prompt: What is your full name?
+    private: no
+    default: Vincent Saelzler
+  - name: usr_email
+    prompt: What is your email address?
+    private: no
+    default: vincent.saelzler@gmail.com
+  - name: on_linux
+    prompt: Should we install Linux apps? Do NOT install if running WSL on Windows! (y/n)
+    private: no
+    default: "y"
+  roles:
+    - ssh-conf
+    - git-conf
+  tasks:
+
+  - name: Install apt packages
+    apt:
+      pkg:
+        - python3-pip
+        - sshpass # required to bootstrap bare-metal nodes
+
+  - name: Install SPICE Client
+    apt:
+      pkg: virt-viewer
+    when: on_linux == "y" or on_linux == "Y"
+
+  - name: Install VS Code
+    import_role:
+      name: vs-code
+    when: on_linux == "y" or on_linux == "Y"
+
+- name: User Config - IDE Extensions, Python Packages, Ansible Roles, and Aliases
+  hosts: localhost
+  vars_prompt:
+  - name: on_linux
+    prompt: Should we install Linux apps? Do NOT install if running WSL on Windows! (y/n)
+    private: no
+    default: "y"
+  - name: wipe_keyair
+    prompt: Should we OVERWRITE the existing public/private keypair? This WIPES existing contents of ~/.ssh/id_rsa and ~/.ssh/id_rsa.pub
+    private: no
+    default: "y"
+  roles:
+    - aliases
+    - vault-pw
+  tasks:
+
+  - name: Install python packages
+    pip:
+      name: proxmoxer
+
+  - name: Install Public/Private Keypair
+    import_role:
+      name: private-key
+    when: wipe_keyair == "y" or wipe_keyair == "Y"
+
+  - name: Install VS Code Extensions
+    import_role:
+      name: vs-code-ext
+    when: on_linux == "y" or on_linux == "Y"

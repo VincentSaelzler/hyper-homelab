@@ -1,0 +1,7 @@
+---
+- name: Disable Strict Host Key Checking
+  lineinfile:
+    path: /etc/ssh/ssh_config
+    line: "StrictHostKeyChecking no"
+    regexp: "StrictHostKeyChecking"
+    state: present

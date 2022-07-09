@@ -1,0 +1,57 @@
+---
+- name: Install Packages
+  hosts: service1,service2
+  become: yes
+  handlers:
+    - import_tasks: handlers/main.yml
+  roles:
+    - full-upgrade
+    - personalize
+    - unprivileged-user
+    - rsyslog
+  tasks:
+    - name: Install apt packages
+      apt:
+        state: present
+        pkg:
+        - nodejs
+        - npm
+
+- name: Create and express app
+  hosts: service1,service2
+  vars:
+    ansible_user: "{{ usr_name }}"
+  tasks:
+    - name: Create the container directory
+      file:
+        path: "~/myapp/"
+        state: directory
+    - name: Run npm init
+      command:
+        cmd: "npm init -y"
+        chdir: "~/myapp"
+        creates: "~/myapp/package.json"
+    - name: Install express
+      command:
+        cmd: "npm install express"
+        chdir: "~/myapp"
+        creates: "~/myapp/package-lock.json"
+    - name: Copy the app file
+      template:
+        src: node-hello-world.js
+        dest: "~/myapp/index.js"
+        mode: "755"
+
+- name: Create the service
+  hosts: service1,service2
+  become: yes
+  tasks:
+  - name: Copy the node service file
+    template:
+        src: node.service
+        dest: /etc/systemd/system
+  - name: Restart node service
+    systemd:
+      name: node
+      state: restarted
+      enabled: yes

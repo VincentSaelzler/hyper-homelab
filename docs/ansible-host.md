@@ -16,10 +16,19 @@ Download and install [virt-viewer](https://virt-manager.org/download/)
 **Linux:** Install Ubuntu on physical hardware
 
 ### Bootstrap with Ansible and Git
-Install software
+Install apt software
 ```sh
 sudo apt update && sudo apt full-upgrade && sudo apt autoremove && sudo reboot
-sudo apt install git ansible
+sudo apt install git python3-pip
+```
+Install python software
+```sh
+# ~/.local/bin is where python saves the Ansible executables
+# The export command will only add the directory to the path for the current session.
+# For persistence, we are relying on ~/.profile to automatically add ~/.local/bin (because it exists).
+# If that doesn't work, check documentation for your distro.
+export PATH=$PATH:$HOME/.local/bin
+python3 -m pip install --user ansible
 ```
 Clone repository
 ```sh

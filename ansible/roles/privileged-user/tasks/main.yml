@@ -1,0 +1,12 @@
+---
+- name: Copy the Public SSH key to the Host
+  authorized_key:
+    user: "{{ ansible_user }}"
+    state: present
+    exclusive: yes
+    key: '{{ pub_key }}'
+
+- name: Set Privileged User PW
+  user:
+    name: "{{ ansible_user }}"
+    password: "{{ root_pw | password_hash('sha512', user_pw_salt) }}"

@@ -1,0 +1,14 @@
+---
+- name: Add Unprivileged User
+  user:
+    name: "{{ usr_name }}"
+    comment: "{{ full_name }}"
+    password: "{{ user_pw | password_hash('sha512', user_pw_salt) }}"
+    shell: /bin/bash
+
+- name: Add Authorized Public Key.
+  authorized_key:
+    user: "{{ usr_name }}"
+    state: present
+    exclusive: yes
+    key: '{{ pub_key }}'

@@ -1,0 +1,49 @@
+---
+- name: Bootstrap Proxmox Nodes
+  hosts: proxmox_nodes
+  handlers:
+    - import_tasks: handlers/main.yml
+  roles:
+    - privileged-user
+  tasks:
+
+  # network
+  - name: Check Whether DMZ Bridge Configuration Exists
+    lineinfile:
+      path: /etc/network/interfaces
+      line: "iface {{ netenv.dmz.vbridge }} inet static"
+      state: present
+    check_mode: yes # do not add the line - just check whether it WOULD be added
+    register: presence
+
+  - name: Create DMZ Bridge Network (for VMs)
+    command:
+      cmd: "pvesh create /nodes/{{ inventory_hostname }}/network --iface {{ netenv.dmz.vbridge }} --type bridge --autostart true --cidr {{ dmz_cidr }} --bridge_ports {{ dmz_iface }}"
+    when:
+    - presence.changed # this will NOT run an update - only adds the bridge config if it does not exist.
+    - dmz_iface is defined # some nodes don't have a spare ethernet port (yet)
+    changed_when: true
+    notify:
+    - Restart
+
+  #repositories
+  - name: Disable Enterprise Repository
+    replace:
+      path: /etc/apt/sources.list.d/pve-enterprise.list
+      regexp: '^deb'
+      replace: '#deb'
+    notify:
+    - Update and Upgrade
+    - Restart
+
+  - name: Enable No-Subscription Repository
+    lineinfile:
+      path: /etc/apt/sources.list
+      line: "deb http://download.proxmox.com/debian/pve {{ ansible_facts.distribution_release }} pve-no-subscription"
+      state: present
+    notify:
+    - Update and Upgrade
+    - Restart
+
+# host-specific configuration (disk partitioning and LVM/RAID)
+#- import_playbook: proxmox-pve4.yml

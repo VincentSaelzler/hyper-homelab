@@ -1,6 +1,6 @@
 # Physical Setup
 The computer has 3 ethernet ports:
-1. onboard (re0) = MGMT (aka LAN)
+1. onboard (re0) = LAN
 1. pci card port #1 (igb0) = WAN
 1. pci card port #2 (igb1) = DMZ
 
@@ -28,7 +28,7 @@ Use the AutoConfigBackup service. This is totally free, and provides offsite bac
 - Avoid IPv6 DNS Servers (http://pfsense1.vnet seemed to default to ATT servers?!)
 - Activate AES-NI Crypto
 - Set DHCP Range to be Correct
-- DHCP on MGMT Interface but not DMZ
+- DHCP on LAN Interface but not DMZ
 - root PW and authorized keys
 - ntp? seems like the default pool wasn't working.
 
@@ -43,4 +43,4 @@ Mostly defaults. Set retention period to 30 days and don't compress logs.
 
 ## Restricting GUI Access in DMZ
 Followed the pfSense cookbook for DMZ: [Setup isolating LAN and DMZ, each with unrestricted Internet access](https://docs.netgate.com/pfsense/en/latest/recipes/example-basic-configuration.html#setup-isolating-lan-and-dmz-each-with-unrestricted-internet-access)  
-Was more permissive for MGMT. Just stuck with the default allow LAN to ANY rule, and made a blocking exception to the DMZ network.
+Was more permissive for LAN. Just stuck with the default allow LAN to ANY rule, and made a blocking exception to the DMZ network.
