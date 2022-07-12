@@ -26,8 +26,8 @@
       state: present
       pkg:
       - elasticsearch
-    # - name: Restart rsyslog service
-    #   systemd:
-    #     name: rsyslog
-    #     state: restarted
-    #     enabled: yes
+  - name: Start Elasticsearch Service
+    systemd:
+      name: elasticsearch
+      state: started
+      enabled: yes
