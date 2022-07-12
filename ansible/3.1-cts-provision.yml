@@ -37,6 +37,7 @@
       node: "{{ virt_host }}"
       # hardware
       ostemplate: "local:vztmpl/{{ template_name.stdout }}"
+      disk: "{{ disk_size }}"
       storage: "{{ tgt_storage }}"
       memory: "{{ ram }}"
       swap: 0
