@@ -1,5 +1,5 @@
 ---
 addtl_space: 8G
 vcpus: 2
-ram: 4096
+ram: 8192
 is_log_server: yes

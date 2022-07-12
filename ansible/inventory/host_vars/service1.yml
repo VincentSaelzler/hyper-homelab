@@ -1,5 +1,5 @@
 ---
 addtl_space: 8G
-vcpus: 4
-ram: 8192
+vcpus: 1
+ram: 1024
 port: 31301
