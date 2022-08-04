@@ -40,7 +40,7 @@
       regexp: "^xpack.security.enabled"
       state: present
 
-  - name: Listen on All Ports with Kibana
+  - name: Listen on All IP Addresses with Kibana
     lineinfile:
       path: /etc/kibana/kibana.yml
       line: 'server.host: "0.0.0.0"'
