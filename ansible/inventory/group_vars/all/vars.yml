@@ -28,7 +28,7 @@ certs:
     - saelzler.org
 
 # rsyslog and nut server (pfSense)
-log_server: "192.168.128.1:5140"
+log_server: "192.168.129.32"
 ups_server: "192.168.128.1"
 ups_name: "old-smart-1500"
 ups_user: upsmon_remote
