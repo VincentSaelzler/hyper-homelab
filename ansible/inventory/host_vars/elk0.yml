@@ -2,3 +2,4 @@
 vcpus: 2
 ram: 16384
 disk_size: 8 # overrides the default in group vars file
+is_log_server: yes

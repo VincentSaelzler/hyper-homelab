@@ -8,61 +8,62 @@
     - full-upgrade
     - personalize
     - unprivileged-user
+    - rsyslog
   tasks:
 
-  - name: Install apt packages
-    apt:
-      state: present
-      pkg:
-      - gpg
+  # - name: Install apt packages
+  #   apt:
+  #     state: present
+  #     pkg:
+  #     - gpg
 
-  - name: Add apt Signing Key
-    apt_key:
-      url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+  # - name: Add apt Signing Key
+  #   apt_key:
+  #     url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
   
-  - name: Configure Elastic Archive
-    apt_repository:
-      repo: 'deb https://artifacts.elastic.co/packages/8.x/apt stable main'
-      state: present
+  # - name: Configure Elastic Archive
+  #   apt_repository:
+  #     repo: 'deb https://artifacts.elastic.co/packages/8.x/apt stable main'
+  #     state: present
 
-  - name: Install apt packages
-    apt:
-      state: present
-      pkg:
-      - elasticsearch
-      - kibana
-      - logstash
+  # - name: Install apt packages
+  #   apt:
+  #     state: present
+  #     pkg:
+  #     - elasticsearch
+  #     - kibana
+  #     - logstash
 
-  - name: Disable Security in Elasticsearch
-    lineinfile:
-      path: /etc/elasticsearch/elasticsearch.yml
-      line: "xpack.security.enabled: false"
-      regexp: "^xpack.security.enabled"
-      state: present
+  # - name: Disable Security in Elasticsearch
+  #   lineinfile:
+  #     path: /etc/elasticsearch/elasticsearch.yml
+  #     line: "xpack.security.enabled: false"
+  #     regexp: "^xpack.security.enabled"
+  #     state: present
 
-  - name: Listen on All IP Addresses with Kibana
-    lineinfile:
-      path: /etc/kibana/kibana.yml
-      line: 'server.host: "0.0.0.0"'
-      regexp: "^server.host"
-      state: present
+  # - name: Listen on All IP Addresses with Kibana
+  #   lineinfile:
+  #     path: /etc/kibana/kibana.yml
+  #     line: 'server.host: "0.0.0.0"'
+  #     regexp: "^server.host"
+  #     state: present
 
-  # the elastic documentation recommends starting in this order,
-  # because some programs are dependent on others
-  - name: Start Elasticsearch Service
-    systemd:
-      name: elasticsearch
-      state: started
-      enabled: yes
+  # # the elastic documentation recommends starting in this order,
+  # # because some programs are dependent on others
+  # - name: Start Elasticsearch Service
+  #   systemd:
+  #     name: elasticsearch
+  #     state: started
+  #     enabled: yes
 
-  - name: Start Kibana Service
-    systemd:
-      name: kibana
-      state: started
-      enabled: yes
+  # - name: Start Kibana Service
+  #   systemd:
+  #     name: kibana
+  #     state: started
+  #     enabled: yes
 
-  - name: Start Logstash Service
-    systemd:
-      name: logstash
-      state: started
-      enabled: yes
+  # - name: Start Logstash Service
+  #   systemd:
+  #     name: logstash
+  #     state: started
+  #     enabled: yes
