@@ -21,6 +21,13 @@
         dest: "/etc/haproxy/haproxy.cfg"
         #mode: "644"
         force: yes
+        
+    - name: Modify the Default HAProxy Config (Defaults to ONLY Sending Logs to Local File)
+      lineinfile:
+        path: /etc/rsyslog.d/49-haproxy.conf
+        line: '# stop # commenting so rsyslog will also send to other destinations'
+        regexp: "^  stop$"
+        state: present
 
 - name: Generate Let's Encrypt Certificates
   hosts: proxy0
