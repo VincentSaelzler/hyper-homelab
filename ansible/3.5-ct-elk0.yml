@@ -11,28 +11,28 @@
     - rsyslog
   tasks:
 
-  # - name: Install apt packages
-  #   apt:
-  #     state: present
-  #     pkg:
-  #     - gpg
+  - name: Install apt packages
+    apt:
+      state: present
+      pkg:
+      - gpg
 
-  # - name: Add apt Signing Key
-  #   apt_key:
-  #     url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+  - name: Add apt Signing Key
+    apt_key:
+      url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
   
-  # - name: Configure Elastic Archive
-  #   apt_repository:
-  #     repo: 'deb https://artifacts.elastic.co/packages/8.x/apt stable main'
-  #     state: present
+  - name: Configure Elastic Archive
+    apt_repository:
+      repo: 'deb https://artifacts.elastic.co/packages/8.x/apt stable main'
+      state: present
 
-  # - name: Install apt packages
-  #   apt:
-  #     state: present
-  #     pkg:
-  #     - elasticsearch
-  #     - kibana
-  #     - logstash
+  - name: Install apt packages
+    apt:
+      state: present
+      pkg:
+      # - elasticsearch
+      # - kibana
+      - logstash
 
   # - name: Disable Security in Elasticsearch
   #   lineinfile:
