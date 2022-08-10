@@ -11,6 +11,7 @@
   #   - rsyslog
   vars:
     logstash_home_dir: /usr/share/logstash/
+    rsyslog_tgt_file: /var/log/tcp.log
   tasks:
 
   - name: Install apt packages
