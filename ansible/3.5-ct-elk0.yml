@@ -4,11 +4,13 @@
   become: yes
   handlers:
     - import_tasks: handlers/main.yml
-  roles:
-    - full-upgrade
-    - personalize
-    - unprivileged-user
-    - rsyslog
+  # roles:
+  #   - full-upgrade
+  #   - personalize
+  #   - unprivileged-user
+  #   - rsyslog
+  vars:
+    logstash_home_dir: /usr/share/logstash/
   tasks:
 
   - name: Install apt packages
@@ -33,6 +35,11 @@
       # - elasticsearch
       # - kibana
       - logstash
+
+  - name: Copy the Logstash Configuration File
+    template:
+        src: logstash.conf
+        dest: "{{ logstash_home_dir }}"
 
   # - name: Disable Security in Elasticsearch
   #   lineinfile:
