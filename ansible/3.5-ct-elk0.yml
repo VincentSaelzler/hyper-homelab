@@ -4,11 +4,11 @@
   become: yes
   handlers:
     - import_tasks: handlers/main.yml
-  # roles:
+  roles:
   #   - full-upgrade
   #   - personalize
   #   - unprivileged-user
-  #   - rsyslog
+    - rsyslog
   vars:
     logstash_home_dir: /usr/share/logstash/
     rsyslog_tgt_file: /var/log/tcp.log
