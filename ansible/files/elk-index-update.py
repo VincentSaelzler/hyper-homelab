@@ -2,6 +2,9 @@ import requests
 import sys
 import json
 
+# huge thanks to Val from StackOverflow for his help on this!
+# https://stackoverflow.com/questions/73423809/how-to-add-a-component-template-to-an-existing-composable-index-template/
+
 # determine where to send requests
 elasticsearchApiRoot = sys.argv[1] # for example: http://localhost:9200/"
 componentTemplateEndpoint = elasticsearchApiRoot + "_component_template/logs-settings"
