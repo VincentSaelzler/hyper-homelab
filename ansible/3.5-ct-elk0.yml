@@ -8,7 +8,7 @@
     - personalize
     - rsyslog
   vars:
-    rsyslog_tgt_file: /var/log/tcp.log
+    rsyslog_tgt_file: /var/log/test.log
   tasks:
 
   #  -------------------------------- installation
