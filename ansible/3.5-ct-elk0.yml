@@ -8,7 +8,6 @@
     - personalize
     - rsyslog
   vars:
-    logstash_home_dir: /usr/share/logstash/
     rsyslog_tgt_file: /var/log/tcp.log
   tasks:
 
@@ -53,7 +52,7 @@
   - name: Copy the Logstash Configuration File
     template:
         src: logstash.conf
-        dest: "{{ logstash_home_dir }}"
+        dest: /etc/logstash/conf.d/main.conf
 
   #  -------------------------------- execution
   - name: Start Elasticsearch Service  
@@ -80,8 +79,8 @@
     delay: 10
     until: script_out.rc == 0 # elk stack takes a while to start
 
-  # - name: Start Logstash Service
-  #   systemd:
-  #     name: logstash
-  #     state: started
-  #     enabled: yes
+  - name: Start Logstash Service
+    systemd:
+      name: logstash
+      state: started
+      enabled: yes
