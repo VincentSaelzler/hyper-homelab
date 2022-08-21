@@ -55,16 +55,16 @@
         dest: /etc/logstash/conf.d/main.conf
 
   #  -------------------------------- execution
-  - name: Start Elasticsearch Service  
+  - name: Restart Elasticsearch Service  
     systemd:
       name: elasticsearch
-      state: started
+      state: restarted
       enabled: yes
 
-  - name: Start Kibana Service # start Elasticsearch before Kibana
+  - name: Restart Kibana Service # start Elasticsearch before Kibana
     systemd:
       name: kibana
-      state: started
+      state: restarted
       enabled: yes
 
   # by default, the "number_of_replicas" setting for new indexes is 1
@@ -79,8 +79,8 @@
     delay: 10
     until: script_out.rc == 0 # elk stack takes a while to start
 
-  - name: Start Logstash Service
+  - name: Restart Logstash Service
     systemd:
       name: logstash
-      state: started
+      state: restarted
       enabled: yes
