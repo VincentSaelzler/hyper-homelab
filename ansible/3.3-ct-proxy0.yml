@@ -6,7 +6,6 @@
   roles:
     - full-upgrade
     - personalize
-    - unprivileged-user
     - rsyslog
   tasks:
     - name: Install apt packages
@@ -15,19 +14,19 @@
         pkg:
         - haproxy
         #- curl # for testing connections to localhost
-    - name: Copy the main config file
+    - name: Copy the Main Config File
       copy:
         src: haproxy.cfg
         dest: "/etc/haproxy/haproxy.cfg"
         #mode: "644"
         force: yes
         
-    - name: Modify the Default HAProxy Config (Defaults to ONLY Sending Logs to Local File)
-      lineinfile:
+    # this file gets installed during the apt package install
+    # we do not want to perform any of the actions is specifies
+    - name: Delete the Default HAProxy Rsyslog Config
+      file:
         path: /etc/rsyslog.d/49-haproxy.conf
-        line: '# stop # commenting so rsyslog will also send to other destinations'
-        regexp: "^  stop$"
-        state: present
+        state: absent
 
 - name: Generate Let's Encrypt Certificates
   hosts: proxy0
@@ -74,11 +73,12 @@
 - name: Restart Services to Apply Changes
   hosts: proxy0
   tasks:
-    - name: The certbot role (sometimes) restarts haproxy service already. Give it a few seconds to fully start.
-      wait_for:
-        timeout: 20
     - name: Restart haproxy service
       systemd:
         name: haproxy
         state: restarted
         enabled: yes
+      register: systemctl
+      retries: 10
+      delay: 3
+      until: not systemctl.failed # The certbot role (sometimes) prevents haproxy from restarting for a few seconds.
