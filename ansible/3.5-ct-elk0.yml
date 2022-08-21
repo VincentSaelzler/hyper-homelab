@@ -1,74 +1,84 @@
 ---
-- name: Install Packages
+- name: Rsyslog and the ELK Stack
   hosts: elk0
-  become: yes
   handlers:
     - import_tasks: handlers/main.yml
   roles:
-  #   - full-upgrade
-  #   - personalize
-  #   - unprivileged-user
+    - full-upgrade
+    - personalize
     - rsyslog
   vars:
     logstash_home_dir: /usr/share/logstash/
     rsyslog_tgt_file: /var/log/tcp.log
   tasks:
 
-  - name: Install apt packages
+  #  -------------------------------- installation
+  - name: Install GPG
     apt:
       state: present
-      pkg:
-      - gpg
+      pkg: gpg
 
   - name: Add apt Signing Key
     apt_key:
       url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
-  
+
   - name: Configure Elastic Archive
     apt_repository:
       repo: 'deb https://artifacts.elastic.co/packages/8.x/apt stable main'
       state: present
 
-  - name: Install apt packages
+  - name: Install ELK Stack
     apt:
       state: present
       pkg:
-      # - elasticsearch
-      # - kibana
+      - elasticsearch
+      - kibana
       - logstash
+
+  #  -------------------------------- configuration
+  - name: Disable Security in Elasticsearch
+    lineinfile:
+      path: /etc/elasticsearch/elasticsearch.yml
+      line: "xpack.security.enabled: false"
+      regexp: "^xpack.security.enabled"
+      state: present
+
+  - name: Listen on All IP Addresses with Kibana
+    lineinfile:
+      path: /etc/kibana/kibana.yml
+      line: 'server.host: "0.0.0.0"'
+      regexp: "^server.host"
+      state: present
 
   - name: Copy the Logstash Configuration File
     template:
         src: logstash.conf
         dest: "{{ logstash_home_dir }}"
 
-  # - name: Disable Security in Elasticsearch
-  #   lineinfile:
-  #     path: /etc/elasticsearch/elasticsearch.yml
-  #     line: "xpack.security.enabled: false"
-  #     regexp: "^xpack.security.enabled"
-  #     state: present
+  #  -------------------------------- execution
+  - name: Start Elasticsearch Service  
+    systemd:
+      name: elasticsearch
+      state: started
+      enabled: yes
 
-  # - name: Listen on All IP Addresses with Kibana
-  #   lineinfile:
-  #     path: /etc/kibana/kibana.yml
-  #     line: 'server.host: "0.0.0.0"'
-  #     regexp: "^server.host"
-  #     state: present
+  - name: Start Kibana Service # start Elasticsearch before Kibana
+    systemd:
+      name: kibana
+      state: started
+      enabled: yes
 
-  # # the elastic documentation recommends starting in this order,
-  # # because some programs are dependent on others
-  # - name: Start Elasticsearch Service
-  #   systemd:
-  #     name: elasticsearch
-  #     state: started
-  #     enabled: yes
-
-  # - name: Start Kibana Service
-  #   systemd:
-  #     name: kibana
-  #     state: started
-  #     enabled: yes
+  # by default, the "number_of_replicas" setting for new indexes is 1
+  # this causes an amber status on indexes because we are a single node cluster
+  # make this change BEFORE logstash starts pushing data (and creating indexes)
+  - name: Configure Indexes for Single-Node Cluster
+    script:
+      executable: "/usr/bin/python3"
+      cmd: "elk-index-update.py http://localhost:9200/"
+    register: script_out
+    retries: 12
+    delay: 10
+    until: script_out.rc == 0 # elk stack takes a while to start
 
   # - name: Start Logstash Service
   #   systemd:
