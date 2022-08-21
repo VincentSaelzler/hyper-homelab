@@ -57,13 +57,6 @@
         - nesting=1 
       #state: started #apparently cannot create and start containers in one step
     delegate_to: localhost
-    register: container
-
-  - name: Wait for a few seconds so the container will be recognized by name
-    wait_for:
-      timeout: 10
-    delegate_to: localhost
-    when: container.changed
 
   - name: Start the new container
     proxmox:
@@ -75,3 +68,7 @@
       hostname: "{{ inventory_hostname }}"
       state: started
     delegate_to: localhost
+    register: proxmoxer
+    retries: 10
+    delay: 1
+    until: not proxmoxer.failed # sometimes it takes a few seconds to recognize container by name
