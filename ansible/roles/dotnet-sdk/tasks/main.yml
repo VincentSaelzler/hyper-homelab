@@ -1,7 +1,7 @@
 ---
-- name: Download Microsoft's Ubuntu 20.04 deb File
+- name: Download Microsoft's Product Deb File
   get_url:
-    url: https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb
+    url: "{{ dotnet_deb_file }}"
     dest: '/tmp'
 
 - name: Make MS Packages Available for Install
@@ -12,5 +12,5 @@
   apt:
     state: present
     update_cache: yes # important
-    pkg: dotnet-sdk-6.0
+    pkg: "{{ sdk_packages }}"
   notify: Restart

@@ -1,2 +1,5 @@
 ---
 ansible_user: root
+
+# https://docs.microsoft.com/en-us/dotnet/core/install/linux-debian
+dotnet_deb_file: https://packages.microsoft.com/config/debian/11/packages-microsoft-prod.deb

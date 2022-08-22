@@ -7,3 +7,4 @@
     # - full-upgrade
     # - personalize
     # - rsyslog
+    - dotnet-sdk
