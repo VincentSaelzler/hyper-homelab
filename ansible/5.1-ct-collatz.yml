@@ -1,0 +1,10 @@
+---
+- name: Bootstrap, Including Dotnet Runtime
+  hosts: collatz
+  handlers:
+    - import_tasks: handlers/main.yml
+  roles:
+    - full-upgrade
+    - personalize
+    - rsyslog
+    - unprivileged-user
