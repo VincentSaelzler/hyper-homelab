@@ -1,0 +1,7 @@
+---
+# expected value is a list of packages, for example:
+# dotnet_packages:
+#   - dotnet-sdk-6.0
+#   - dotnet-runtime-3.1
+
+dotnet_packages: []

@@ -8,7 +8,7 @@
     - unprivileged-user
     - ubuntu-gui
     - vs-code
-    - dotnet-sdk
+    - dotnet
     - ssh-conf
     - git-conf
   handlers:

@@ -4,6 +4,10 @@ vcpus: 4
 ram: 4096
 vram: 32
 
+dotnet_packages:
+  - dotnet-sdk-2.1
+  - dotnet-sdk-6.0
+
 # This VM is special because it has an
 #   IP on the LAN network
 #   AND on the DMZ network.

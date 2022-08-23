@@ -7,7 +7,7 @@
     - full-upgrade
     - personalize
     - rsyslog
-    - dotnet-sdk
+    - dotnet
     - unprivileged-user
   tasks:
     - name: Install Git

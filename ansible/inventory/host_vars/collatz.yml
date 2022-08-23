@@ -1,3 +1,4 @@
 ---
 vcpus: 1
 ram: 1024
+dotnet_packages: dotnet-runtime-2.1
