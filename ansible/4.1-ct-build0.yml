@@ -28,7 +28,18 @@
         dest: "~/src/{{ project_name }}/"
         force: yes
 
-    - name: Create Build Artifacts and Save in /tmp Directory
+    - name: Create and Save Build Artifacts
       command: "dotnet publish -c Release -o /tmp/{{ project_name }}/"
       args:
         chdir: "~/src/{{ project_name }}/"
+
+    - name: Compress Published Output Directory
+      archive:
+        path: /tmp/{{ project_name }}/
+        dest: "~/{{ project_name }}.tgz"
+
+    - name: Fetch File and Save on Control Node
+      fetch:
+        src: "~/{{ project_name }}.tgz"
+        dest: "/tmp/{{ project_name }}.tgz"
+        flat: yes

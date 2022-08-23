@@ -9,3 +9,23 @@
     - rsyslog
     - unprivileged-user
     - dotnet
+  vars:
+    project_name: CollatzRazorPage
+  tasks:
+    - name: Create Folder for Executable Files
+      file:
+        path: "/usr/local/bin/{{ project_name }}"
+        state: directory
+        owner: "{{ usr_name }}"
+        group: "{{ usr_name }}"
+
+- name: Retreive Project
+  hosts: collatz
+  vars:
+    ansible_user: "{{ usr_name }}"
+    project_name: CollatzRazorPage
+  tasks:
+    - name: Unarchive Project File (Saved on Controller Node)
+      unarchive:
+        src: "/tmp/{{ project_name }}.tgz"
+        dest: "/usr/local/bin/{{ project_name }}"
