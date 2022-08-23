@@ -1,10 +1,34 @@
 ---
-- name: .NET Core Build Server
+- name: Bootstrap, Including Dotnet SDK(s)
   hosts: build0
   handlers:
     - import_tasks: handlers/main.yml
   roles:
-    # - full-upgrade
-    # - personalize
-    # - rsyslog
+    - full-upgrade
+    - personalize
+    - rsyslog
     - dotnet-sdk
+    - unprivileged-user
+  tasks:
+    - name: Install Git
+      apt:
+        pkg: git
+
+- name: Download Repository and Publish Project
+  hosts: build0
+  vars:
+    ansible_user: "{{ usr_name }}"
+    project_repo: https://github.com/VincentSaelzler/CollatzRazorPage.git
+    project_name: CollatzRazorPage
+  tasks:
+
+    - name: Clone Collatz Repo
+      git:
+        repo: "{{ project_repo }}"
+        dest: "~/src/{{ project_name }}/"
+        force: yes
+
+    - name: Create Build Artifacts and Save in /tmp Directory
+      command: "dotnet publish -c Release -o /tmp/{{ project_name }}/"
+      args:
+        chdir: "~/src/{{ project_name }}/"
