@@ -7,7 +7,7 @@ WorkingDirectory=/usr/local/bin/{{ project_name }}
 # systemd will run this executable to start the service
 # if /usr/bin/dotnet doesn't work, use `which dotnet` to find correct dotnet executable path
 # by default project runs on localhost:5000/5001. Not messing with port cofig in project source, just overriding.
-ExecStart=/usr/bin/dotnet /usr/local/bin/{{ project_name }}/CollatzCoreRazorPage.dll --urls "http://*:5005"
+ExecStart=/usr/bin/dotnet /usr/local/bin/{{ project_name }}/CollatzCoreRazorPage.dll --urls http://*:5000
 # to query logs using journalctl, set a logical name here  
 SyslogIdentifier={{ project_name }}
 
