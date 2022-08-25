@@ -29,3 +29,20 @@
       unarchive:
         src: "/tmp/{{ project_name }}.tgz"
         dest: "/usr/local/bin/{{ project_name }}"
+
+- name: Create Service File and Start Service
+  hosts: collatz
+  vars:
+    project_name: CollatzRazorPage
+  tasks:
+
+    - name: Copy the Service File
+      template:
+        src: collatz.service
+        dest: "/etc/systemd/system/collatzapp.service"
+
+    - name: Restart App Service
+      systemd:
+        name: collatzapp
+        state: restarted
+        enabled: yes
