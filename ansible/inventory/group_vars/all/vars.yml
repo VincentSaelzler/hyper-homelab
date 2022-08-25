@@ -18,14 +18,20 @@ netenv:
 domains: 
   # - quercusphellos.online
   - saelzler.org
+  - collatz.saelzler.org
 
 # the certbot role expects a list of ~certificates~
 # each certificate could have one or more domains
+# CANNOT USE MULTIPLE DOMAINS ON ONE CERT FOR NOW
+# TASK [Create symbolic links for intermediate certificate chains]
+# fails
 certs:
   # - domains:
     # - quercusphellos.online
   - domains:
     - saelzler.org
+  - domains:
+    - collatz.saelzler.org
 
 # rsyslog and nut server (pfSense)
 log_server: "192.168.129.32"
