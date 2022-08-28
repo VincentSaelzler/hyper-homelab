@@ -1,0 +1,9 @@
+---
+- name: Bootstrap
+  hosts: files
+  handlers:
+    - import_tasks: handlers/main.yml
+  roles:
+    - full-upgrade
+    - personalize
+    - rsyslog
