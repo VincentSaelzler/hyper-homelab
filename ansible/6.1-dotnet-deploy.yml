@@ -1,0 +1,69 @@
+---
+
+- name: Download Repository and Publish Project
+  hosts: build0
+  vars:
+    ansible_user: "{{ usr_name }}"
+    project_repo: https://github.com/VincentSaelzler/CollatzRazorPage.git
+    project_name: CollatzRazorPage
+  tasks:
+
+    - name: Clone Collatz Repo
+      git:
+        repo: "{{ project_repo }}"
+        dest: "~/src/{{ project_name }}/"
+        force: yes
+
+    - name: Create and Save Build Artifacts
+      command: "dotnet publish -c Release -o /tmp/{{ project_name }}/"
+      args:
+        chdir: "~/src/{{ project_name }}/"
+
+    - name: Compress Published Output Directory
+      archive:
+        path: /tmp/{{ project_name }}/
+        dest: "~/{{ project_name }}.tgz"
+
+    - name: Fetch File and Save on Control Node
+      fetch:
+        src: "~/{{ project_name }}.tgz"
+        dest: "/tmp/{{ project_name }}.tgz"
+        flat: yes
+
+  vars:
+    project_name: CollatzRazorPage
+  tasks:
+    - name: Create Folder for Executable Files
+      file:
+        path: "/usr/local/bin/{{ project_name }}"
+        state: directory
+        owner: "{{ usr_name }}"
+        group: "{{ usr_name }}"
+
+- name: Retreive Project
+  hosts: collatz
+  vars:
+    ansible_user: "{{ usr_name }}"
+    project_name: CollatzRazorPage
+  tasks:
+    - name: Unarchive Project File (Saved on Controller Node)
+      unarchive:
+        src: "/tmp/{{ project_name }}.tgz"
+        dest: "/usr/local/bin/{{ project_name }}"
+
+- name: Create Service File and Start Service
+  hosts: collatz
+  vars:
+    project_name: CollatzRazorPage
+  tasks:
+
+    - name: Copy the Service File
+      template:
+        src: collatz.service
+        dest: "/etc/systemd/system/collatzapp.service"
+
+    - name: Restart App Service
+      systemd:
+        name: collatzapp
+        state: restarted
+        enabled: yes
