@@ -1,4 +1,7 @@
 ---
 vcpus: 1
 ram: 1024
+
+# stuff related to the specific dotnet project the server runs
 dotnet_packages: aspnetcore-runtime-2.1
+dotnet_repo: https://github.com/VincentSaelzler/CollatzRazorPage.git

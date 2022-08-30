@@ -1,0 +1,9 @@
+---
+vcpus: 2
+ram: 2048
+
+# stuff related to the specific dotnet projects the server builds
+dotnet_packages:
+  - dotnet-sdk-2.1
+  - dotnet-sdk-3.1
+  - dotnet-sdk-6.0

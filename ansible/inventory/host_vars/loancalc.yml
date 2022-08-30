@@ -1,0 +1,8 @@
+---
+vcpus: 1
+ram: 1024
+
+# stuff related to the specific dotnet project the server runs
+dotnet_packages: aspnetcore-runtime-3.1
+dotnet_repo: "git@github.com:VincentSaelzler/loancalc.git"
+dotnet_repo_deploy_key: loancalc_rsa

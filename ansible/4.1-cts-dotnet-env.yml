@@ -1,0 +1,34 @@
+---
+- name: Bootstrap and Install Dotnet Packages (Runtime, SDK)
+  hosts: dotnet_apps, build
+  handlers:
+    - import_tasks: handlers/main.yml
+  roles:
+    - full-upgrade
+    - personalize
+    - rsyslog
+    - unprivileged-user
+    - dotnet
+  tasks:
+    - debug:
+        var: dotnet_packages
+
+- name: Install Git on Build Server
+  hosts: build
+  tasks:
+    - name: Install Git
+      apt:
+        pkg: git
+
+- name: Copy Encrypted Private Repo Deploy Key(s)
+  hosts: dotnet_apps
+  vars:
+    ansible_user: "{{ usr_name }}"
+  tasks:
+    - name:  Copy Encrypted Private Repo Deploy Key(s)
+      delegate_to: build
+      copy:
+        src: "{{ dotnet_repo_deploy_key }}"
+        dest: "~/.ssh/"
+        mode: "600" # mode based on what ssh-keygen auto-generated
+      when: dotnet_repo_deploy_key is defined
