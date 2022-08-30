@@ -4,12 +4,14 @@
   hosts: dotnet_apps
   vars:
     ansible_user: "{{ usr_name }}"
+    repo_dir: "~/src/{{ inventory_hostname }}/"
+    build_tgt: "/tmp/{{ inventory_hostname }}/"
   tasks:
     - name: Clone Private Repositories
       delegate_to: build
       git:
         repo: "{{ dotnet_repo }}"
-        dest: "~/src/{{ inventory_hostname }}/"
+        dest: "{{ repo_dir }}"
         force: yes
         key_file: "~/.ssh/{{ dotnet_repo_deploy_key }}" # required for private repos
         accept_newhostkey: yes # if the host key isn't trusted, module fails with misleading permissions issue
@@ -19,14 +21,15 @@
       delegate_to: build
       git:
         repo: "{{ dotnet_repo }}"
-        dest: "~/src/{{ inventory_hostname }}/"
+        dest: "{{ repo_dir }}"
         force: yes
       when: dotnet_repo_deploy_key is not defined
   
-#     - name: Create and Save Build Artifacts
-#       command: "dotnet publish -c Release -o /tmp/{{ project_name }}/"
-#       args:
-#         chdir: "~/src/{{ project_name }}/"
+    - name: Create and Save Build Artifacts
+      delegate_to: build
+      command: "dotnet publish -c Release -o {{ build_tgt }}"
+      args:
+        chdir: "{{ repo_dir }}{{dotnet_build_subdir}}"
 
 #     - name: Compress Published Output Directory
 #       archive:

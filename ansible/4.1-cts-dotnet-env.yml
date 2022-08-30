@@ -28,7 +28,7 @@
     - name:  Copy Encrypted Private Repo Deploy Key(s)
       delegate_to: build
       copy:
-        src: "{{ dotnet_repo_deploy_key }}"
+        src: "vault/{{ dotnet_repo_deploy_key }}"
         dest: "~/.ssh/"
         mode: "600" # mode based on what ssh-keygen auto-generated
       when: dotnet_repo_deploy_key is defined

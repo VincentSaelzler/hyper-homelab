@@ -1,6 +1,7 @@
 ---
 vcpus: 2
 ram: 2048
+disk_size: 8 # overrides the default in group vars file
 
 # stuff related to the specific dotnet projects the server builds
 dotnet_packages:
