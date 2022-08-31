@@ -6,6 +6,7 @@
     ansible_user: "{{ usr_name }}"
     repo_dir: "~/src/{{ inventory_hostname }}/"
     build_tgt: "/tmp/{{ inventory_hostname }}/"
+    archive_file: "/tmp/{{ inventory_hostname }}.tgz"
   tasks:
     - name: Clone Private Repositories
       delegate_to: build
@@ -31,10 +32,11 @@
       args:
         chdir: "{{ repo_dir }}{{dotnet_build_subdir}}"
 
-#     - name: Compress Published Output Directory
-#       archive:
-#         path: /tmp/{{ project_name }}/
-#         dest: "~/{{ project_name }}.tgz"
+    - name: Compress Published Output Directory
+      delegate_to: build
+      archive:
+        path: "{{ build_tgt }}"
+        dest: "{{ archive_file }}"
 
 #     - name: Fetch File and Save on Control Node
 #       fetch:
