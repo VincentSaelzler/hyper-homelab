@@ -15,7 +15,7 @@
         dest: "{{ repo_dir }}"
         force: yes
         key_file: "~/.ssh/{{ dotnet_repo_deploy_key }}" # required for private repos
-        accept_newhostkey: yes # if the host key isn't trusted, module fails with misleading permissions issue
+        accept_newhostkey: yes # if the host key isn't trusted, module fails with misleading permissions errors
       when: dotnet_repo_deploy_key is defined
 
     - name: Clone Public Repositories
@@ -50,19 +50,16 @@
         src: "{{ archive_file }}"
         dest: "{{ app_directory }}"
 
-# - name: Create Service File and Start Service
-#   hosts: collatz
-#   vars:
-#     project_name: CollatzRazorPage
-#   tasks:
+- name: Create Service File and Start Service
+  hosts: dotnet_apps
+  tasks:
+    - name: Copy the Service File
+      template:
+        src: dotnetapp.service
+        dest: /etc/systemd/system/dotnetapp.service
 
-#     - name: Copy the Service File
-#       template:
-#         src: collatz.service
-#         dest: "/etc/systemd/system/collatzapp.service"
-
-#     - name: Restart App Service
-#       systemd:
-#         name: collatzapp
-#         state: restarted
-#         enabled: yes
+    - name: Restart App Service
+      systemd:
+        name: dotnetapp
+        state: restarted
+        enabled: yes

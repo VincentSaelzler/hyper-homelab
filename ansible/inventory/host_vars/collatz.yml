@@ -6,3 +6,4 @@ ram: 1024
 dotnet_packages: aspnetcore-runtime-2.1
 dotnet_repo: https://github.com/VincentSaelzler/CollatzRazorPage.git
 dotnet_build_subdir: "" # i.e. the root folder of the repo
+dotnet_dll: CollatzCoreRazorPage.dll

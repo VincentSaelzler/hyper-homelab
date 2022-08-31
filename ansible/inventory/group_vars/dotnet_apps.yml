@@ -1,2 +1,3 @@
 ---
 app_directory: "/app"
+listen_addr: "http://*:5000"
