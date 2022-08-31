@@ -20,7 +20,7 @@
       apt:
         pkg: git
 
-- name: Copy Encrypted Private Repo Deploy Key(s)
+- name: Copy Encrypted Private Repo Deploy Key(s) to Build Server
   hosts: dotnet_apps
   vars:
     ansible_user: "{{ usr_name }}"
@@ -32,3 +32,13 @@
         dest: "~/.ssh/"
         mode: "600" # mode based on what ssh-keygen auto-generated
       when: dotnet_repo_deploy_key is defined
+
+- name: Create Directory to Run Apps
+  hosts: dotnet_apps
+  tasks:
+    - name: Create Folder for Executable Files
+      file:
+        path: "{{ app_directory }}"
+        state: directory
+        owner: "{{ usr_name }}"
+        group: "{{ usr_name }}"
