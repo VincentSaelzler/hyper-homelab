@@ -1,5 +1,5 @@
 ---
-- name: Bootstrap
+- name: Bootstrap and Install MS SQL Server
   hosts: mssql
   handlers:
     - import_tasks: handlers/main.yml
@@ -8,3 +8,21 @@
     - personalize
     - rsyslog
     - unprivileged-user
+  tasks:
+    - name: Install GPG
+      apt:
+        state: present
+        pkg: gpg
+
+    - name: Add apt Signing Key
+      apt_key:
+        url: https://packages.microsoft.com/keys/microsoft.asc
+
+    - name: Register SQL Server 2019 Repository
+      ansible.builtin.apt_repository:
+        # contents of https://packages.microsoft.com/config/ubuntu/20.04/mssql-server-2019.list
+        repo: deb [arch=amd64,armhf,arm64] https://packages.microsoft.com/ubuntu/20.04/mssql-server-2019 focal main
+
+    - name: Install MS SQL Server
+      apt:
+        pkg: mssql-server

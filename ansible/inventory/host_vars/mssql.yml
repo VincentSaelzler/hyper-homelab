@@ -1,3 +1,6 @@
 ---
 vcpus: 2
 ram: 4096
+
+# overrides the default (the latest debian template from proxmox)
+container_template: ubuntu-20.04-standard_20.04-1_amd64.tar.gz

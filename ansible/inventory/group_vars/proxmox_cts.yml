@@ -1,2 +1,6 @@
 is_container: yes
 disk_size: 4
+
+# the container templates that ship with proxmox always use root user
+# (even for ubuntu templates they don't use the 'ubuntu' user)
+ansible_user: root 

@@ -8,13 +8,23 @@
   - name: Check for Latest OS Template
     shell:
       cmd: "pveam available --section system | grep -o debian.* | sort -r | sed 1q"
-    register: template_name
+    register: latest_debian_template
     delegate_to: "{{ virt_host }}"
     changed_when: false
 
+  - name: Use Latest Debian Template
+    set_fact:
+      template_name: "{{ latest_debian_template.stdout }}"
+    when: container_template is not defined
+
+  - name: Override Default (of Latest Debian Template)
+    set_fact:
+      template_name: "{{ container_template }}"
+    when: container_template is defined
+
   - name: Download Latest OS Template
     command:
-      cmd: "pveam download local {{ template_name.stdout }}"
+      cmd: "pveam download local {{ template_name }}"
     delegate_to: "{{ virt_host }}"
     register: template_dl
     changed_when: template_dl.stdout_lines | last() != 'calculating checksum of existing file...OK, got correct file already, no need to download'
@@ -36,7 +46,7 @@
       api_host: "{{ virt_host_ip }}"
       node: "{{ virt_host }}"
       # hardware
-      ostemplate: "local:vztmpl/{{ template_name.stdout }}"
+      ostemplate: "local:vztmpl/{{ template_name }}"
       disk: "{{ disk_size }}"
       storage: "{{ tgt_storage }}"
       memory: "{{ ram }}"

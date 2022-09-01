@@ -8,6 +8,12 @@ dotnet_packages:
   - dotnet-sdk-2.1
   - dotnet-sdk-6.0
 
+ansible_user: ubuntu
+img_url: "https://cloud-images.ubuntu.com/releases/focal/release/"
+img_file: "ubuntu-20.04-server-cloudimg-amd64.img"
+# https://docs.microsoft.com/en-us/dotnet/core/install/linux-ubuntu
+dotnet_deb_file: https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb
+
 # This VM is special because it has an
 #   IP on the LAN network
 #   AND on the DMZ network.
