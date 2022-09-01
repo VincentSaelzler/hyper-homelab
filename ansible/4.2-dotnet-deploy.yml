@@ -52,14 +52,16 @@
 
 - name: Create Service File and Start Service
   hosts: dotnet_apps
+  vars:
+    service_name: "{{ inventory_hostname }}app"
   tasks:
     - name: Copy the Service File
       template:
         src: dotnetapp.service
-        dest: /etc/systemd/system/dotnetapp.service
+        dest: "/etc/systemd/system/{{ service_name }}.service"
 
     - name: Restart App Service
       systemd:
-        name: dotnetapp
+        name: "{{ service_name }}"
         state: restarted
         enabled: yes
