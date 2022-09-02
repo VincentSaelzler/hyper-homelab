@@ -26,3 +26,12 @@
     - name: Install MS SQL Server
       apt:
         pkg: mssql-server
+
+    # https://docs.microsoft.com/en-us/sql/linux/sample-unattended-install-ubuntu?view=sql-server-ver16
+    - name: Bootstrap MS SQL Server
+      command:  /opt/mssql/bin/mssql-conf -n setup accept-eula
+      environment:
+        # https://docs.ansible.com/ansible/latest/user_guide/playbooks_environment.html
+        MSSQL_SA_PASSWORD: TestPass2022 #WARNING passed in clear text. is there a better way?
+        MSSQL_PID: express
+      #TODO Idempotence
