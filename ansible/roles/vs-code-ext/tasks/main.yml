@@ -5,4 +5,5 @@
       code --install-extension ms-dotnettools.csharp
       code --install-extension ionide.ionide-fsharp
       code --install-extension oderwat.indent-rainbow
+      code --install-extension ms-mssql.mssql 	
     # cmd: whoami
