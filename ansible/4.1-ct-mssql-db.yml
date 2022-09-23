@@ -1,5 +1,5 @@
 ---
-- name: Bootstrap and Install MS SQL Server
+- name: Install MS SQL Server
   hosts: mssql
   handlers:
     - import_tasks: handlers/main.yml
@@ -27,12 +27,17 @@
       apt:
         pkg: mssql-server
 
-    # https://docs.microsoft.com/en-us/sql/linux/sample-unattended-install-ubuntu?view=sql-server-ver16
-    - name: Bootstrap MS SQL Server
+- name: Bootstrap MS SQL Server
+  hosts: mssql
+  tasks:
+    - name: Collect Facts About System Services
+      service_facts:
+
+    - name: Run Bootstrap Script
       command:
-        cmd: /opt/mssql/bin/mssql-conf -n setup accept-eula
-        creates: /usr/lib/systemd/system/mssql-server.service
+        cmd: /opt/mssql/bin/mssql-conf --noprompt setup
       environment:
-        # https://docs.ansible.com/ansible/latest/user_guide/playbooks_environment.html
-        MSSQL_SA_PASSWORD: "{{ mssql_pw }}" #WARNING passed in clear text. is there a better way?
+        MSSQL_SA_PASSWORD: "{{ mssql_pw }}" #WARNING per Ansible docs, this is passed in clear text. Is there a better way?
         MSSQL_PID: express
+        ACCEPT_EULA: MEH
+      when: ansible_facts.services['mssql-server.service'].state != "running"
