@@ -8,3 +8,5 @@ dotnet_repo: "git@github.com:VincentSaelzler/loancalc.git"
 dotnet_build_subdir: "websrv"
 dotnet_repo_deploy_key: loancalc_rsa
 dotnet_dll: websrv.dll
+
+sqlconnstring: 'SQLCONNSTR_mssql="Server=192.168.129.76;Initial Catalog=loancalc;User ID=sa;Password=TestPass2022;"'

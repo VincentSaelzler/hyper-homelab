@@ -14,11 +14,14 @@ SyslogIdentifier={{ service_name }}
 # copied from dotnet documentation at
 # https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/linux-nginx
 KillSignal=SIGINT
-Environment=ASPNETCORE_ENVIRONMENT=Production
-Environment=DOTNET_PRINT_TELEMETRY_MESSAGE=false
+Environment=ASPNETCORE_ENVIRONMENT=Development
+#Environment=ASPNETCORE_ENVIRONMENT=Production
+#Environment=DOTNET_PRINT_TELEMETRY_MESSAGE=false
 
 # listen ONLY on this port (overrides config in project source)
 Environment=Kestrel__Endpoints__Http__Url=http://*:5000
+
+# optional additional settins go below this line
 
 [Install]
 WantedBy=multi-user.target

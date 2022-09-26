@@ -60,6 +60,14 @@
         src: dotnetapp.service
         dest: "/etc/systemd/system/{{ service_name }}.service"
 
+    - name: Add SQL Connection String if Applicable
+      lineinfile:
+        path: "/etc/systemd/system/{{ service_name }}.service"
+        regexp: '^Listen '
+        insertafter: '^# optional additional settins go below this line$'
+        line: "Environment={{ sqlconnstring }}"
+      when: sqlconnstring is defined
+
     - name: Restart App Service
       systemd:
         name: "{{ service_name }}"

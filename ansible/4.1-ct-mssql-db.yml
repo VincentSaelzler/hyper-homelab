@@ -41,3 +41,6 @@
         MSSQL_PID: express
         ACCEPT_EULA: MEH
       when: ansible_facts.services['mssql-server.service'].state != "running"
+
+    # install sqlpackaage in devenv
+    # sqlpackage /Action:Publish /SourceFile:"/home/vince/Downloads/LoanPayment_v5.3.3.dacpac" /TargetConnectionString:"Server=192.168.129.76;Initial Catalog=loancalc;User ID=sa;Password=TestPass2022;"
