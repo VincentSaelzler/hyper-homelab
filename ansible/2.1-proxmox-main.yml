@@ -11,22 +11,40 @@
   - name: Check Whether DMZ Bridge Configuration Exists
     lineinfile:
       path: /etc/network/interfaces
-      line: "iface {{ netenv.dmz.vbridge }} inet static"
+      line: "iface {{ netenv.dmz.vbridge }} inet manual"
       state: present
     check_mode: yes # do not add the line - just check whether it WOULD be added
-    register: presence
+    register: dmz_presence
 
-  - name: Create DMZ Bridge Network (for VMs)
+  - name: Create DMZ Bridge (for VMs)
     command:
-      cmd: "pvesh create /nodes/{{ inventory_hostname }}/network --iface {{ netenv.dmz.vbridge }} --type bridge --autostart true --cidr {{ dmz_cidr }} --bridge_ports {{ dmz_iface }}"
+      cmd: "pvesh create /nodes/{{ inventory_hostname }}/network --iface {{ netenv.dmz.vbridge }} --type bridge --autostart true --bridge_ports {{ dmz_iface }} --comments DMZ"
     when:
-    - presence.changed # this will NOT run an update - only adds the bridge config if it does not exist.
+    - dmz_presence.changed # this will NOT run an update - only adds the bridge config if it does not exist.
     - dmz_iface is defined # some nodes don't have a spare ethernet port (yet)
     changed_when: true
     notify:
     - Restart
 
-  #repositories
+  - name: Check Whether WAN Bridge Configuration Exists
+    lineinfile:
+      path: /etc/network/interfaces
+      line: "iface {{ netenv.wan.vbridge }} inet manual"
+      state: present
+    check_mode: yes # do not add the line - just check whether it WOULD be added
+    register: wan_presence
+
+  - name: Create WAN Bridge (for Router VM)
+    command:
+      cmd: "pvesh create /nodes/{{ inventory_hostname }}/network --iface {{ netenv.wan.vbridge }} --type bridge --autostart true --bridge_ports {{ wan_iface }} --comments WAN"
+    when:
+    - wan_presence.changed # this will NOT run an update - only adds the bridge config if it does not exist.
+    - wan_iface is defined # only one node hosts the router VM
+    changed_when: true
+    notify:
+    - Restart
+
+#   #repositories
   - name: Disable Enterprise Repository
     replace:
       path: /etc/apt/sources.list.d/pve-enterprise.list
@@ -45,5 +63,5 @@
     - Update and Upgrade
     - Restart
 
-# host-specific configuration (disk partitioning and LVM/RAID)
-#- import_playbook: proxmox-pve4.yml
+# # host-specific configuration (disk partitioning and LVM/RAID)
+# #- import_playbook: proxmox-pve4.yml
