@@ -4,6 +4,7 @@ netenv:
   lan:
     mask: 24
     gw: 192.168.128.1
+    dns: 192.168.128.1
     vbridge: vmbr0
   dmz:
     mask: 24
