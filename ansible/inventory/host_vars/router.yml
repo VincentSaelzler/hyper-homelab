@@ -4,10 +4,6 @@ ram: 1024
 
 #netconf: '{"net0":"name=eth0,ip=192.168.129.1/24,bridge=vmbr1";"net1":"name=eth1,ip=99.107.120.140/29,gw=99.107.120.143,bridge=vmbr2" }'
 netconf:
-  net0: "name=eth0,ip=192.168.129.1/24,bridge=vmbr1"
-  net1: "name=eth1,ip=99.107.120.140/29,gw=99.107.120.142,bridge=vmbr2"
-dns_srvr: "1.1.1.1,8.8.8.8"
-
-
-
-#netconf: '{"net0":"name=eth0,gw={{ netenv.dmz.gw }},ip={{ ansible_host }}/{{ netenv.dmz.mask }},bridge={{ netenv.dmz.vbridge }}"}'
+  net0: "name=eth0,ip={{ ansible_host }}/{{ netenv.dmz.mask }},bridge={{ netenv.dmz.vbridge }}"
+  net1: "name=eth1,ip={{ secondary_ip }}/{{ netenv.wan.mask }},bridge={{ netenv.wan.vbridge }},gw={{ netenv.wan.gw }}"
+dns_srvr: "{{ public_dns_servers }}"

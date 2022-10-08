@@ -2,7 +2,7 @@
 - name: Bootstrap Host
   hosts: router
   roles:
-    #- full-upgrade
+    - full-upgrade
     - personalize
     # - rsyslog
   tasks:

@@ -12,7 +12,11 @@ netenv:
     dns: 192.168.129.1
     vbridge: vmbr1
   wan:
+    mask: 29
+    gw: 99.107.120.142
     vbridge: vmbr2
+
+public_dns_servers: "1.1.1.1,8.8.8.8" #cloudflare and google
 
 # domains that these services are for
 domains: 
