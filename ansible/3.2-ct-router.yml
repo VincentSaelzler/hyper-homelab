@@ -5,5 +5,20 @@
     - full-upgrade
     - personalize
     # - rsyslog
+  handlers:
+  - import_tasks: handlers/main.yml
   tasks:
-  
+  - name: Install apt Packages
+    apt:
+      state: present
+      pkg:
+        - firewalld
+  - name: Run Firewall Commands
+    shell:
+      creates: /etc/firewalld/zones/external.xml # don't rerun from an existing config (just wipe the container and start over)
+      cmd: |
+        firewall-cmd --permanent --zone=dmz --add-interface=eth0
+        firewall-cmd --permanent --zone=external --add-interface=eth1
+        firewall-cmd --permanent --zone=external --add-forward-port=port=22:proto=tcp:toport=22:toaddr=192.168.129.72
+        firewall-cmd --reload
+        systemctl restart firewalld

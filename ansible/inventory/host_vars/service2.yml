@@ -2,3 +2,5 @@
 vcpus: 1
 ram: 1024
 port: 31302
+
+dns_srvr: "{{ public_dns_servers }}"
