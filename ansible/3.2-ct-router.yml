@@ -1,0 +1,9 @@
+---
+- name: Bootstrap Host
+  hosts: router
+  roles:
+    #- full-upgrade
+    - personalize
+    # - rsyslog
+  tasks:
+  

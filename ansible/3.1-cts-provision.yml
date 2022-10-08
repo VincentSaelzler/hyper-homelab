@@ -1,6 +1,6 @@
 ---
 - name: Download Container Templates from Proxmox Repository
-  hosts: proxmox_cts
+  hosts: router
   gather_facts: no # fact gathering will fail if the containers don't exist yet
   serial: 1
   tasks:
@@ -21,7 +21,7 @@
 
 
 - name: Create and Start Containers
-  hosts: proxmox_cts
+  hosts: router
   gather_facts: no # fact gathering will fail if the containers don't exist yet
   serial: 1
   vars:

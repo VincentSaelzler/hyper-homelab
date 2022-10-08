@@ -1,0 +1,6 @@
+---
+vcpus: 2
+ram: 1024
+
+netconf: '{"net0":"name=eth0,ip=192.168.129.1/24,bridge=vmbr1"}'
+#dns_srvr: "1.1.1.1"
