@@ -1,0 +1,12 @@
+acl goodclients {
+	localhost;
+	192.168.129.0/24;
+};
+
+options {
+	directory "/var/cache/bind";
+	recursion yes;
+	allow-query { goodclients; };
+	dnssec-validation auto;
+	listen-on-v6 { any; };
+};
