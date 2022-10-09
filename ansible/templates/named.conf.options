@@ -1,6 +1,6 @@
 acl goodclients {
 	localhost;
-	192.168.129.0/24;
+	{{ netenv.dmz.network }}/{{ netenv.dmz.mask }};
 };
 
 options {

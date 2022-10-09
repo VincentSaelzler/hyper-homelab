@@ -32,7 +32,7 @@
   - name: Hard-Code Hosts on DMZ
     lineinfile:
       path: /etc/cloud/templates/hosts.debian.tmpl
-      line: "192.168.129.30 {{ item }}"
+      line: "{{ hostvars.proxy0.ansible_host }} {{ item }}"
       state: present
     loop: "{{ domains }}"
     notify:

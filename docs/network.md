@@ -1,64 +1,38 @@
 # Network List and Description
-**Public**: These are public, static IP addresses.
+**WAN**: These are public, static IP addresses.
 
-**ATT**: These are the "private" addresses coming from the AT&T router. Only real use is to connect to the router to change configuratoin settings.
-
-**LAN**: The main "LAN" segment. Includes bare-metal OS IPs, Wi-Fi AP, and iDRAC addresses.
+**LAN**: The management netork. Bare-metal OS IPs, including Proxmox hosts.
 
 **DMZ**: Virtualized infrastructure has IPs on this network.
 
-# Public
-Purchased a block of 5 static IPs from AT&T. This network is configured by logging in to the AT&T router, using the ATT network.
+# WAN
+Purchased a block of 5 static IPs from AT&T. This network is configured by logging in to the AT&T router.
 ```
-Gateway: 99.107.120.142
-Subnet: 255.255.255.248
-First Usable: 99.107.120.137
-Lat Usable: 99.107.120.141
+Network Address:        99.107.120.136
+Usable Host IP Range:   99.107.120.137 - 99.107.120.142
+Broadcast Address:      99.107.120.143
+Total Number of Hosts:  8
+Number of Usable Hosts: 6
+Subnet Mask:            255.255.255.248
+IP Class:               C
+CIDR Notation:          /29
+IP Type:                Public
+Short:                  99.107.120.136 /29
 ```
-WAN port of pfSense is `99.107.120.137`
-
-# ATT
-```
-Network: 192.168.1.0/24
-Gateway: 192.168.1.254
-```
-Router config is at `192.168.1.254`
-
 # LAN
+Router is a physical TPLink device.
 ```
-Network: 192.168.128.0/24
-Gateway: 192.168.128.1
-DNS: 192.168.128.1
+Network:    192.168.128.0/24
+Gateway:    192.168.128.1
+DNS:        192.168.128.1
+WAN IP:     99.107.120.139
 ```
-The LAN side of the pfSense router is at `192.168.128.1`
-
-This is the main subnet, so hosts of certain types use different addresses.
-- `02` - `29`: Hypervisor Web GUI
-- `30` - `49`: Hardware (APs, iDRAC ports, Switch Admin Web GUI)
-- `50` - `59`: Other Bare-Metal OS Addresses
-- `60` - `69`: Clients with Static DHCP Reservations (e.g. to consistenly enable remote access)
-- `70` - `99`: Dynamic DHCP range.
-
-## Hosts on LAN
-
-|Address|Host|Description|
-|---|---|---|
-|1|pfsense1|pfSense Router|
-|2|pve2|Proxmox Node|
-|3|pve3|Proxmox Node|
-|4|pve4|Proxmox Node|
-|5|pve5|Proxmox Node|
-|30|(none)|TP-Link EAP 115 Access Point|
-|31|(none)|Dell PowerConnect 2824 Switch|
-|32|(none)|Dell PowerEdge R620 iDRAC|
-|33|(none)|Dell PowerEdge R720xd iDRAC|
-|50|pbu0|Proxmox Backup Server|
-|60|devenv|Dev Environment and Ansible Host for VMs|
 
 # DMZ
+Router is a container running firewalld.
 ```
-Network: 192.168.129.0/24
-Gateway: 192.168.129.1
-DNS: 192.168.129.1
+Network:    192.168.129.0/24
+Gateway:    192.168.129.1
+DNS:        192.168.129.1
+WAN IP:     99.107.120.140
 ```
-The LAN side of the pfSense router is at `192.168.129.1` (_it's the same pfSense as for the LAN network_)

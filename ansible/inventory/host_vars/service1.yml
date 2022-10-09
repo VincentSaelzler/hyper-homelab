@@ -2,9 +2,3 @@
 vcpus: 1
 ram: 1024
 port: 31301
-
-
-
-netconf:
-  net0: "name=eth0,ip={{ ansible_host }}/{{ netenv.wan.mask }},bridge={{ netenv.wan.vbridge }},gw={{ netenv.wan.gw }}"
-dns_srvr: "{{ public_dns_servers }}"

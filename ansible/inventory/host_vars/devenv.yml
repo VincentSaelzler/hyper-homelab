@@ -19,4 +19,4 @@ ethports:
 netconfig:
   ipconfig0: "ip={{ ansible_host }}/{{ netenv.lan.mask }},gw={{ netenv.lan.gw }}"
   ipconfig1: "ip={{ secondary_ip }}/{{ netenv.dmz.mask }}"
-dns_srv: "{{ netenv.lan.dns }}" #override the default in vms-provision
+dns_srv: "{{ netenv.lan.dns }}" # override the default in vms-provision

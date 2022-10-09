@@ -16,15 +16,23 @@
         - bind9
 
   - name: Run Firewall Commands
-    shell:
-      creates: /etc/firewalld/zones/external.xml # don't rerun from an existing config (just wipe the container and start over)
-      cmd: |
-        firewall-cmd --permanent --zone=dmz --add-interface=eth0
-        firewall-cmd --permanent --zone=dmz --add-service=dns
-        firewall-cmd --permanent --zone=external --add-interface=eth1
-        firewall-cmd --permanent --zone=external --add-forward-port=port=22:proto=tcp:toport=22:toaddr=192.168.129.72
-        firewall-cmd --reload
-        systemctl restart firewalld
+    command:
+      cmd: "{{ item }}"
+    with_items:
+    # these commands are already idempotent, so rerunning is fine.
+    - firewall-cmd --permanent --zone=dmz --add-interface=eth0
+    - firewall-cmd --permanent --zone=dmz --add-service=dns
+    - firewall-cmd --permanent --zone=external --add-interface=eth1
+    - firewall-cmd --permanent --zone=external --add-forward-port=port=22:proto=tcp:toport=22:toaddr={{ hostvars.proxy0.ansible_host }}
+    # some helpful commands for troubleshooting...
+      # firewall-cmd --reload
+      # firewall-cmd --get-active-zones
+      # firewall-cmd --list-all --zone=external
+
+  - name: Restart Firewall Service
+    systemd:
+      name: firewalld
+      state: restarted
 
   - name: Copy the Bind Configuration File
     template:

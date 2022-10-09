@@ -2,5 +2,3 @@
 vcpus: 1
 ram: 1024
 port: 31302
-
-dns_srvr: 192.168.129.1
