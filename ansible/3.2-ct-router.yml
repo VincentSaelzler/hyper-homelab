@@ -23,7 +23,11 @@
     - firewall-cmd --permanent --zone=dmz --add-interface=eth0
     - firewall-cmd --permanent --zone=dmz --add-service=dns
     - firewall-cmd --permanent --zone=external --add-interface=eth1
+    - firewall-cmd --permanent --zone=external --add-service=http
+    - firewall-cmd --permanent --zone=external --add-service=https
     - firewall-cmd --permanent --zone=external --add-forward-port=port=22:proto=tcp:toport=22:toaddr={{ hostvars.proxy.ansible_host }}
+    - firewall-cmd --permanent --zone=external --add-forward-port=port=80:proto=tcp:toport=80:toaddr={{ hostvars.proxy.ansible_host }}
+    - firewall-cmd --permanent --zone=external --add-forward-port=port=443:proto=tcp:toport=443:toaddr={{ hostvars.proxy.ansible_host }}
     # some helpful commands for troubleshooting...
       # firewall-cmd --reload
       # firewall-cmd --get-active-zones

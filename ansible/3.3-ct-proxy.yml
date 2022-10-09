@@ -14,13 +14,12 @@
         pkg:
         - haproxy
         #- curl # for testing connections to localhost
+
     - name: Copy the Main Config File
-      copy:
+      template:
         src: haproxy.cfg
         dest: "/etc/haproxy/haproxy.cfg"
-        #mode: "644"
-        force: yes
-        
+
     # this file gets installed during the apt package install
     # we do not want to perform any of the actions is specifies
     - name: Delete the Default HAProxy Rsyslog Config
