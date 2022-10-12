@@ -1,0 +1,52 @@
+---
+- name: Bootstrap Host
+  hosts: router
+  roles:
+    - full-upgrade
+    - personalize
+    # - rsyslog
+  handlers:
+  - import_tasks: handlers/main.yml
+  tasks:
+  - name: Install apt Packages
+    apt:
+      state: present
+      pkg:
+        - firewalld
+        - bind9
+
+  - name: Run Firewall Commands
+    command:
+      cmd: "{{ item }}"
+    with_items:
+    # these commands are already idempotent, so rerunning is fine.
+    - firewall-cmd --permanent --zone=dmz --add-interface=eth0
+    - firewall-cmd --permanent --zone=dmz --add-service=dns
+    - firewall-cmd --permanent --zone=external --add-interface=eth1
+    - firewall-cmd --permanent --zone=external --add-service=http
+    - firewall-cmd --permanent --zone=external --add-service=https
+    - firewall-cmd --permanent --zone=external --add-forward-port=port=22:proto=tcp:toport=22:toaddr={{ hostvars.proxy.ansible_host }}
+    - firewall-cmd --permanent --zone=external --add-forward-port=port=80:proto=tcp:toport=80:toaddr={{ hostvars.proxy.ansible_host }}
+    - firewall-cmd --permanent --zone=external --add-forward-port=port=443:proto=tcp:toport=443:toaddr={{ hostvars.proxy.ansible_host }}
+    # some helpful commands for troubleshooting...
+      # firewall-cmd --reload
+      # firewall-cmd --get-active-zones
+      # firewall-cmd --list-all --zone=external
+
+  - name: Restart Firewall Service
+    systemd:
+      name: firewalld
+      state: restarted
+
+  - name: Copy the Bind Configuration File
+    template:
+      src: named.conf.options
+      dest: /etc/bind/named.conf.options
+      # useful command for testing: dig [site.com] +trace
+    register: bind_config
+
+  - name: Restart Bind Service
+    systemd:
+      name: bind9
+      state: restarted
+    when: bind_config.changed

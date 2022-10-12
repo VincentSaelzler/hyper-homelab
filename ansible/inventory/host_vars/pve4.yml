@@ -1,5 +1,7 @@
 ---
-dmz_iface: enp3s0
+dmz_iface: enp1s0f0
+wan_iface: enp1s0f1
+
 lvm_drives:
   - /dev/sda
 lvm_parts:

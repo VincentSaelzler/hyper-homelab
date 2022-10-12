@@ -2,21 +2,26 @@
 # networking environment
 netenv:
   lan:
-    cidr: 192.168.128.0/24
     mask: 24
     gw: 192.168.128.1
     dns: 192.168.128.1
     vbridge: vmbr0
   dmz:
-    cidr: 192.168.129.0/24
+    network: 192.168.129.0
     mask: 24
     gw: 192.168.129.1
     dns: 192.168.129.1
     vbridge: vmbr1
+  wan:
+    mask: 29
+    gw: 99.107.120.142
+    vbridge: vmbr2
+
+log_server: "{{ hostvars.elk.ansible_host }}" # rsyslog server
+public_dns_servers: "1.1.1.1,8.8.8.8" # cloudflare primary (no tracking) and google secondary
 
 # domains that these services are for
 domains: 
-  # - quercusphellos.online
   - saelzler.org
   - collatz.saelzler.org
 
@@ -32,12 +37,6 @@ certs:
     - saelzler.org
   - domains:
     - collatz.saelzler.org
-
-# rsyslog and nut server (pfSense)
-log_server: "192.168.129.32"
-ups_server: "192.168.128.1"
-ups_name: "old-smart-1500"
-ups_user: upsmon_remote
 
 # assumptions about physical location
 time_zone: "America/New_York"

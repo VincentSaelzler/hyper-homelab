@@ -1,6 +1,6 @@
 ---
 - name: Rsyslog and the ELK Stack
-  hosts: elk0
+  hosts: elk
   handlers:
     - import_tasks: handlers/main.yml
   roles:

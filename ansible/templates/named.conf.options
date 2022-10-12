@@ -1,0 +1,12 @@
+acl goodclients {
+	localhost;
+	{{ netenv.dmz.network }}/{{ netenv.dmz.mask }};
+};
+
+options {
+	directory "/var/cache/bind";
+	recursion yes;
+	allow-query { goodclients; };
+	dnssec-validation auto;
+	listen-on-v6 { any; };
+};

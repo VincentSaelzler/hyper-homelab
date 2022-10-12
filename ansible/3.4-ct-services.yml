@@ -1,7 +1,6 @@
 ---
 - name: Install Packages
   hosts: service1,service2
-  become: yes
   handlers:
     - import_tasks: handlers/main.yml
   roles:

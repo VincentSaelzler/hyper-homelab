@@ -1,0 +1,9 @@
+---
+vcpus: 2
+ram: 1024
+
+# override the defaults that are defined in proxmox_svcs.yml and used in cts-provision.yml
+netconf:
+  net0: "name=eth0,ip={{ ansible_host }}/{{ netenv.dmz.mask }},bridge={{ netenv.dmz.vbridge }}"
+  net1: "name=eth1,ip={{ secondary_ip }}/{{ netenv.wan.mask }},bridge={{ netenv.wan.vbridge }},gw={{ netenv.wan.gw }}"
+dns_srvr: "{{ public_dns_servers }}"
