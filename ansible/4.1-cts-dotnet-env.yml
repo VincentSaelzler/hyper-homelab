@@ -8,6 +8,10 @@
     - personalize
     - rsyslog
     - unprivileged-user
+    # the install on build doesn't always work the first time
+    # i think it's related to installing several sdks at once, especially the old 2.1 sdk
+    # not troubleshooting to much because probably won't have 2.1 dependency much longer.
+    # troubleshoot by remoting into the build container and doing dpkg -a
     - dotnet
   tasks:
     - debug:
