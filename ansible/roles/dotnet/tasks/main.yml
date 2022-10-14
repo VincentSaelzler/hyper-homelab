@@ -8,6 +8,9 @@
   apt:
     deb: '/tmp/packages-microsoft-prod.deb'
 
+- debug:
+    var: dotnet_packages
+
 - name: Install New apt Packages.
   apt:
     state: present
