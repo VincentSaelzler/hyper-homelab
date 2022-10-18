@@ -1,0 +1,14 @@
+---
+- name: Install MariaDB
+  hosts: mariadb
+  handlers:
+    - import_tasks: handlers/main.yml
+  roles:
+    - full-upgrade
+    - personalize
+    - rsyslog
+    - unprivileged-user
+  tasks:
+    - name: Install MariaDB
+      apt:
+        pkg: mariadb-server
