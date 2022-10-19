@@ -9,6 +9,23 @@
     - rsyslog
     - unprivileged-user
   tasks:
-    - name: Install MariaDB
+    - name: Install APT Packages
       apt:
-        pkg: mariadb-server
+        pkg:
+        - mariadb-server
+        - default-libmysqlclient-dev # required for python mysqlclient package
+        - python3-pip
+
+    - name: Install Python Packages
+      pip:
+        name:
+        - mysqlclient
+
+    - name: Check a var 
+      mysql_variables:
+        variable: bind_address
+        login_unix_socket: /run/mysqld/mysqld.sock
+      register: dbout
+    
+    - debug:
+        var: dbout
