@@ -16,6 +16,11 @@
         - default-libmysqlclient-dev # required for python mysqlclient package
         - python3-pip
 
+    - name:  Copy Configuration File
+      copy:
+        src: tcp-listen.cnf
+        dest: /etc/mysql/mariadb.conf.d/51-tcp-listen.cnf
+
     - name: Install Python Packages
       pip:
         name:

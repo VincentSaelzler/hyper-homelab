@@ -1,0 +1,5 @@
+# https://mariadb.com/kb/en/configuring-mariadb-for-remote-client-access/
+# overrides the default of 127.0.0.1 set in 50-server.cnf
+
+[mysqld]
+bind-address = 0.0.0.0
