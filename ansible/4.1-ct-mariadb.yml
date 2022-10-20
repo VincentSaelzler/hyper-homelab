@@ -45,3 +45,4 @@
         password: 12345dd
         # priv: "'bobdata.*': 'ALL,GRANT'"
         # priv: "GRANT ALL PRIVILEGES ON 'bobdata'.*"
+        priv: "bobdata.*:ALL" # it looks like not having spaces is the key. submit issue on docs page?
