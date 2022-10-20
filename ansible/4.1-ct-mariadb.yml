@@ -29,8 +29,19 @@
     - name: Check a var 
       mysql_variables:
         variable: bind_address
-        login_unix_socket: /run/mysqld/mysqld.sock
       register: dbout
     
     - debug:
         var: dbout
+
+    - name: Create a new database with name 'bobdata'
+      mysql_db:
+        name: bobdata
+
+    - name: Create bob
+      mysql_user:
+        name: bob
+        host: 192.168.129.%
+        password: 12345dd
+        # priv: "'bobdata.*': 'ALL,GRANT'"
+        # priv: "GRANT ALL PRIVILEGES ON 'bobdata'.*"
