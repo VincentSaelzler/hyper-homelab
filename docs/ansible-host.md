@@ -11,7 +11,9 @@ This project assumes that the Ansible host will be running Ubuntu (or Ubuntu on 
 ```ps
 wsl --install
 ```
-Download and install [virt-viewer](https://virt-manager.org/download/)
+**Windows:** Install VS Code and Remote Development Extension
+
+**Windows:** Download and install [virt-viewer](https://virt-manager.org/download/)
 
 **Linux:** Install Ubuntu on physical hardware
 
@@ -36,7 +38,7 @@ git clone https://github.com/VincentSaelzler/hyper-homelab.git ~/src/hyper-homel
 ```
 Run playbook to bootstrap host
 ```sh
-ansible-playbook ~/src/hyper-homelab/ansible/ansible-host.yml --ask-become-pass --ask-vault-pass
+ansible-playbook ~/src/hyper-homelab/ansible/1.0-ansible-host.yml --ask-become-pass --ask-vault-pass
 ```
 Apply aliases
 ```sh
