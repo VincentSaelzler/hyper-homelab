@@ -1,136 +1,4 @@
-# PCIe Passthrough
-https://pve.proxmox.com/wiki/PCI(e)_Passthrough
 
-
-Enable IOMMU in Motherboard BIOS
-- Advanced > AMD CBS > NBIO Common Options
-
-
-```sh
-# nano /etc/modules
-...
-vfio
-vfio_iommu_type1
-vfio_pci
-vfio_virqfd
-# update-initramfs -u -k all
-update-initramfs: Generating /boot/initrd.img-5.15.64-1-pve
-Running hook script 'zz-proxmox-boot'..
-Re-executing '/etc/kernel/postinst.d/zz-proxmox-boot' in new private mount namespace..
-No /etc/kernel/proxmox-boot-uuids found, skipping ESP sync.
-update-initramfs: Generating /boot/initrd.img-5.15.30-2-pve
-Running hook script 'zz-proxmox-boot'..
-Re-executing '/etc/kernel/postinst.d/zz-proxmox-boot' in new private mount namespace..
-No /etc/kernel/proxmox-boot-uuids found, skipping ESP sync.
-# reboot
-# dmesg | grep -e DMAR -e IOMMU -e AMD-Vi
-[    0.680418] pci 0000:00:00.2: AMD-Vi: IOMMU performance counters supported
-[    0.683153] pci 0000:00:00.2: AMD-Vi: Found IOMMU cap 0x40
-[    0.683156] AMD-Vi: Extended features (0x58f77ef22294a5a): PPR NX GT IA PC GA_vAPIC
-[    0.683160] AMD-Vi: Interrupt remapping enabled
-[    0.693138] perf/amd_iommu: Detected AMD IOMMU #0 (2 banks, 4 counters/bank).
-```
-
-Look for the PCI (slot?) numbers associated with NVIDIA devices.
-
-With card in secondary x16 slot
-```sh
-# lspci -nn
-04:00.0 VGA compatible controller [0300]: NVIDIA Corporation TU104 [GeForce RTX 2060] [10de:1e89] (rev a1)
-04:00.1 Audio device [0403]: NVIDIA Corporation TU104 HD Audio Controller [10de:10f8] (rev a1)
-04:00.2 USB controller [0c03]: NVIDIA Corporation TU104 USB 3.1 Host Controller [10de:1ad8] (rev a1)
-04:00.3 Serial bus controller [0c80]: NVIDIA Corporation TU104 USB Type-C UCSI Controller [10de:1ad9] (rev a1)
-```
-
-With card in primary x16 slot
-```sh
-# lspci -nn
-07:00.0 VGA compatible controller [0300]: NVIDIA Corporation TU104 [GeForce RTX 2060] [10de:1e89] (rev a1)
-07:00.1 Audio device [0403]: NVIDIA Corporation TU104 HD Audio Controller [10de:10f8] (rev a1)
-07:00.2 USB controller [0c03]: NVIDIA Corporation TU104 USB 3.1 Host Controller [10de:1ad8] (rev a1)
-07:00.3 Serial bus controller [0c80]: NVIDIA Corporation TU104 USB Type-C UCSI Controller [10de:1ad9] (rev a1)
-```
-
-Determine which IOMMU groups the NVIDIA devices are in. See if there are any other devices in that group.
-
-With card in secondary x16 slot
-- They are in group 0
-- Lots of other devices are in that same group
-- Including Ethernet and NVMe drives
-- **⚠️⚠️⚠️ ISSUE: THE DEVICE SHOULD BE THE ONLY ONE IN THE GROUP ⚠️⚠️⚠️**
-
-With card in primary GPU slot
-❓Should I pass the PCIe bridges?
-```sh
-# find /sys/kernel/iommu_groups/ -type l
-# plus some excel forumulas to associate devices by group...
-2	00:03.0	Host bridge [0600]: Advanced Micro Devices, Inc. [AMD] Starship/Matisse PCIe Dummy Host Bridge [1022:1482]
-2	00:03.1	PCI bridge [0604]: Advanced Micro Devices, Inc. [AMD] Starship/Matisse GPP Bridge [1022:1483]
-2	07:00.0	VGA compatible controller [0300]: NVIDIA Corporation TU104 [GeForce RTX 2060] [10de:1e89] (rev a1)
-2	07:00.1	Audio device [0403]: NVIDIA Corporation TU104 HD Audio Controller [10de:10f8] (rev a1)
-2	07:00.2	USB controller [0c03]: NVIDIA Corporation TU104 USB 3.1 Host Controller [10de:1ad8] (rev a1)
-2	07:00.3	Serial bus controller [0c80]: NVIDIA Corporation TU104 USB Type-C UCSI Controller [10de:1ad9] (rev a1)
-```
-
-- **⚠️⚠️⚠️ There was a typo in the IDs the first round. not sure if that was this doc only or also the real file contents ⚠️⚠️⚠️**
-```sh
-# echo "options vfio-pci ids=10de:1e89,10de:10f8,10de:1ad8,10de:1ad9" > /etc/modprobe.d/passthrough.conf
-# update-initramfs -u -k all
-update-initramfs: Generating /boot/initrd.img-5.15.64-1-pve
-Running hook script 'zz-proxmox-boot'..
-Re-executing '/etc/kernel/postinst.d/zz-proxmox-boot' in new private mount namespace..
-No /etc/kernel/proxmox-boot-uuids found, skipping ESP sync.
-update-initramfs: Generating /boot/initrd.img-5.15.30-2-pve
-Running hook script 'zz-proxmox-boot'..
-Re-executing '/etc/kernel/postinst.d/zz-proxmox-boot' in new private mount namespace..
-No /etc/kernel/proxmox-boot-uuids found, skipping ESP sync.
-```
-
-After rebooting, it *seems* to work. The boot log stops as soon as the lvm vgs are checked.
-
-I can still ssh into the machine and also access the web interface.
-
-
-📝 only the VGA controller uses the driver (not the related functions)
-```sh
-# lspci -nnk | grep -C 2 vfio
-04:00.0 VGA compatible controller [0300]: NVIDIA Corporation TU104 [GeForce RTX 2060] [10de:1e89] (rev a1)
-        Subsystem: eVga.com. Corp. TU104 [GeForce RTX 2060] [3842:2068]
-        Kernel driver in use: vfio-pci
-        Kernel modules: nvidiafb, nouveau
-
-```
-
-📝 With typos fixed, one more device uses the vfio stuff
-```sh
-#lspci -nnk | grep -B 2 -A 1 vfio
-07:00.0 VGA compatible controller [0300]: NVIDIA Corporation TU104 [GeForce RTX 2060] [10de:1e89] (rev a1)
-        Subsystem: eVga.com. Corp. TU104 [GeForce RTX 2060] [3842:2068]
-        Kernel driver in use: vfio-pci
-        Kernel modules: nvidiafb, nouveau
-07:00.1 Audio device [0403]: NVIDIA Corporation TU104 HD Audio Controller [10de:10f8] (rev a1)
-        Subsystem: eVga.com. Corp. TU104 HD Audio Controller [3842:2068]
-        Kernel driver in use: vfio-pci
-        Kernel modules: snd_hda_intel
-
-```
-
-create windows vm with defaults
-
-```sh
-# qm set 100 -hostpci0 04:00.0
-update VM 100: -hostpci0 04:00.0
-```
-
-second round - this time I excluded the last part of the pcie address
-```sh
-# qm set 100 -hostpci0 07:00,pcie=on,x-vga=on
-update VM 100: -hostpci0 07:00,pcie=on,x-vga=on
-```
-
-now the device appears in the gui
-- checked primary GPU
-- checked PCIe
 
 ⛔ The screen goes blank, connection to host SSH and web interface are lost ⛔
 
@@ -432,3 +300,183 @@ echo 1 > /sys/bus/pci/devices/0000\:07\:00.0/remove
 
 The command line defaults ARE reequired.
 When not passed, there was a crazy situation where I could see both the VM boot screen AND the Proxmox prompt at the same time.
+
+
+
+cat /proc/iomem
+
+
+initcall_blacklist=sysfb_init
+
+
+
+
+BIOS F4403 (AGESA V2 PI 1.2.0.7): enable IOMMU, SVM; disable CSM
+
+
+
+# Attempt 4
+## Configure Motherboard BIOS
+Passthrough (AMD-Vi / Intel VT-d)
+- Advanced > AMD CBS > NBIO Common Options > IOMMU = Enable
+
+Virtualization (AMD-V / Intel VT-x)
+- Advanced > CPU Configuration >  SVM Mode = Enable
+
+Boot Options
+- Boot > CSM = Disable
+
+## Enable vfio Kernel Modules
+```sh
+# lsmod | grep vfio
+<no output>
+# nano /etc/modules
+# printf " vfio \n vfio_iommu_type1 \n vfio_pci \n vfio_virqfd \n" >> /etc/modules
+< ... >
+vfio
+vfio_iommu_type1
+vfio_pci
+vfio_virqfd
+# update-initramfs -u -k all
+# reboot
+# lsmod | grep vfio
+vfio_pci               16384  0
+vfio_pci_core          73728  1 vfio_pci
+vfio_virqfd            16384  1 vfio_pci_core
+irqbypass              16384  2 vfio_pci_core,kvm
+vfio_iommu_type1       40960  0
+vfio                   45056  2 vfio_pci_core,vfio_iommu_type1
+# dmesg | grep -e DMAR -e IOMMU -e AMD-Vi
+[    0.680418] pci 0000:00:00.2: AMD-Vi: IOMMU performance counters supported
+[    0.683153] pci 0000:00:00.2: AMD-Vi: Found IOMMU cap 0x40
+[    0.683156] AMD-Vi: Extended features (0x58f77ef22294a5a): PPR NX GT IA PC GA_vAPIC
+[    0.683160] AMD-Vi: Interrupt remapping enabled
+[    0.693138] perf/amd_iommu: Detected AMD IOMMU #0 (2 banks, 4 counters/bank).
+```
+
+## Create Script to Check IOMMU Groups
+Create a script file called `getgroups.sh`. Make it executable.
+```sh
+#!/bin/bash
+shopt -s nullglob
+for d in /sys/kernel/iommu_groups/*/devices/*; do
+    n=${d#*/iommu_groups/*}; n=${n%%/*}
+    printf 'IOMMU Group %s ' "$n"
+    lspci -nns "${d##*/}"
+done | sort -V
+```
+## Identify PCI Devices to Pass Through
+```sh
+# ./getgroups.sh
+IOMMU Group 2 00:03.0 Host bridge [0600]: Advanced Micro Devices, Inc. [AMD] Starship/Matisse PCIe Dummy Host Bridge [1022:1482]
+IOMMU Group 2 00:03.1 PCI bridge [0604]: Advanced Micro Devices, Inc. [AMD] Starship/Matisse GPP Bridge [1022:1483]
+IOMMU Group 2 07:00.0 VGA compatible controller [0300]: NVIDIA Corporation TU104 [GeForce RTX 2060] [10de:1e89] (rev a1)
+IOMMU Group 2 07:00.1 Audio device [0403]: NVIDIA Corporation TU104 HD Audio Controller [10de:10f8] (rev a1)
+IOMMU Group 2 07:00.2 USB controller [0c03]: NVIDIA Corporation TU104 USB 3.1 Host Controller [10de:1ad8] (rev a1)
+IOMMU Group 2 07:00.3 Serial bus controller [0c80]: NVIDIA Corporation TU104 USB Type-C UCSI Controller [10de:1ad9] (rev a1)
+<...>
+IOMMU Group 14 09:00.3 USB controller [0c03]: Advanced Micro Devices, Inc. [AMD] Matisse USB 3.0 Host Controller [1022:149c]
+```
+
+## Specify PCI Devices to Pass Through
+```sh
+# lspci -nnk | grep -B 2 -A 1 vfio
+<no output>
+# echo "options vfio-pci ids=10de:1e89,10de:10f8,10de:1ad8,10de:1ad9,1022:149c" > /etc/modprobe.d/vfio.conf
+# update-initramfs -u -k all
+# reboot
+# lspci -nnk | grep -B 2 -A 1 vfio
+07:00.0 VGA compatible controller [0300]: NVIDIA Corporation TU104 [GeForce RTX 2060] [10de:1e89] (rev a1)
+        Subsystem: eVga.com. Corp. TU104 [GeForce RTX 2060] [3842:2068]
+        Kernel driver in use: vfio-pci
+        Kernel modules: nvidiafb, nouveau
+07:00.1 Audio device [0403]: NVIDIA Corporation TU104 HD Audio Controller [10de:10f8] (rev a1)
+        Subsystem: eVga.com. Corp. TU104 HD Audio Controller [3842:2068]
+        Kernel driver in use: vfio-pci
+        Kernel modules: snd_hda_intel
+```
+
+## Disable Frame Buffers
+```sh
+# cat /proc/cmdline
+BOOT_IMAGE=/boot/vmlinuz-5.15.64-1-pve root=/dev/mapper/pve-root ro quiet
+# nano /etc/default/grub
+GRUB_CMDLINE_LINUX_DEFAULT="quiet initcall_blacklist=sysfb_init"
+# grub-mkconfig -o /boot/grub/grub.cfg
+# reboot
+# cat /proc/cmdline
+BOOT_IMAGE=/boot/vmlinuz-5.15.64-1-pve root=/dev/mapper/pve-root ro quiet initcall_blacklist=sysfb_init
+```
+
+## Create VM
+Use Windows 11 ISO (22H2v1)  
+All defaults, except:
+- Increase size of disk to 52GB
+- Use 2 cores
+
+Add PCI Device (Graphics)
+- All Functions = Y
+- Primary GPU = Y
+- PCI-Express = Y
+
+Add PCI Device (USB)
+- All Defaults
+
+# Troubleshooting
+✅ The only visible entries in the boot log should be:
+```
+Loading Linux 5.15.64-1-pve ...
+Loading initial ramdisk ...
+```
+⚠️ If boot the log ends past `Loading initial ramdisk ...`, frame buffer capabilities are probably still enabled.
+```sh
+# -- before disabling frame buffers
+Found volume group "pve" using metadata type lvm2
+6 logical volume(s) in volume group "pve" now active
+/dev/mapper/pve-root: clean, nn/nn files, nn/nn blocks
+# nano /etc/default/grub
+GRUB_CMDLINE_LINUX_DEFAULT="quiet initcall_blacklist=sysfb_init"
+# grub-mkconfig -o /boot/grub/grub.cfg
+# reboot
+# -- after disabling frame buffers
+Loading Linux 5.15.64-1-pve ...
+Loading initial ramdisk ...
+```
+
+
+⚠️ Devices we don't want to pass CANNOT be in the same IOMMU group.
+❓Should I pass the PCIe bridges? NO
+❓Should I pass the USB functions to vfio-pci ids? Not sure of the impact there.
+
+💡Comparing `lspci` output before and after the VM starts would be helpful. It seems like the GPU+HD audio device START as passthrough, while others are normal (owned by host) until the VM starts.
+
+
+# References
+Command List
+```sh
+# making changes
+nano /etc/default/grub
+grub-mkconfig -o /boot/grub/grub.cfg
+echo "options vfio-pci ids=10de:1e89,10de:10f8,10de:1ad8,10de:1ad9 disable_vga=1" > /etc/modprobe.d/passthrough.conf
+update-initramfs -u -k all
+
+# validating
+lsmod | grep vfio
+dmesg | grep -e DMAR -e IOMMU -e AMD-Vi
+lspci -nnk | grep -B 2 -A 1 vfio
+cat /proc/cmdline
+sysctl -a | grep video # not 1:1 naming with passed parameters
+
+
+
+```
+
+
+[Spaceinvader One: A little about Passthrough, PCIe, IOMMU Groups and breaking them up](https://www.youtube.com/watch?v=qQiMMeVNw-o)
+
+[welemmanuel: Working Config](https://forum.proxmox.com/threads/problem-with-gpu-passthrough.55918/post-486436)
+
+
+
+
+printf " vfio \n vfio_iommu_type1 \n vfio_pci \n vfio_virqfd \n"
