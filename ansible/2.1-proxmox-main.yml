@@ -7,42 +7,42 @@
     - privileged-user
   tasks:
 
-  # network
-  - name: Check Whether DMZ Bridge Configuration Exists
-    lineinfile:
-      path: /etc/network/interfaces
-      line: "iface {{ netenv.dmz.vbridge }} inet manual"
-      state: present
-    check_mode: yes # do not add the line - just check whether it WOULD be added
-    register: dmz_presence
+  # # network
+  # - name: Check Whether DMZ Bridge Configuration Exists
+  #   lineinfile:
+  #     path: /etc/network/interfaces
+  #     line: "iface {{ netenv.dmz.vbridge }} inet manual"
+  #     state: present
+  #   check_mode: yes # do not add the line - just check whether it WOULD be added
+  #   register: dmz_presence
 
-  - name: Create DMZ Bridge (for VMs)
-    command:
-      cmd: "pvesh create /nodes/{{ inventory_hostname }}/network --iface {{ netenv.dmz.vbridge }} --type bridge --autostart true --bridge_ports {{ dmz_iface }} --comments DMZ"
-    when:
-    - dmz_presence.changed # this will NOT run an update - only adds the bridge config if it does not exist.
-    - dmz_iface is defined # some nodes don't have a spare ethernet port (yet)
-    changed_when: true
-    notify:
-    - Restart
+  # - name: Create DMZ Bridge (for VMs)
+  #   command:
+  #     cmd: "pvesh create /nodes/{{ inventory_hostname }}/network --iface {{ netenv.dmz.vbridge }} --type bridge --autostart true --bridge_ports {{ dmz_iface }} --comments DMZ"
+  #   when:
+  #   - dmz_presence.changed # this will NOT run an update - only adds the bridge config if it does not exist.
+  #   - dmz_iface is defined # some nodes don't have a spare ethernet port (yet)
+  #   changed_when: true
+  #   notify:
+  #   - Restart
 
-  - name: Check Whether WAN Bridge Configuration Exists
-    lineinfile:
-      path: /etc/network/interfaces
-      line: "iface {{ netenv.wan.vbridge }} inet manual"
-      state: present
-    check_mode: yes # do not add the line - just check whether it WOULD be added
-    register: wan_presence
+  # - name: Check Whether WAN Bridge Configuration Exists
+  #   lineinfile:
+  #     path: /etc/network/interfaces
+  #     line: "iface {{ netenv.wan.vbridge }} inet manual"
+  #     state: present
+  #   check_mode: yes # do not add the line - just check whether it WOULD be added
+  #   register: wan_presence
 
-  - name: Create WAN Bridge (for Router VM)
-    command:
-      cmd: "pvesh create /nodes/{{ inventory_hostname }}/network --iface {{ netenv.wan.vbridge }} --type bridge --autostart true --bridge_ports {{ wan_iface }} --comments WAN"
-    when:
-    - wan_presence.changed # this will NOT run an update - only adds the bridge config if it does not exist.
-    - wan_iface is defined # only one node hosts the router VM
-    changed_when: true
-    notify:
-    - Restart
+  # - name: Create WAN Bridge (for Router VM)
+  #   command:
+  #     cmd: "pvesh create /nodes/{{ inventory_hostname }}/network --iface {{ netenv.wan.vbridge }} --type bridge --autostart true --bridge_ports {{ wan_iface }} --comments WAN"
+  #   when:
+  #   - wan_presence.changed # this will NOT run an update - only adds the bridge config if it does not exist.
+  #   - wan_iface is defined # only one node hosts the router VM
+  #   changed_when: true
+  #   notify:
+  #   - Restart
 
 #   #repositories
   - name: Disable Enterprise Repository
